@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Clinicon Assistent</title>
+  <link rel="stylesheet" href="../../../../style.css" />
+  <style>
+    :root{--bg:#eef3f7;--panel:#fff;--line:#e5e7eb;--muted:#6b7280;--text:#0f172a;--accent:#1f4b82;--accent-strong:#12355c;--shadow:0 14px 28px rgba(15,23,42,.12);}
+    body{margin:0;font-family:'Roboto',var(--font-base);font-size:var(--font-size-base);line-height:var(--line-height-base);background:var(--bg);color:var(--text);}
+    main{width:100%;max-width:1180px;margin:0 auto;padding:20px;display:flex;flex-direction:column;gap:16px;}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px;}
+    .hero{display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:16px;background:linear-gradient(120deg,#f7fbff 0%,#e8f1ff 40%,#f7fbff 100%);border:1px solid var(--line);box-shadow:var(--shadow);}
+    .badge{display:inline-flex;gap:8px;align-items:center;padding:8px 12px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-strong));color:#fff;font-weight:700;}
+    h1{margin:0;font-size:clamp(1.4rem,2.1vw,1.9rem);}
+    .grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:14px;}
+    label{display:flex;flex-direction:column;gap:6px;font-weight:700;color:var(--text);}
+    textarea,input{border:1px solid var(--line);border-radius:10px;padding:12px;font:inherit;background:#fff;}
+    textarea{min-height:120px;resize:vertical;}
+    .btn{padding:12px 16px;border:none;border-radius:10px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-weight:800;cursor:pointer;}
+    .status-line{display:flex;align-items:center;gap:10px;color:var(--muted);font-weight:600;}
+    .status-dot{width:12px;height:12px;border-radius:50%;background:#d1d5db;}
+    .status-dot.ok{background:#16a34a;}
+    .status-dot.err{background:#dc2626;}
+    .hint{color:var(--muted);font-size:0.95rem;}
+    .audit-head{display:flex;justify-content:space-between;align-items:center;}
+    .audit-list{display:flex;flex-direction:column;gap:8px;}
+    .audit-top{display:flex;flex-direction:column;gap:6px;}
+    .audit-scroll{max-height:160px;overflow:auto;border:1px solid var(--line);border-radius:10px;padding:8px;background:#f8fafc;}
+    .bubble{padding:10px 12px;border-radius:12px;box-shadow:0 4px 12px rgba(15,23,42,.08);background:#fff;border:1px solid var(--line);}
+    .chat{border:1px solid var(--line);border-radius:12px;padding:12px;background:#f8fafc;min-height:220px;max-height:380px;overflow:auto;display:flex;flex-direction:column;gap:10px;}
+    .chat .bubble.user{margin-left:auto;background:#2563eb;color:#fff;}
+    .chat .bubble.bot{margin-right:auto;background:#fff;}
+    @media(max-width:1100px){main{padding:16px;max-width:100%;} .grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero card">
+      <div class="badge">Clinicon Assistent</div>
+      <h1>Direktbefehle an den Stellenplan</h1>
+      <p class="hint">Mandant wird automatisch verwendet. KI-Parser läuft vor der Ausführung.</p>
+    </section>
+
+    <section class="card">
+      <div class="grid">
+        <div>
+          <div class="status-line" style="margin-bottom:8px;">
+            <span class="status-dot" id="apiStatusDot"></span>
+            <span id="apiStatusText">Bereit</span>
+          </div>
+          <p class="hint" style="margin-top:0;margin-bottom:10px;">Mandant: <strong id="siteLabel">-</strong> · API: <strong id="apiBaseLabel"></strong></p>
+          <label>Nachricht
+            <textarea id="messageInput" placeholder="Frage oder Auftrag eingeben..."></textarea>
+          </label>
+          <button class="btn" id="processBtn" type="button" style="margin-top:10px;">Verarbeiten (KI + DB)</button>
+          <p class="hint" id="lastJson" style="white-space:pre-wrap;margin-top:10px;"></p>
+        </div>
+        <div>
+          <div class="audit-head">
+            <h3 style="margin:0;">Audit-Log</h3>
+            <span class="hint">Letzte 3 sichtbar</span>
+          </div>
+          <div class="audit-list" id="auditTop"></div>
+          <div class="audit-scroll" id="auditScroll"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3 style="margin:0 0 8px 0;">Chat</h3>
+      <div class="chat" id="chatBox" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script>
+    const SITE_LABEL = (sessionStorage.getItem("cliniconSite") || "GFO-DIN").trim();
+    const SITE = SITE_LABEL || "GFO-DIN";
+    const workerDefault = "https://divine-disk-6cb5.maarten-koomen.workers.dev";
+    const API_BASE_URL = (window.CLINICON_API_BASE || workerDefault).trim();
+
+    // Falls weitere Mandanten → Mapping hier erweitern
+    const TABLE = "stellenplan_employees_gfodin";
+
+    const els = {
+      messageInput: document.getElementById("messageInput"),
+      processBtn: document.getElementById("processBtn"),
+      chatBox: document.getElementById("chatBox"),
+      apiStatusText: document.getElementById("apiStatusText"),
+      apiStatusDot: document.getElementById("apiStatusDot"),
+      auditTop: document.getElementById("auditTop"),
+      auditScroll: document.getElementById("auditScroll"),
+      siteLabel: document.getElementById("siteLabel"),
+      apiBaseLabel: document.getElementById("apiBaseLabel"),
+      lastJson: document.getElementById("lastJson"),
+    };
+    els.siteLabel.textContent = SITE_LABEL || "-";
+    els.apiBaseLabel.textContent = API_BASE_URL;
+
+    function setStatus(text, type="neutral"){
+      els.apiStatusText.textContent = text;
+      els.apiStatusDot.classList.remove("ok","err");
+      if(type==="ok") els.apiStatusDot.classList.add("ok");
+      if(type==="err") els.apiStatusDot.classList.add("err");
+    }
+    function appendBubble(text, type="bot"){
+      const div = document.createElement("div");
+      div.className = "bubble " + type;
+      div.textContent = text;
+      els.chatBox.appendChild(div);
+      els.chatBox.scrollTop = els.chatBox.scrollHeight;
+    }
+    async function requestJson(path, opts={}){
+      const url = API_BASE_URL + path + (path.includes("?")?"&":"?") + "_cb=" + Date.now();
+      const res = await fetch(url, { cache:"no-cache", ...opts });
+      let data = null;
+      try{ data = await res.json(); }catch{ /* ignore parse errors */ }
+      return { ok: res.ok, status: res.status, statusText: res.statusText, data };
+    }
+    function formatApplied(applied, parsed){
+      if(!applied) return null;
+      const action = (parsed && (parsed.action || parsed.intent)) || "";
+      if(action === "get_employee_fte_year"){
+        const monthLabel = applied.month || "Ø";
+        if (applied.found === false) return "Keine Daten gefunden.";
+        let val = (applied.month_value ?? applied.avg_vk ?? applied.avg_year);
+        if (val === undefined || val === null || Number.isNaN(val)) val = "keine Daten";
+        const avgYear = (applied.avg_year !== undefined && applied.avg_year !== null && !Number.isNaN(applied.avg_year))
+          ? ` (Ø Jahr: ${applied.avg_year})` : "";
+        const col = applied.month_column ? ` [Spalte: ${applied.month_column}]` : "";
+        return `Stellenanteil ${monthLabel} ${applied.year || ""}: ${val}${avgYear}${col}`;
+      }
+      if(action === "check_employee_exists"){
+        return applied.exists ? "Gefunden." : "Nicht gefunden.";
+      }
+      if(action === "list_unit_employees"){
+        const names = (applied.employees||[]).map(e=>e.name).join(", ") || "-";
+        return `Mitarbeitende ${applied.dept||""} ${applied.year||""}: ${names}`;
+      }
+      return null;
+    }
+
+    async function loadAudit(){
+      try{
+        const res = await requestJson("/api/audit?site=" + encodeURIComponent(SITE) + "&limit=20");
+        if(!res.ok) throw new Error(res.data?.detail || res.statusText);
+        const items = res.data?.audit || [];
+        const top3 = items.slice(0,3);
+        const rest = items.slice(3);
+        els.auditTop.innerHTML = top3.map(item=>{
+          const ts = (item.created_at||"").replace("T"," ").replace("Z","");
+          return `<div class="bubble"><strong>${ts}</strong> · ${item.status||""}<br>Aktion: ${item.action||"-"}<br>Cmd: ${item.command||""}</div>`;
+        }).join("") || '<div class="hint">Keine Einträge.</div>';
+        els.auditScroll.innerHTML = rest.map(item=>{
+          const ts = (item.created_at||"").replace("T"," ").replace("Z","");
+          return `<div class="bubble" style="margin-bottom:6px;"><strong>${ts}</strong> · ${item.status||""}<br>Aktion: ${item.action||"-"} · Jahr: ${item.plan_year||"-"}<br>Cmd: ${item.command||""}</div>`;
+        }).join("") || '<div class="hint">Ältere Einträge leer.</div>';
+      }catch(err){
+        els.auditTop.innerHTML = '<div class="hint">Audit-Log Fehler: '+err.message+'</div>';
+        els.auditScroll.innerHTML = '';
+      }
+    }
+
+    async function processCommand(){
+      const msg = els.messageInput.value.trim();
+      if(!msg) return;
+      appendBubble(msg, "user");
+      setStatus("Frage KI-Parser ...");
+
+      // 1) KI-Parser
+      const parseRes = await requestJson("/api/ai-command", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ command: msg })
+      });
+      if(!parseRes.ok){
+        appendBubble(`Fehler KI-Parser (HTTP ${parseRes.status}): ${parseRes.data?.error || parseRes.statusText}`, "bot");
+        setStatus("KI-Parser Fehler","err");
+        return;
+      }
+      const parsed = parseRes.data?.parsed || {};
+      els.lastJson.textContent = "KI-JSON:\n" + JSON.stringify(parsed, null, 2);
+      if(parsed.needs_clarification){
+        appendBubble(`⚠️ Klärungsfrage: ${parsed.clarification_question || "Bitte präzisieren."}`, "bot");
+        setStatus("Klärung nötig","err");
+        return;
+      }
+
+      // 2) DB-Ausführung
+      setStatus("Ausführung ...");
+      const execRes = await requestJson("/api/command", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ command: msg, table: TABLE, site: SITE })
+      });
+      const execFail = !execRes.ok || execRes.data?.success === false;
+      if(execFail){
+        appendBubble(`Fehler Backend (HTTP ${execRes.status}): ${execRes.data?.error || execRes.statusText}`, "bot");
+        setStatus("Backend Fehler","err");
+        return;
+      }
+      const applied = execRes.data?.applied || {};
+      const feedback = formatApplied(applied, execRes.data?.parsed);
+      const parts = [
+        "Backend bestätigt",
+        "Aktion: " + (execRes.data?.parsed?.intent || execRes.data?.parsed?.action || "unbekannt"),
+        feedback || null,
+        "Mandant: " + SITE
+      ].filter(Boolean);
+      appendBubble(parts.join("\n"), "bot");
+      setStatus("Erledigt","ok");
+      loadAudit();
+    }
+
+    els.processBtn.addEventListener("click", processCommand);
+    els.messageInput.addEventListener("keydown", e => {
+      if(e.key === "Enter" && (e.ctrlKey || e.metaKey)) processCommand();
+    });
+
+    setStatus("Bereit", "ok");
+    loadAudit();
+  </script>
+</body>
+</html>

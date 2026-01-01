@@ -1,0 +1,206 @@
+<section class="card page-frame roadmap-frame">
+  <div class="page-frame__body roadmap-stack">
+    <section class="card roadmap-section">
+      <h2>Roadmap &amp; Priorit&auml;ten</h2>
+      <p>Die wichtigsten Arbeitspakete f&uuml;r die kommenden Releases. Termine sind Zielwerte und werden bei Bedarf angepasst.</p>
+      <div class="roadmap-grid">
+        <article class="roadmap-card">
+          <span class="status-badge status-active">In Umsetzung &middot; Q1/2026</span>
+          <h3>PPBV-Automation</h3>
+          <p>Die Eingaben im PPBV-Rechner lassen sich k&uuml;nftig als Szenario speichern und mit anderen Teams teilen.</p>
+          <ul class="roadmap-points">
+            <li>Automatische Aktualisierung der Patientengruppen aus der Stammdatenbank.</li>
+            <li>Versions-Historie direkt im Tool f&uuml;r schnelle Vergleiche.</li>
+            <li>Export als PDF oder Excel aus dem Tool heraus.</li>
+          </ul>
+        </article>
+        <article class="roadmap-card">
+          <span class="status-badge status-planned">Geplant &middot; Q2/2026</span>
+          <h3>Mobile Dashboard</h3>
+          <p>Eine kompakte Ansicht f&uuml;r Stationsleitungen mit KPIs aus PPUG-, PPBV- und Schichttools.</p>
+          <ul class="roadmap-points">
+            <li>Benachrichtigungen bei Schwellwertverletzungen.</li>
+            <li>Favoriten pro Bereich f&uuml;r schnellere Navigation.</li>
+            <li>Offline-Sync f&uuml;r Visiten-Tablets.</li>
+          </ul>
+        </article>
+        <article class="roadmap-card">
+          <span class="status-badge status-planned">Geplant &middot; Q3/2026</span>
+          <h3>Textgesteuerte Stellenplan&auml;nderung</h3>
+          <p>Stellenplan-Schritte per Textbefehl ausl&ouml;sen und als Workflow freigeben.</p>
+          <ul class="roadmap-points">
+            <li>Kommandos zum Hinzuf&uuml;gen/Anpassen/L&ouml;schen von Eintr&auml;gen.</li>
+            <li>Review- und Freigabe-Pfad mit Protokoll.</li>
+            <li>Audit-Log der durchgef&uuml;hrten &Auml;nderungen.</li>
+          </ul>
+        </article>
+        <article class="roadmap-card">
+          <span class="status-badge status-research">In Analyse &middot; Q3/2026</span>
+          <h3>Dienstplan-Schnittstelle</h3>
+          <p>Direkte Integration in die Dienstplanung, um Fehltage und Besetzungsbedarf automatisch zu &uuml;bergeben.</p>
+          <ul class="roadmap-points">
+            <li>Import von Monatspl&auml;nen via REST oder SFTP.</li>
+            <li>Mapping von Rollen und Kompetenzprofilen.</li>
+            <li>Abgleich mit Planstellen in Echtzeit.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="card roadmap-section">
+      <h2>Neueste Updates</h2>
+      <p>Kurzfassung der Oktober/November-Releases.</p>
+      <div class="updates-list">
+        <article class="update-item">
+          <div class="update-meta">
+            <strong>November 2025</strong>
+            <span class="status-badge status-active">verf&uuml;gbar</span>
+          </div>
+          <p>Stabilit&auml;ts-Update f&uuml;r PPBV/PPUG mit schnellerem Export.</p>
+          <ul class="roadmap-points">
+            <li>Performance- und Export-Fixes.</li>
+            <li>Logging/Monitoring f&uuml;r Fehlertracing.</li>
+          </ul>
+        </article>
+        <article class="update-item">
+          <div class="update-meta">
+            <strong>Oktober 2025</strong>
+            <span class="status-badge status-planned">rollout</span>
+          </div>
+          <p>Shell-Navigation und Sticky-Header finalisiert, dazu kompaktere KPI-Kacheln.</p>
+          <ul class="roadmap-points">
+            <li>Schnellere Navigation (Keyboard &amp; Sticky-Topbar).</li>
+            <li>Kompakte KPIs f&uuml;r Hilfskr&auml;fte/VZ&Auml;.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="card roadmap-section">
+      <h2>Feedback &amp; Beteiligung</h2>
+      <p>Transparenz ist nur hilfreich, wenn alle Bereiche mitreden. So k&ouml;nnen Sie die Roadmap beeinflussen:</p>
+      <ul class="roadmap-list">
+        <li>Melden Sie Funktionsw&uuml;nsche direkt im CliniCon-Ideaboard (Bereich &bdquo;PPBV/PPUG&ldquo;).</li>
+        <li>Nehmen Sie am viertelj&auml;hrlichen Produktforum teil &ndash; Termine finden Sie im Intranet-Kalender.</li>
+        <li>Teilen Sie Updates mit Ihrem Team: Screenshots und Folien liegen im Kommunikationspaket (Ordner &bdquo;Roadmap&ldquo;).</li>
+      </ul>
+      <p>Fragen? Schreiben Sie an <a class="link" href="mailto:info.clinicon.info">info.clinicon.info</a>.</p>
+    </section>
+  </div>
+</section>
+
+<style>
+  .roadmap-frame .page-frame__body{
+    display:grid;
+    gap:16px;
+    padding:16px;
+  }
+  .roadmap-stack{
+    display:grid;
+    gap:16px;
+  }
+  .roadmap-section{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  .roadmap-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+    gap:18px;
+  }
+  .roadmap-card{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px;
+    background:#fff;
+    box-shadow:0 8px 16px rgba(15,23,42,0.08);
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .roadmap-card h3{
+    margin:0;
+    font-size:1.1rem;
+  }
+  .roadmap-card p{
+    margin:0;
+    color:var(--muted);
+    font-size:0.96rem;
+  }
+  .roadmap-points{
+    margin:0;
+    padding-left:18px;
+    color:var(--text);
+    font-size:0.95rem;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .status-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:0.8rem;
+    font-weight:600;
+    border-radius:999px;
+    padding:4px 10px;
+    background:#e2e8f0;
+    color:#475569;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  .status-active{
+    background:#dbeafe;
+    color:#1d4ed8;
+  }
+  .status-planned{
+    background:#fef3c7;
+    color:#b45309;
+  }
+  .status-research{
+    background:#f3e8ff;
+    color:#7e22ce;
+  }
+  .updates-list{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .update-item{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px;
+    background:#fff;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .update-meta{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+  }
+  .update-item strong{
+    font-size:1rem;
+  }
+  .roadmap-list{
+    margin:0;
+    padding-left:18px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .roadmap-list li{
+    line-height:1.4;
+  }
+  .link{
+    color:var(--accent);
+    font-weight:600;
+    text-decoration:none;
+  }
+  .link:hover{
+    text-decoration:underline;
+  }
+</style>

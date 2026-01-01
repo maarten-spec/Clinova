@@ -1,0 +1,957 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CliniCon – Schichtplaner &amp; Besetzungsbedarf</title>
+  <style>
+    :root{
+      --bg:#f5f7fb; --panel:#ffffff; --muted:#94a3b8; --text:#0f172a; --line:#e2e8f0;
+      --accent:#2563eb; --accent-weak:#dbeafe; --accent-strong:#1d4ed8;
+      --success:#16a34a; --shadow:0 18px 36px rgba(15,23,42,.08);
+      --gold:#facc15; --gold-strong:#eab308; --gold-bg:#fff8db;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text); background:var(--bg);
+    }
+    .shell{display:grid; grid-template-columns:240px 1fr; min-height:100dvh}
+    .side{
+      position:sticky; top:0; height:100dvh; background:#ffffffcc; backdrop-filter:saturate(180%) blur(10px);
+      border-right:1px solid var(--line); display:flex; flex-direction:column; align-items:stretch; gap:12px; padding:16px 12px;
+      width:240px; overflow:auto;
+    }
+    .brand{
+      display:flex; align-items:center; justify-content:center; padding:8px 10px; width:100%; text-decoration:none;
+    }
+    .brand img{width:180px; height:auto; object-fit:contain}
+    .nav{display:flex; flex-direction:column; gap:8px; width:100%; margin-top:8px}
+    .nav a{
+      --bg1:#fff; --bg2:#f9fbff;
+      display:flex; align-items:center; gap:12px;
+      text-decoration:none; color:var(--text);
+      padding:12px 14px; border-radius:14px; border:1px solid var(--line);
+      background:linear-gradient(180deg,var(--bg1),var(--bg2));
+      box-shadow:0 1px 0 rgba(15,23,42,.03);
+      transition:.18s ease transform, .18s ease box-shadow, .18s ease border-color, .18s ease background;
+    }
+    .nav a:hover{
+      transform:translateY(-1px);
+      border-color:#bfd7ff;
+      background:linear-gradient(180deg,#ffffff,#eef5ff);
+      box-shadow:0 6px 14px rgba(37,99,235,.12);
+    }
+    .nav a.active{
+      background:linear-gradient(180deg,#2563eb,#1d4ed8);
+      color:#fff; border-color:transparent;
+      box-shadow:0 10px 20px rgba(37,99,235,.25);
+    }
+    .nav a svg{
+      width:22px; height:22px; flex:0 0 22px;
+      opacity:.9;
+    }
+    .nav a.active svg{ opacity:1; filter:brightness(10) }
+    .nav a.secure{
+      background:linear-gradient(180deg,var(--gold-bg),#fffef4);
+      border-color:#fde68a;
+      color:#854d0e;
+      font-weight:600;
+    }
+    .nav a.secure:hover{
+      background:linear-gradient(180deg,#fff5b1,#fffef4);
+      box-shadow:0 6px 14px rgba(250,204,21,.25);
+      border-color:var(--gold);
+      transform:translateY(-1px);
+    }
+    .nav a.secure.active{
+      background:linear-gradient(180deg,var(--gold),var(--gold-strong));
+      color:#fff;
+      border:none;
+      box-shadow:0 10px 22px rgba(250,204,21,.35);
+    }
+    header{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:16px; padding:20px 24px; border-bottom:1px solid var(--line); background:#fff; position:sticky; top:0; z-index:2;
+    }
+    .topbar-left h1{ margin:0; font-size:1.6rem; letter-spacing:.02em }
+    .topbar-left p{ margin:6px 0 0; color:var(--muted); font-size:.98rem }
+    .product-logo{ height:56px; width:auto; object-fit:contain }
+    main{ padding:24px; display:grid; gap:20px; grid-template-columns:repeat(12,1fr) }
+    .card{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:24px; box-shadow:var(--shadow) }
+
+    .hero{
+      grid-column:1/-1; display:grid; gap:14px; text-align:center; justify-items:center; padding:32px;
+      background:linear-gradient(145deg, rgba(37,99,235,0.16), rgba(255,255,255,0.95)); border:1px solid rgba(37,99,235,0.2);
+      max-width:1280px; width:100%; margin:0 auto;
+    }
+    .hero h2{ margin:0; font-size:1.8rem }
+    .hero p{ margin:0; max-width:620px; color:#1f2937 }
+    .hero .cta{
+      display:inline-flex; align-items:center; gap:10px; padding:12px 24px; border-radius:999px;
+      background:var(--accent); color:#fff; text-decoration:none; font-weight:600; transition:.18s ease all;
+    }
+    .hero .cta:hover{ background:var(--accent-strong); transform:translateY(-1px) }
+    .hero .cta svg{ width:18px; height:18px }
+
+    .schedule-card,
+    .summary-card{
+      grid-column:1/-1;
+      max-width:1280px; width:100%; margin:0 auto;
+    }
+    .schedule-card{ display:grid; gap:18px }
+    .schedule-header{
+      display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between;
+      gap:18px;
+    }
+    .schedule-header h2{ margin:0; font-size:1.35rem }
+    .schedule-header p{ margin:6px 0 0; color:var(--muted); max-width:520px }
+    .schedule-legend{
+      display:flex; flex-wrap:wrap; gap:10px;
+    }
+    .legend-item{
+      display:inline-flex; align-items:center; gap:8px; padding:9px 16px; border-radius:14px;
+      border:1px dashed rgba(37,99,235,.45); background:linear-gradient(180deg,#fff,#f8fafc);
+      cursor:grab; user-select:none; font:600 0.92rem/1.1 inherit; color:#0f172a;
+      box-shadow:0 8px 20px rgba(15,23,42,0.08); transition:.18s ease transform,.18s ease box-shadow,.18s ease border-color;
+    }
+    .legend-item:focus-visible{ outline:2px solid var(--accent); outline-offset:3px }
+    .legend-item:active{
+      cursor:grabbing; transform:translateY(1px); box-shadow:0 4px 12px rgba(15,23,42,0.15);
+    }
+    body.is-shift-dragging .legend-item{ cursor:grabbing }
+    body.is-shift-dragging .day-track{ cursor:copy }
+    .legend-swatch{
+      width:32px; height:14px; border-radius:8px; border:1px solid rgba(15,23,42,0.15);
+    }
+    .legend-swatch.frueh{ background:#b9d0ff }
+    .legend-swatch.spaet{ background:#a9e2cb }
+    .legend-swatch.nacht{ background:#f7b8b2 }
+    .legend-swatch.flex{ background:#cebaf6 }
+
+    .time-scale{
+      display:grid; grid-template-columns:110px repeat(96, minmax(8px,1fr));
+      font-size:.82rem; color:var(--muted); align-items:center;
+    }
+    .time-scale-top{ margin-top:8px }
+    .time-label{ font-weight:600; padding:6px 8px }
+    .time-hour{
+      grid-column:var(--start); border-left:1px solid var(--line);
+      padding:4px 4px 4px 6px;
+    }
+
+    .schedule-grid{ display:grid; gap:12px }
+    .day-row{
+      display:grid; grid-template-columns:110px 1fr; gap:12px; align-items:flex-start;
+    }
+    .day-label{ font-weight:600; color:#0f172a; padding-top:18px }
+    .day-track{
+      position:relative; display:grid; grid-template-columns:repeat(96, minmax(8px,1fr));
+      gap:2px; padding:16px; min-height:88px;
+      border:1px solid var(--line); border-radius:14px; background:#fff;
+    }
+
+    .shift{
+      position:relative; display:grid; grid-template-columns:auto 1fr auto; align-items:center;
+      gap:8px; padding:8px 12px;
+      grid-column:var(--start)/span var(--duration);
+      border-radius:12px; box-shadow:0 10px 24px rgba(15,23,42,0.18);
+      cursor:grab; user-select:none; color:#0f172a; font-weight:600;
+    }
+    .shift:focus-visible{ outline:2px solid var(--accent); outline-offset:2px }
+    .shift-handle{
+      width:6px; height:100%; border-radius:4px; background:rgba(15,23,42,0.2);
+    }
+    .shift-label{ font-size:.95rem }
+    .shift-time{ font-size:.82rem; color:#334155; grid-column:span 3 }
+    .shift[data-type="frueh"]{ background:linear-gradient(180deg,#e7efff,#b9d0ff) }
+    .shift[data-type="spaet"]{ background:linear-gradient(180deg,#dff9ec,#a9e2cb) }
+    .shift[data-type="nacht"]{ background:linear-gradient(180deg,#ffe0dc,#f7b8b2) }
+    .shift[data-type="flex"]{ background:linear-gradient(180deg,#f2eaff,#cebaf6) }
+
+    .summary-card{ display:grid; gap:16px }
+    .summary-header h3{ margin:0; font-size:1.2rem }
+    .summary-header p{ margin:4px 0 0; color:var(--muted) }
+    .summary-scale{
+      display:grid; grid-template-columns:110px repeat(96, minmax(8px,1fr));
+      font-size:.82rem; color:var(--muted);
+    }
+    .summary-track{
+      display:grid; grid-template-columns:110px 1fr; gap:12px; align-items:center;
+    }
+    .summary-label{ font-weight:600; color:#0f172a }
+    .summary-grid{
+      position:relative; display:grid; grid-template-columns:repeat(96,minmax(4px,1fr));
+      gap:2px; min-height:48px; border:1px dashed var(--line); border-radius:12px; padding:8px; background:#fff;
+    }
+    .summary-bar{
+      grid-column:var(--start)/span var(--duration);
+      border-radius:10px; display:flex; align-items:center; justify-content:center;
+      font-weight:600; font-size:.85rem;
+      box-shadow:0 12px 18px rgba(15,23,42,0.15); color:#0f172a;
+    }
+    .summary-grid[data-type="frueh"] .summary-bar{ background:#c8d9ff }
+    .summary-grid[data-type="spaet"] .summary-bar{ background:#c5f1df }
+    .summary-grid[data-type="nacht"] .summary-bar{ background:#ffd1cb }
+    .summary-grid[data-type="flex"] .summary-bar{ background:#e1d2ff }
+
+    @media (max-width: 1200px){
+      .time-scale,
+      .summary-scale{
+        grid-template-columns:90px repeat(96,minmax(6px,1fr));
+      }
+      .day-row,
+      .summary-track{
+        grid-template-columns:90px 1fr;
+      }
+      .day-label,
+      .summary-label{ padding-top:12px }
+    }
+    @media (max-width: 960px){
+      .shell{ grid-template-columns:1fr }
+      .side{ position:relative; height:auto; width:100%; flex-direction:row; align-items:center; justify-content:space-between; padding:12px 16px }
+      .nav{ flex-direction:row; overflow-x:auto; padding-bottom:4px }
+      .nav a{ white-space:nowrap }
+      header{ position:relative }
+      main{ grid-template-columns:1fr; padding:20px }
+    }
+    @media (max-width: 640px){
+      .schedule-header{ flex-direction:column }
+      .time-scale,
+      .summary-scale{ grid-template-columns:1fr }
+      .day-row,
+      .summary-track{ grid-template-columns:1fr }
+      .day-label,
+      .summary-label{ padding-top:0 }
+      .time-hour,
+      .time-label{ display:none }
+    }
+    footer{ padding:18px 24px; color:var(--muted); text-align:right }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="side" aria-label="Hauptnavigation">
+      <a class="brand" href="index.html" aria-label="Startseite">
+        <img src="Bilder/CliniConLogo.png" alt="CliniCon Logo" />
+      </a>
+      <nav class="nav" id="mainNav">
+        <a href="index.html" data-key="index">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>
+          <span>Start</span>
+        </a>
+        <a href="0_PpUG-Rechner.html" data-key="ppug">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span>PPUG-Rechner</span>
+        </a>
+        <a href="0_PPBV-Berechnung.html" data-key="ppbv">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+          <span>PPBV-Berechnung</span>
+        </a>
+        <a href="0_Schichtbesetzung.html" data-key="schichten">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Schichtbesetzung</span>
+        </a>
+        <a href="0_Besetzungsbedarf.html" data-key="bedarf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Besetzungsbedarf</span>
+        </a>
+        <a href="0_Perzentilen-Berechnung.html" data-key="perzentilen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="3" x2="3" y2="21"/><line x1="21" y1="21" x2="3" y2="21"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>
+          <span>Perzentilen</span>
+        </a>
+        <a href="0_Login.html" class="secure" data-key="secure" aria-label="Geschützter Bereich">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Geschützter Bereich</span>
+        </a>
+      </nav>
+    </aside>
+    <div>
+      <header>
+        <div class="topbar-left">
+          <h1 id="pageHeading">CliniCon – Schichtplaner &amp; Besetzungsbedarf</h1>
+          <p id="pageSubheading">Dienstmodelle planen und Besetzungsdichten abstimmen.</p>
+        </div>
+        <img class="product-logo" src="Bilder/CliniConLogo.png" alt="CliniCon Logo" />
+      </header>
+      <main id=""main"" role=""main"">
+        <div class="container">
+          <!-- Steuerleiste -->
+          <section class="card">
+            <h2>Rahmenparameter</h2>
+            <div class="grid grid-4">
+              <div>
+                <label>Bundesland</label>
+                <select id="state"></select>
+              </div>
+              <div>
+                <label>Jahr</label>
+                <select id="year"></select>
+              </div>
+              <div>
+                <label>Stunden pro Tag</label>
+                <input id="hoursPerDay" type="number" value="8" min="1" max="24" />
+              </div>
+              <div>
+                <label>Auslastungsfaktor (%)</label>
+                <input id="utilization" type="number" value="100" min="1" max="100" />
+              </div>
+            </div>
+            <div class="grid grid-4" style="margin-top:10px">
+              <div>
+                <label>Urlaubstage</label>
+                <input id="vacation" type="number" value="30" min="0" max="60" />
+              </div>
+              <div>
+                <label>Zusatzurlaub</label>
+                <input id="extraVacation" type="number" value="0" min="0" max="30" />
+              </div>
+              <div>
+                <label>Fortbildung (Tage)</label>
+                <input id="trainingDays" type="number" value="5" min="0" max="30" />
+              </div>
+              <div>
+                <label>Krankheit (Tage)</label>
+                <input id="sickDays" type="number" value="12" min="0" max="60" />
+              </div>
+            </div>
+          </section>
+        
+          <!-- Angebotsrechnung VK -->
+          <section class="card" id="availabilityCard">
+            <h2>Arbeitszeitangebot je VK</h2>
+            <div class="kpi" id="kpi"></div>
+            <div class="grid grid-2" style="margin-top:10px">
+              <div id="weekdayTable"></div>
+              <div id="availabilityTable"></div>
+            </div>
+          </section>
+        
+          <!-- Arbeitsplatz-Eingaben wie zuvor (mehrfachräume) -->
+          <section class="card">
+            <h2>Abteilungs-Berechnung (Arbeitsplätze)</h2>
+            <div id="rooms-container">
+              <div class="room-entry">
+                <label>Arbeitsplatz</label>
+                <select class="room">
+                  <option value="OP-Saal">OP-Saal</option>
+                  <option value="Endoskopie-Raum">Endoskopie-Raum</option>
+                  <option value="Kreißsaal">Kreißsaal</option>
+                  <option value="Röntgen">Röntgen</option>
+                  <option value="Herzkatheter-Labor">Herzkatheter-Labor</option>
+                  <option value="EEG / EKG / Funktionsdiagnostik">EEG / EKG / Funktionsdiagnostik</option>
+                  <option value="Aufwachraum">Aufwachraum</option>
+                  <option value="Sterilgutversorgung">Sterilgutversorgung</option>
+                  <option value="Zentralambulanz">Zentralambulanz</option>
+                  <option value="Notaufnahme">Notaufnahme</option>
+                  <option value="Pflegearbeitsplatz">Pflegearbeitsplatz</option>
+                </select>
+                <label style="margin-top:8px">Benötigte Personen</label>
+                <input type="number" class="staff" placeholder="z. B. 2" min="1">
+                <div style="margin-top:10px">
+                  <label>Betriebstage & Stunden pro Tag</label>
+                  <div class="day-row">
+                    <div class="day-btn active" data-day="Mo">Mo</div>
+                    <div class="day-btn active" data-day="Di">Di</div>
+                    <div class="day-btn active" data-day="Mi">Mi</div>
+                    <div class="day-btn active" data-day="Do">Do</div>
+                    <div class="day-btn active" data-day="Fr">Fr</div>
+                    <div class="day-btn" data-day="Sa">Sa</div>
+                    <div class="day-btn" data-day="So">So</div>
+                  </div>
+                  <div class="hours-row">
+                    <input type="number" class="hours" data-day="Mo" placeholder="8" min="0" max="24">
+                    <input type="number" class="hours" data-day="Di" placeholder="8" min="0" max="24">
+                    <input type="number" class="hours" data-day="Mi" placeholder="8" min="0" max="24">
+                    <input type="number" class="hours" data-day="Do" placeholder="8" min="0" max="24">
+                    <input type="number" class="hours" data-day="Fr" placeholder="8" min="0" max="24">
+                    <input type="number" class="hours disabled" data-day="Sa" placeholder="0" min="0" max="24" disabled>
+                    <input type="number" class="hours disabled" data-day="So" placeholder="0" min="0" max="24" disabled>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="badge" style="margin-top:8px;cursor:pointer" onclick="addRoom()">+ weiteren Arbeitsplatz hinzufügen</div>
+            <div class="grid grid-3" style="margin-top:16px">
+              <div>
+                <label>Abwesenheitsquote (%)</label>
+                <input type="number" id="absence" value="21" min="0" max="50">
+              </div>
+              <div>
+                <label>Ergebnisbasis</label>
+                <select id="basis"><option value="month">Monat</option><option value="year">Jahr</option></select>
+              </div>
+            </div>
+            <div style="margin-top:12px"><button class="btn" onclick="calculateAll()">Gesamtberechnung durchführen</button></div>
+            <div id="result" style="margin-top:14px"></div>
+          </section>
+        
+          <!-- Feiertage (15 Jahre) -->
+          <section class="card">
+            <h2>Feiertage – Vorschau der nächsten 15 Jahre</h2>
+            <div class="legend"><span class="pill">bundesweit</span><span class="pill">länder-spezifisch</span><span class="pill">beweglich</span></div>
+            <details class="holidays" open>
+              <summary><span id="holidaySummary">Feiertage für …</span></summary>
+              <div id="holidayTables"></div>
+            </details>
+          </section>
+        </div>
+      </main>
+      <footer>&copy; CliniCon</footer>
+    </div>
+  </div>
+  <script>
+    (function(){
+      const path = (location.pathname.split('/').pop() || '').toLowerCase();
+      const map = {
+        'index.html':'index',
+        '0_ppug-rechner.html':'ppug',
+        '0_ppbv-berechnung.html':'ppbv',
+        '0_schichtbesetzung.html':'schichten',
+        '0_besetzungsbedarf.html':'bedarf',
+        '0_perzentilen-berechnung.html':'perzentilen',
+        '0_login.html':'secure',
+        'clinicon layout.html':'bedarf',
+        'klappt/clinicon layout.html':'bedarf'
+      };
+      const titles = {
+        index:['Start','Übersicht & Schnellzugriff'],
+        ppug:['PPUG-Rechner','Untergrenzen schnell prüfen'],
+        ppbv:['PPBV-Berechnung','Parameter steuern & vergleichen'],
+        schichten:['Schichtbesetzung','Planung & Visualisierung'],
+        bedarf:['Besetzungsbedarf','Anforderung je Tag & Schicht'],
+        perzentilen:['Perzentilen-Rechner','Wachstum verständlich darstellen'],
+        secure:['Geschützter Bereich','Zugriff für autorisierte Nutzer']
+      };
+      const key = map[path] || null;
+      if(key){
+        const link = document.querySelector('.nav a[data-key="'+key+'"]');
+        if(link) link.classList.add('active');
+        if(titles[key]){
+          document.getElementById('pageHeading').textContent = 'CliniCon – ' + titles[key][0];
+          document.getElementById('pageSubheading').textContent = titles[key][1];
+          document.title = 'CliniCon – ' + titles[key][0];
+        }
+      }
+    })();
+
+    (function(){
+      const SHIFT_COLUMNS = 96;
+      const TIMELINE_START_MINUTES = 6 * 60;
+      const MINUTES_PER_COLUMN = 15;
+      const MIN_DURATION = 1;
+      const scheduleGrid = document.querySelector('.schedule-grid');
+      const legendItems = document.querySelectorAll('.legend-item[data-type]');
+      const modelInputs = document.querySelectorAll('.model-option input[name="dienstmodell"]');
+      const summaryGrids = {
+        frueh: document.querySelector('.summary-grid[data-type="frueh"]'),
+        spaet: document.querySelector('.summary-grid[data-type="spaet"]'),
+        nacht: document.querySelector('.summary-grid[data-type="nacht"]'),
+        flex: document.querySelector('.summary-grid[data-type="flex"]')
+      };
+      const summaryTypes = Object.keys(summaryGrids).filter(type => summaryGrids[type]);
+      const summaryLabels = {
+        frueh:'Frühdienste',
+        spaet:'Spätdienste',
+        nacht:'Nachtdienste',
+        flex:'Flexdienste'
+      };
+      const legendDefaults = {
+        frueh:{ label:'Frühdienst', duration:32 },
+        spaet:{ label:'Spätdienst', duration:28 },
+        nacht:{ label:'Nachtdienst', duration:32 },
+        flex:{ label:'Flexdienst', duration:24 }
+      };
+
+      let summaryDirty = false;
+      let shiftCounter = 0;
+      let currentMode = getInitialMode();
+      const shiftMap = new Map();
+      const scheduleModels = {
+        individuell:{},
+        standard:{},
+        monfr:{}
+      };
+      const dayOrderTemplates = {
+        individuell:[],
+        standard:['Montag – Sonntag'],
+        monfr:['Montag – Freitag','Samstag & Sonntag']
+      };
+
+      const pointerState = {
+        shift:null,
+        pointerId:null,
+        action:'move',
+        startX:0,
+        startStart:0,
+        startDuration:0,
+        grabOffset:0,
+        columnWidth:0,
+        trackRect:null
+      };
+
+      if(!scheduleGrid) return;
+
+      parseInitialSchedule();
+      buildPresetModels();
+      setupLegendDnD();
+      setupModelSwitching();
+      renderSchedule(currentMode);
+      requestSummaryUpdate();
+
+      function getInitialMode(){
+        const checked = document.querySelector('.model-option input[name="dienstmodell"]:checked');
+        return checked ? checked.value : 'standard';
+      }
+
+      function parseInitialSchedule(){
+        const rows = Array.from(scheduleGrid.querySelectorAll('.day-row'));
+        rows.forEach(row => {
+          const day = row.dataset.day || row.querySelector('.day-label')?.textContent.trim() || 'Tag';
+          if(!dayOrderTemplates.individuell.includes(day)){
+            dayOrderTemplates.individuell.push(day);
+          }
+          const shiftEls = Array.from(row.querySelectorAll('.shift'));
+          scheduleModels.individuell[day] = shiftEls.map(el => {
+            const type = el.dataset.type || 'frueh';
+            const defaults = legendDefaults[type] || { label:'Dienst', duration:24 };
+            const label = el.querySelector('.shift-label')?.textContent.trim() || defaults.label;
+            const start = parseInt(el.dataset.start, 10) || 1;
+            const duration = parseInt(el.dataset.duration, 10) || defaults.duration;
+            return createShiftObject(day, type, label, start, duration);
+          });
+        });
+        scheduleGrid.innerHTML = '';
+      }
+
+      function buildPresetModels(){
+        const baseDay = dayOrderTemplates.individuell[0];
+        const weekendDay = scheduleModels.individuell['Samstag'] ? 'Samstag' :
+                           scheduleModels.individuell['Sonntag'] ? 'Sonntag' : baseDay;
+        scheduleModels.standard['Montag – Sonntag'] = cloneShiftList(scheduleModels.individuell[baseDay] || [], 'Montag – Sonntag');
+        scheduleModels.monfr['Montag – Freitag'] = cloneShiftList(scheduleModels.individuell[baseDay] || [], 'Montag – Freitag');
+        scheduleModels.monfr['Samstag & Sonntag'] = cloneShiftList(scheduleModels.individuell[weekendDay] || [], 'Samstag & Sonntag');
+      }
+
+      function setupLegendDnD(){
+        legendItems.forEach(item => {
+          item.setAttribute('draggable', 'true');
+          item.addEventListener('dragstart', onLegendDragStart);
+          item.addEventListener('dragend', onLegendDragEnd);
+          item.addEventListener('keydown', event => {
+            if(event.key === 'Enter' || event.key === ' '){
+              event.preventDefault();
+              quickAddShift(item.dataset.type);
+            }
+          });
+        });
+      }
+
+      function onLegendDragStart(event){
+        const type = event.currentTarget.dataset.type;
+        const defaults = legendDefaults[type];
+        if(!defaults) return;
+        const payload = JSON.stringify({ type, duration:defaults.duration, label:defaults.label });
+        event.dataTransfer.effectAllowed = 'copy';
+        event.dataTransfer.setData('application/json', payload);
+        event.dataTransfer.setData('text/plain', payload);
+        document.body.classList.add('is-shift-dragging');
+      }
+
+      function onLegendDragEnd(){
+        document.body.classList.remove('is-shift-dragging');
+      }
+
+      function quickAddShift(type){
+        const defaults = legendDefaults[type];
+        if(!defaults) return;
+        const targetDay = getCurrentDayOrder()[0];
+        if(!targetDay) return;
+        const modelData = scheduleModels[currentMode];
+        if(!modelData[targetDay]){
+          modelData[targetDay] = [];
+        }
+        modelData[targetDay].push(createShiftObject(targetDay, type, defaults.label, 1, defaults.duration));
+        renderSchedule(currentMode);
+        requestSummaryUpdate();
+      }
+
+      function setupModelSwitching(){
+        modelInputs.forEach(input => {
+          input.addEventListener('change', () => {
+            if(!input.checked) return;
+            currentMode = input.value;
+            if(!scheduleModels[currentMode]){
+              scheduleModels[currentMode] = {};
+            }
+            renderSchedule(currentMode);
+            requestSummaryUpdate();
+          });
+        });
+      }
+
+      function renderSchedule(mode){
+        const modelData = scheduleModels[mode];
+        if(!modelData) return;
+        sortModelRows(modelData);
+        shiftMap.clear();
+        scheduleGrid.innerHTML = '';
+
+        const order = getCurrentDayOrder();
+        order.forEach(dayLabel => {
+          if(!modelData[dayLabel]){
+            modelData[dayLabel] = [];
+          }
+        });
+
+        order.forEach(dayLabel => {
+          const row = document.createElement('div');
+          row.className = 'day-row';
+          row.dataset.day = dayLabel;
+
+          const label = document.createElement('div');
+          label.className = 'day-label';
+          label.textContent = dayLabel;
+          row.appendChild(label);
+
+          const track = document.createElement('div');
+          track.className = 'day-track';
+          track.dataset.day = dayLabel;
+          row.appendChild(track);
+          attachTrackDnD(track);
+
+          (modelData[dayLabel] || []).forEach(shiftObj => {
+            shiftObj.day = dayLabel;
+            const shiftEl = createShiftElement(shiftObj);
+            track.appendChild(shiftEl);
+          });
+
+          scheduleGrid.appendChild(row);
+        });
+      }
+
+      function sortModelRows(modelData){
+        Object.keys(modelData).forEach(day => {
+          modelData[day].sort((a,b) => a.start - b.start);
+        });
+      }
+
+      function getCurrentDayOrder(){
+        const template = dayOrderTemplates[currentMode];
+        if(template && template.length){
+          return template;
+        }
+        return dayOrderTemplates.individuell;
+      }
+
+      function createShiftObject(day, type, label, start, duration){
+        return {
+          id:'shift-'+(++shiftCounter),
+          day,type,label,start,duration
+        };
+      }
+
+      function cloneShiftList(list, newDay){
+        return list.map(item => ({
+          id:'shift-'+(++shiftCounter),
+          day:newDay,
+          type:item.type,
+          label:item.label,
+          start:item.start,
+          duration:item.duration
+        }));
+      }
+
+      function createShiftElement(shift){
+        const el = document.createElement('div');
+        el.className = 'shift';
+        el.tabIndex = 0;
+        el.dataset.id = shift.id;
+        el.dataset.day = shift.day;
+        el.dataset.type = shift.type;
+        el.dataset.start = shift.start;
+        el.dataset.duration = shift.duration;
+        el.dataset.name = shift.label;
+        el.style.setProperty('--start', shift.start);
+        el.style.setProperty('--duration', shift.duration);
+        el.setAttribute('role','slider');
+        el.setAttribute('aria-label', shift.label);
+        el.setAttribute('aria-orientation','horizontal');
+        el.setAttribute('aria-valuemin','1');
+        el.setAttribute('aria-valuemax', String(SHIFT_COLUMNS));
+        el.setAttribute('aria-valuenow', String(shift.start));
+
+        const handleStart = document.createElement('div');
+        handleStart.className = 'shift-handle start';
+        handleStart.dataset.handle = 'start';
+        el.appendChild(handleStart);
+
+        const label = document.createElement('span');
+        label.className = 'shift-label';
+        label.textContent = shift.label;
+        el.appendChild(label);
+
+        const time = document.createElement('span');
+        time.className = 'shift-time';
+        time.textContent = formatShiftTime(shift.start, shift.duration);
+        el.appendChild(time);
+
+        const handleEnd = document.createElement('div');
+        handleEnd.className = 'shift-handle end';
+        handleEnd.dataset.handle = 'end';
+        el.appendChild(handleEnd);
+
+        attachShiftEvents(el);
+        shiftMap.set(shift.id, shift);
+        return el;
+      }
+
+      function attachShiftEvents(shift){
+        shift.addEventListener('pointerdown', onShiftPointerDown);
+        shift.addEventListener('keydown', onShiftKeydown);
+      }
+
+      function attachTrackDnD(track){
+        track.addEventListener('dragover', event => {
+          event.preventDefault();
+          event.dataTransfer.dropEffect = 'copy';
+        });
+        track.addEventListener('drop', event => {
+          event.preventDefault();
+          const data = event.dataTransfer.getData('application/json') || event.dataTransfer.getData('text/plain');
+          if(!data) return;
+          try{
+            const payload = JSON.parse(data);
+            if(!payload.type) return;
+            const defaults = legendDefaults[payload.type];
+            if(!defaults) return;
+            const rect = track.getBoundingClientRect();
+            const offset = event.clientX - rect.left;
+            const columnWidth = rect.width / SHIFT_COLUMNS;
+            const startColumn = Math.max(1, Math.min(SHIFT_COLUMNS, Math.round(offset / columnWidth)));
+            const day = track.dataset.day || 'Tag';
+            const modelData = scheduleModels[currentMode] || (scheduleModels[currentMode] = {});
+            if(!modelData[day]){
+              modelData[day] = [];
+            }
+            const shiftObj = createShiftObject(day, payload.type, payload.label || defaults.label, startColumn, defaults.duration);
+            modelData[day].push(shiftObj);
+            renderSchedule(currentMode);
+            requestSummaryUpdate();
+          }catch(e){
+            console.error(e);
+          }
+        });
+      }
+
+      function onShiftPointerDown(event){
+        const shift = event.currentTarget;
+        shift.setPointerCapture(event.pointerId);
+        pointerState.shift = shift;
+        pointerState.pointerId = event.pointerId;
+        pointerState.startX = event.clientX;
+        pointerState.startStart = parseInt(shift.dataset.start, 10);
+        pointerState.startDuration = parseInt(shift.dataset.duration, 10);
+        pointerState.trackRect = shift.parentElement.getBoundingClientRect();
+        pointerState.columnWidth = pointerState.trackRect.width / SHIFT_COLUMNS;
+        const handle = event.target.dataset.handle;
+        pointerState.action = handle === 'start' ? 'resize-start' : handle === 'end' ? 'resize-end' : 'move';
+        pointerState.grabOffset = event.clientX - pointerState.trackRect.left - (pointerState.startStart - 1) * pointerState.columnWidth;
+        shift.addEventListener('pointermove', onShiftPointerMove);
+        shift.addEventListener('pointerup', onShiftPointerUp);
+        shift.addEventListener('pointercancel', onShiftPointerUp);
+      }
+
+      function onShiftPointerMove(event){
+        if(pointerState.pointerId !== event.pointerId) return;
+        event.preventDefault();
+        const delta = event.clientX - pointerState.startX;
+        const columnsDelta = Math.round(delta / pointerState.columnWidth);
+        if(pointerState.action === 'move'){
+          updateShiftStart(pointerState.shift, pointerState.startStart + columnsDelta);
+        }else if(pointerState.action === 'resize-start'){
+          const newStart = pointerState.startStart + columnsDelta;
+          const newDuration = pointerState.startDuration - columnsDelta;
+          updateShiftRange(pointerState.shift, newStart, newDuration, true);
+        }else if(pointerState.action === 'resize-end'){
+          const newDuration = pointerState.startDuration + columnsDelta;
+          updateShiftDuration(pointerState.shift, newDuration);
+        }
+      }
+
+      function onShiftPointerUp(event){
+        if(pointerState.pointerId !== event.pointerId) return;
+        pointerState.shift.releasePointerCapture(event.pointerId);
+        pointerState.shift.removeEventListener('pointermove', onShiftPointerMove);
+        pointerState.shift.removeEventListener('pointerup', onShiftPointerUp);
+        pointerState.shift.removeEventListener('pointercancel', onShiftPointerUp);
+        pointerState.shift = null;
+      }
+
+      function onShiftKeydown(event){
+        const shift = event.currentTarget;
+        const start = parseInt(shift.dataset.start, 10);
+        const duration = parseInt(shift.dataset.duration, 10);
+        let handled = true;
+        switch(event.key){
+          case 'ArrowLeft':
+            updateShiftStart(shift, start - 1);
+            break;
+          case 'ArrowRight':
+            updateShiftStart(shift, start + 1);
+            break;
+          case 'ArrowUp':
+            updateShiftDuration(shift, duration + 1);
+            break;
+          case 'ArrowDown':
+            updateShiftDuration(shift, duration - 1);
+            break;
+          default:
+            handled = false;
+        }
+        if(handled){
+          event.preventDefault();
+          requestSummaryUpdate();
+        }
+      }
+
+      function updateShiftRange(shift, start, duration, lockEnd){
+        const clampedDuration = updateShiftDuration(shift, duration);
+        if(lockEnd){
+          const currentStart = parseInt(shift.dataset.start, 10);
+          const currentDuration = parseInt(shift.dataset.duration, 10);
+          const maxStart = currentStart + (currentDuration - clampedDuration);
+          const adjustedStart = Math.min(start, maxStart);
+          const clampedStart = updateShiftStart(shift, adjustedStart);
+          return { start:clampedStart, duration:clampedDuration };
+        }
+        const clampedStart = updateShiftStart(shift, start);
+        return { start:clampedStart, duration:clampedDuration };
+      }
+
+      function updateShiftStart(shift, rawStart){
+        const duration = parseInt(shift.dataset.duration, 10);
+        const minStart = 1;
+        const maxStart = SHIFT_COLUMNS - duration + 1;
+        const clamped = Math.min(Math.max(rawStart, minStart), maxStart);
+        shift.dataset.start = String(clamped);
+        shift.style.setProperty('--start', clamped);
+        shift.setAttribute('aria-valuenow', String(clamped));
+        shift.setAttribute('aria-valuemax', String(SHIFT_COLUMNS - duration + 1));
+        updateTimeLabel(shift, clamped, duration);
+        const shiftObj = shiftMap.get(shift.dataset.id);
+        if(shiftObj){
+          shiftObj.start = clamped;
+          sortRow(shiftObj.day);
+        }
+        requestSummaryUpdate();
+        return clamped;
+      }
+
+      function updateShiftDuration(shift, rawDuration){
+        const start = parseInt(shift.dataset.start, 10);
+        const minDuration = MIN_DURATION;
+        const maxDuration = SHIFT_COLUMNS - start + 1;
+        const clamped = Math.min(Math.max(rawDuration, minDuration), maxDuration);
+        shift.dataset.duration = String(clamped);
+        shift.style.setProperty('--duration', clamped);
+        shift.setAttribute('aria-valuemax', String(SHIFT_COLUMNS - clamped + 1));
+        updateTimeLabel(shift, start, clamped);
+        const shiftObj = shiftMap.get(shift.dataset.id);
+        if(shiftObj){
+          shiftObj.duration = clamped;
+          sortRow(shiftObj.day);
+        }
+        requestSummaryUpdate();
+        return clamped;
+      }
+
+      function sortRow(dayLabel){
+        const modelData = scheduleModels[currentMode];
+        if(modelData && modelData[dayLabel]){
+          modelData[dayLabel].sort((a,b) => a.start - b.start);
+        }
+      }
+
+      function updateTimeLabel(shift, startColumn, duration){
+        const label = shift.querySelector('.shift-time');
+        if(!label) return;
+        label.textContent = formatShiftTime(startColumn, duration);
+      }
+
+      function formatShiftTime(startColumn, duration){
+        const startMinutes = TIMELINE_START_MINUTES + (startColumn - 1) * MINUTES_PER_COLUMN;
+        const endMinutes = startMinutes + duration * MINUTES_PER_COLUMN;
+        return `${formatTime(startMinutes)} – ${formatTime(endMinutes)}`;
+      }
+
+      function requestSummaryUpdate(){
+        if(!summaryTypes.length) return;
+        if(summaryDirty) return;
+        summaryDirty = true;
+        requestAnimationFrame(() => {
+          summaryDirty = false;
+          refreshSummary();
+        });
+      }
+
+      function refreshSummary(){
+        const totals = {};
+        summaryTypes.forEach(type => {
+          totals[type] = new Array(SHIFT_COLUMNS).fill(0);
+        });
+        const modelData = scheduleModels[currentMode] || {};
+        Object.values(modelData).forEach(shifts => {
+          shifts.forEach(shift => {
+            const arr = totals[shift.type];
+            if(!arr) return;
+            const startIdx = shift.start - 1;
+            for(let i = 0; i < shift.duration; i++){
+              const idx = startIdx + i;
+              if(idx >= 0 && idx < SHIFT_COLUMNS){
+                arr[idx] += 1;
+              }
+            }
+          });
+        });
+        summaryTypes.forEach(type => {
+          const grid = summaryGrids[type];
+          if(!grid) return;
+          grid.innerHTML = '';
+          const counts = totals[type];
+          let i = 0;
+          while(i < SHIFT_COLUMNS){
+            const value = counts[i];
+            if(value > 0){
+              let span = 1;
+              while(i + span < SHIFT_COLUMNS && counts[i + span] === value) span++;
+              const bar = document.createElement('div');
+              bar.className = 'summary-bar';
+              bar.style.setProperty('--start', i + 1);
+              bar.style.setProperty('--duration', span);
+              const startMinutes = TIMELINE_START_MINUTES + i * MINUTES_PER_COLUMN;
+              const endMinutes = startMinutes + span * MINUTES_PER_COLUMN;
+              bar.textContent = value;
+              bar.title = `${formatTime(startMinutes)} – ${formatTime(endMinutes)}: ${value} ${summaryLabels[type] || 'Dienste'}`;
+              grid.appendChild(bar);
+              i += span;
+            }else{
+              i++;
+            }
+          }
+        });
+      }
+
+      function formatTime(totalMinutes){
+        const minutesInDay = 24 * 60;
+        const wrapped = ((totalMinutes % minutesInDay) + minutesInDay) % minutesInDay;
+        const hours = Math.floor(wrapped / 60);
+        const minutes = wrapped % 60;
+        return String(hours).padStart(2,'0') + ':' + String(minutes).padStart(2,'0');
+      }
+    })();
+  </script>
+</body>
+</html>
+

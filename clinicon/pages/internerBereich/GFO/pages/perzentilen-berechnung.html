@@ -1,0 +1,272 @@
+<!-- Trimmed page generated from 0_Perzentilen-Berechnung.html -->
+<style>
+  .percentile-app{
+    display:grid;
+    gap:24px;
+  }
+  .percentile-app .form-card{
+    display:grid;
+    gap:20px;
+  }
+  .percentile-app .form-top{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .percentile-app .form-top h2{
+    margin:0;
+    font-size:1.5rem;
+  }
+  .percentile-app .form-top p{
+    margin:0;
+    color:var(--muted);
+  }
+  .percentile-app .form-layout{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:16px 20px;
+    align-items:end;
+  }
+  .percentile-app .form-field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .percentile-app .form-field label{
+    font-weight:600;
+    font-size:.95rem;
+  }
+  .percentile-app .form-field input,
+  .percentile-app .form-field select{
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    font:inherit;
+  }
+  .percentile-app .form-submit{
+    padding:12px 20px;
+    border-radius:12px;
+    border:none;
+    background:var(--accent);
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    transition:.15s ease background;
+  }
+  .percentile-app .form-submit:hover{
+    background:var(--accent-strong);
+  }
+  .percentile-app #result{
+    margin:0;
+    font-size:1.05rem;
+    font-weight:600;
+    color:var(--accent-strong);
+  }
+  .percentile-app .chart-card{
+    display:grid;
+    gap:16px;
+  }
+  .percentile-app .chart-card h2{
+    margin:0;
+    font-size:1.4rem;
+  }
+  .percentile-app .chart-card canvas{
+    display:block;
+    width:100%;
+    height:360px;
+    max-height:360px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px;
+  }
+  .percentile-app .print-actions{
+    display:flex;
+    justify-content:flex-end;
+  }
+  .percentile-app .print-button{
+    padding:10px 18px;
+    border-radius:12px;
+    border:1px solid var(--accent);
+    background:#fff;
+    color:var(--accent);
+    font-weight:600;
+    cursor:pointer;
+    transition:.15s ease all;
+  }
+  .percentile-app .print-button:hover{
+    background:var(--accent);
+    color:#fff;
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="percentile-app">
+<section class="card form-card">
+          <div class="form-top">
+            <h2>Eingaben</h2>
+            <p>Berechnen Sie den WHO-Perzentilenwert f&uuml;r Kinder und Jugendliche.</p>
+          </div>
+
+          <div class="form-layout">
+            <div class="form-field">
+              <label for="age">Alter (Monate)</label>
+              <input type="number" id="age" min="0" max="228" placeholder="z. B. 72 (6 Jahre)">
+            </div>
+            <div class="form-field">
+              <label for="height">Gr&ouml;&szlig;e (cm)</label>
+              <input type="number" id="height" min="30" max="220" placeholder="z. B. 120">
+            </div>
+            <div class="form-field">
+              <label for="sex">Geschlecht</label>
+              <select id="sex">
+                <option value="m">Junge</option>
+                <option value="w">M&auml;dchen</option>
+              </select>
+            </div>
+            <button type="button" class="form-submit" onclick="calcPercentile()">Berechnen</button>
+          </div>
+
+          <p id="result"></p>
+        </section>
+
+        <section class="card chart-card">
+          <h2>Wachstumsdiagramm</h2>
+          <canvas id="growthChart"></canvas>
+          <div class="print-actions">
+            <button type="button" class="print-button" onclick="handlePrint()">Drucken</button>
+          </div>
+        </section>
+</div>
+<script></script>
+<script>
+    const whoBoys = {
+      months:[0,6,12,24,36,48,60,72,84,96,108,120,132,144,156,168,180],
+      P3:[46,65,73,85,95,102,108,114,120,125,130,135,140,145,150,160,168],
+      P15:[49,67,75,87,97,104,110,116,122,127,132,137,142,147,153,165,173],
+      P50:[50,69,77,89,99,106,112,118,124,130,135,140,145,150,157,170,178],
+      P85:[52,71,79,91,101,108,114,120,126,132,137,142,147,153,160,174,181],
+      P97:[54,73,81,93,103,110,116,122,128,134,139,144,149,155,162,176,183]
+    };
+    const whoGirls = {
+      months:[0,6,12,24,36,48,60,72,84,96,108,120,132,144,156,168,180],
+      P3:[45,63,71,83,93,99,105,110,115,120,125,130,135,140,146,158,165],
+      P15:[48,65,73,85,95,101,107,112,117,122,127,132,137,142,148,160,167],
+      P50:[49,67,75,87,97,103,109,114,119,124,129,134,139,144,150,162,169],
+      P85:[51,69,77,89,99,105,111,116,121,126,131,136,141,146,152,164,171],
+      P97:[53,71,79,91,101,107,113,118,123,128,133,138,143,148,154,166,173]
+    };
+
+    let chartInstance = null;
+
+    function withChart(callback){
+      const attempt = () => {
+        const canvas = document.getElementById('growthChart');
+        if(typeof window.Chart !== 'function' || !canvas){
+          setTimeout(attempt, 40);
+          return;
+        }
+        if(!chartInstance){
+          canvas.height = 360;
+          canvas.style.height = '360px';
+          canvas.style.maxHeight = '360px';
+          canvas.style.width = '100%';
+          chartInstance = new Chart(canvas, {
+            type:'line',
+            data:{labels:[],datasets:[]},
+            options:{
+              responsive:true,
+              maintainAspectRatio:false,
+              scales:{
+                y:{title:{display:true,text:'K\u00f6rpergr\u00f6\u00dfe (cm)'}},
+                x:{title:{display:true,text:'Alter (Monate)'}}
+              },
+              plugins:{legend:{position:'bottom'}},
+              elements:{line:{tension:0.25}}
+            }
+          });
+        }
+        callback(chartInstance);
+      };
+      attempt();
+    }
+
+    function calcPercentile(){
+      const age = Number(document.getElementById('age').value);
+      const height = Number(document.getElementById('height').value);
+      const sex = document.getElementById('sex').value;
+      if(!age && age !== 0 || !height){
+        document.getElementById('result').textContent = 'Bitte alle Werte eingeben.';
+        return;
+      }
+      const ref = sex === 'm' ? whoBoys : whoGirls;
+      const nearest = ref.months.findIndex(v => v >= age);
+      if(nearest <= 0){
+        document.getElementById('result').textContent = 'Alter au\u00dferhalb des Referenzbereichs.';
+        return;
+      }
+      const i = nearest - 1;
+      const frac = (age - ref.months[i]) / (ref.months[i+1] - ref.months[i]);
+      const interp = arr => arr[i] + (arr[i+1] - arr[i]) * frac;
+      const percValues = {
+        P3:interp(ref.P3),
+        P15:interp(ref.P15),
+        P50:interp(ref.P50),
+        P85:interp(ref.P85),
+        P97:interp(ref.P97)
+      };
+
+      let percentile = 50;
+      if(height <= percValues.P3) percentile = 3;
+      else if(height <= percValues.P15) percentile = 15;
+      else if(height <= percValues.P50) percentile = 50;
+      else if(height <= percValues.P85) percentile = 85;
+      else if(height <= percValues.P97) percentile = 97;
+      else percentile = 99;
+
+      document.getElementById('result').innerHTML =
+        `Gr&ouml;&szlig;e: <strong>${height} cm</strong> entspricht etwa der <strong>${percentile}. Perzentile</strong>.`;
+
+      drawChart(ref, age, height);
+    }
+
+    function drawChart(ref, age, height){
+      withChart(chart => {
+        chart.data.labels = ref.months;
+        chart.data.datasets = [
+          {label:'P3',data:ref.P3,borderColor:'#bfdbfe',borderDash:[6,4],fill:false,pointRadius:0},
+          {label:'P15',data:ref.P15,borderColor:'#93c5fd',borderDash:[6,4],fill:false,pointRadius:0},
+          {label:'P50',data:ref.P50,borderColor:'#1f2937',fill:false,pointRadius:0},
+          {label:'P85',data:ref.P85,borderColor:'#60a5fa',borderDash:[6,4],fill:false,pointRadius:0},
+          {label:'P97',data:ref.P97,borderColor:'#1d4ed8',borderDash:[6,4],fill:false,pointRadius:0},
+          {
+            label:'Messwert',
+            data:[{x:age,y:height}],
+            borderColor:'#dc2626',
+            pointBackgroundColor:'#dc2626',
+            pointRadius:6,
+            fill:false,
+            showLine:false,
+            parsing:false
+          }
+        ];
+        chart.update('none');
+      });
+    }
+    function handlePrint(){
+      window.print();
+    }
+    withChart(()=>{});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+

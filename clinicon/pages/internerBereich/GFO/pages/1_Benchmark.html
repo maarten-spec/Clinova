@@ -1,0 +1,1587 @@
+﻿<!doctype html>
+
+<html lang="de">
+
+<head>
+
+  <meta charset="utf-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>CliniCon - Benchmark</title>
+
+  <link rel="stylesheet" href="../../../../assets/typography.css" />
+
+  <style>
+    :root{
+
+      --bg:#f5f7fb;
+
+      --panel:#ffffff;
+
+      --muted:#94a3b8;
+
+      --text:#0f172a;
+
+      --line:#e2e8f0;
+
+      --accent:#2563eb;
+
+      --accent-weak:#dbeafe;
+
+      --accent-strong:#1d4ed8;
+      --success:#16a34a;
+
+      --danger:#b91c1c;
+      --font-base:"Roboto","Go","Segoe UI","Helvetica",Arial,sans-serif;
+      --font-size-base:16px;
+      --line-height-base:1.6;
+      --font-size-h1:1.9rem;
+      --font-size-h2:1.5rem;
+      --font-size-h3:1.2rem;
+      --font-size-h4:1.05rem;
+
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{height:100%}
+
+    body{
+      margin:0;
+      font-family:var(--font-base);
+      font-size:var(--font-size-base);
+      line-height:var(--line-height-base);
+      color:var(--text); background:var(--bg);
+    }
+    h1,h2,h3,h4{
+      margin:0 0 8px;
+      letter-spacing:.01em;
+      line-height:1.3;
+      color:var(--text);
+    }
+    h1{ font-size:var(--font-size-h1); }
+    h2{ font-size:var(--font-size-h2); }
+    h3{ font-size:var(--font-size-h3); }
+    h4{ font-size:var(--font-size-h4); }
+
+
+
+    .shell{display:grid; grid-template-columns:240px 1fr; min-height:100dvh}
+
+
+
+    .side{
+
+      position:sticky; top:0; height:100dvh; background:#ffffffcc; backdrop-filter:saturate(180%) blur(10px);
+
+      border-right:1px solid var(--line); display:flex; flex-direction:column; align-items:flex-start; gap:12px; padding:16px 12px;
+
+      width:240px; overflow:hidden
+
+    }
+
+
+
+    .brand{display:flex; align-items:center; gap:10px; padding:6px 8px; width:100%}
+
+    .brand img{width:180px; height:auto; object-fit:contain}
+
+
+
+    .nav{display:flex; flex-direction:column; gap:6px; width:100%; margin-top:8px}
+
+    .nav a{ display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--text);
+
+      padding:10px 12px; border-radius:12px; border:1px solid transparent; transition:.15s ease all }
+
+    .nav a:hover{ background:var(--accent-weak); border-color:#bfd7ff }
+
+    .nav a.active{ background:var(--accent); color:white }
+
+    .nav svg{ min-width:22px }
+
+    .nav a.nav-spaced{
+
+      margin-top:54px;
+
+      background:#fff7d6;
+
+      border-color:#ffe8a3;
+
+      color:#604a14;
+
+    }
+
+    .nav a.nav-spaced:hover{
+
+      background:#ffefbc;
+
+      border-color:#ffdc82;
+
+    }
+
+
+
+    header{
+
+      display:flex; align-items:flex-start; justify-content:space-between;
+
+      gap:16px; padding:20px 24px; border-bottom:1px solid var(--line); background:#fff; position:sticky; top:0; z-index:2
+
+    }
+    .topbar-left h1{ font-size:var(--font-size-h1); }
+
+    .topbar-left p{ margin:6px 0 0; color:var(--muted); font-size:1rem }
+
+    .product-logo{ height:56px; width:auto; object-fit:contain }
+
+
+
+    .benchmark-main{
+      padding:24px;
+      display:grid;
+      gap:20px;
+      grid-template-columns:repeat(12,1fr);
+      margin:0 auto;
+      width:100%;
+    }
+
+    .card{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:24px; box-shadow:0 18px 36px rgba(15,23,42,.08); grid-column:1/-1 }
+
+
+
+    .hero{ display:grid; gap:14px; text-align:center; justify-items:center; padding:24px;
+
+      background:linear-gradient(145deg, rgba(37,99,235,0.18), rgba(255,255,255,0.9)); border:1px solid rgba(37,99,235,0.2) }
+
+    .hero h2{ margin:0; font-size:var(--font-size-h2); color:#0f172a }
+
+    .hero p{ margin:0; max-width:640px; color:#1f2937 }
+
+
+
+    .panel-header{ display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:16px }
+
+    .panel-header h3{ margin:0 }
+
+    .panel-header p{ margin:4px 0 0; color:var(--muted); max-width:420px }
+
+    .controls{ display:flex; flex-wrap:wrap; gap:12px; align-items:center }
+
+    .controls label{ display:flex; flex-direction:column; font-size:.9rem; color:#475569; gap:6px }
+
+    .controls select{
+
+      padding:8px 12px; border-radius:10px; border:1px solid var(--line); background:#fff; min-width:200px;
+
+    }
+
+
+
+    .chart-wrap{ position:relative; width:100%; min-height:300px }
+
+    .legend{ display:flex; flex-wrap:wrap; gap:12px; color:#475569; font-size:.95rem }
+
+    .legend span{ display:inline-flex; align-items:center; gap:8px }
+
+    .legend .dot{ width:12px; height:12px; border-radius:999px; display:inline-block }
+
+
+
+    .table-scroll{ overflow:auto; border:1px solid var(--line); border-radius:12px }
+
+    .benchmark-table{ width:100%; border-collapse:collapse; min-width:960px }
+
+    .benchmark-table th, .benchmark-table td{ padding:12px 16px; border-bottom:1px solid var(--line); text-align:left }
+
+    .benchmark-table tbody tr:hover{ background:#f1f5f9 }
+
+    .metric-positive{ color:var(--success); font-weight:600 }
+
+    .metric-negative{ color:var(--danger); font-weight:600 }
+
+
+
+    @media (max-width: 960px){
+
+      .shell{ grid-template-columns:1fr }
+
+      .side{ position:relative; height:auto; width:100%; flex-direction:row; align-items:center; justify-content:space-between; padding:12px 16px }
+
+      .nav{ flex-direction:row; overflow-x:auto; padding-bottom:4px }
+
+      .nav a{ white-space:nowrap }
+
+      header{ position:relative }
+
+      .benchmark-main{ grid-template-columns:1fr; padding:20px }
+
+    }
+
+    @media (max-width: 540px){
+
+      .controls label{ width:100% }
+
+      .controls select{ width:100% }
+
+      .benchmark-table{ min-width:100% }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="shell">
+
+    <aside class="side">
+
+      <a class="brand" href="#">
+
+        <img src="Bilder/Log.jpg" alt="GFO Logo" />
+
+        <span class="title" aria-hidden="true"></span>
+
+      </a>
+
+
+
+      <nav class="nav">
+
+        <a href="index.html">
+
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>
+
+          <span>Start</span>
+
+        </a>        <a href="1_klinikverbund.html">
+
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+
+          <span>Klinikverbund</span>
+
+        </a>        <a class="active" href="1_Benchmark.html">
+
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 13l3 3 7-7"/></svg>
+
+          <span>Benchmark</span>
+
+        </a>        <a href="stellenplan-insights.html">
+
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/></svg>
+
+          <span>Stellenplan</span>
+
+        </a>        <a href="#">
+
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8h4v8h-4z"/></svg>
+
+          <span>Stellenplan Berechnung</span>
+
+        </a>        <a href="#">
+
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21V12h6v9"/></svg>
+
+          <span>Station / Abteilung</span>
+
+        </a>        <a class="nav-spaced" href="Fachabteilungen.html">
+
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21V12h6v9"/></svg>
+
+          <span>Fachabteilungen GFO</span>
+
+        </a>
+
+      </nav>
+
+    </aside>
+
+
+
+    <div>
+
+      <header>
+
+        <div class="topbar-left"></div>
+
+        <img class="product-logo" src="Bilder/CliniConLogo.png" alt="CliniCon Logo" />
+
+      </header>
+
+
+
+      <main class="benchmark-main">
+
+        <section class="hero card">
+          <h2>Klinikverbund Benchmark</h2>
+          <p>Alle Werte sind fiktiv und zeigen typische Spannweiten: Planstellen SOLL ~150 VK, kleinere Defizite im Bereich 1–5 VK, boolesche Angaben als Ja/Nein.</p>
+        </section>
+
+
+
+        <section class="panel card">
+
+          <header class="panel-header">
+
+            <div>
+
+              <h3>Standortvergleich</h3>
+
+              <p>Vergleicht die gew&auml;hlte Kennzahl f&uuml;r alle Standorte eines Verbundes. Delta-Werte bewegen sich im Band -5 bis 0 VK.</p>
+
+            </div>
+
+            <div class="controls">
+
+              <label>
+
+                Klinikverbund:
+
+                <select id="cluster-select"></select>
+
+              </label>
+
+              <label>
+
+                Kennzahl:
+
+                <select id="metric-select"></select>
+
+              </label>
+
+            </div>
+
+          </header>
+
+          <div class="chart-wrap">
+
+            <canvas id="benchmark-chart" height="340"></canvas>
+
+          </div>
+
+          <div class="legend" id="benchmark-legend"></div>
+
+        </section>
+
+
+
+        <section class="panel card">
+
+          <header class="panel-header">
+
+            <div>
+
+              <h3>Funktionsdienste je Standort</h3>
+
+              <p>Drill-Through in die Funktionsbereiche eines Standortes: Dienstleistungen auf der Y-Achse, Kennzahlen auf der X-Achse.</p>
+
+            </div>
+
+            <div class="controls">
+
+              <label>
+
+                Standort:
+
+                <select id="site-select"></select>
+
+              </label>
+
+              <label>
+
+                Kennzahl:
+
+                <select id="service-metric-select"></select>
+
+              </label>
+
+            </div>
+
+          </header>
+
+          <div class="chart-wrap">
+
+            <canvas id="service-chart" height="340"></canvas>
+
+          </div>
+
+        </section>
+
+
+
+        <section class="panel card">
+
+          <header class="panel-header">
+
+            <div>
+
+              <h3>Detailwerte</h3>
+
+              <p>Aggregierte Werte je Standort. Delta entspricht <em>IST minus SOLL</em> (negativ bedeutet Defizit).</p>
+
+            </div>
+
+          </header>
+
+          <div class="table-scroll">
+
+            <table class="benchmark-table" id="benchmark-table">
+
+              <thead>
+
+                <tr>
+
+                  <th>Klinikverbund</th>
+
+                  <th>Standort</th>
+
+                  <th>Delta Soll/Ist</th>
+
+                  <th>Mitarbeitende SOLL in VK</th>
+
+                  <th>Mitarbeitende IST in VK</th>
+
+                  <th>R&auml;ume/S&auml;le</th>
+
+                  <th>Sono Raum</th>
+
+                  <th>Sonderarbeitsplatz z. B. Schleuse</th>
+
+                  <th>Rufbereitschaft</th>
+
+                  <th>3-j&auml;hrig Examinierte</th>
+
+                  <th>1-j&auml;hrig Examinierte</th>
+
+                  <th>MFA/ATA/OTA im Einsatz</th>
+
+                  <th>ANU</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody></tbody>
+
+            </table>
+
+          </div>
+
+        </section>
+
+      </main>
+
+
+
+      <footer>
+
+        CliniCon – GFO Kliniken Verbund
+
+      </footer>
+
+    </div>
+
+  </div>
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+  <script>
+
+    const METRICS = [
+
+      { key: "soll", label: "Mitarbeitende SOLL in VK" },
+
+      { key: "ist", label: "Mitarbeitende IST in VK" },
+
+      { key: "raeume", label: "Räume/Säle" },
+
+      { key: "sono", label: "Sono Raum" },
+
+      { key: "sonder", label: "Sonderarbeitsplatz z. B. Schleuse" },
+
+      { key: "ruf", label: "Rufbereitschaft", bool: true },
+
+      { key: "ex3", label: "3-jährig Examinierte" },
+
+      { key: "ex1", label: "1-jährig Examinierte" },
+
+      { key: "mfa", label: "MFA/ATA/OTA im Einsatz" },
+
+      { key: "delta", label: "Delta Soll/Ist" },
+
+      { key: "anue", label: "ANU", bool: true }
+
+    ];
+
+
+
+    const SERVICES = [
+
+      "OP-Dienst (zentraler oder dezentraler OP)",
+
+      "Anästhesiedienst",
+
+      "Endoskopie",
+
+      "Herzkatheterlabor",
+
+      "Notaufnahme (ZNA, interdisziplinär)",
+
+      "Interdisziplinäre Aufnahmeeinheit (IAE / AUE)",
+
+      "Ambulantes OP-Zentrum (AOZ)",
+
+      "Zentrale Sterilgutversorgungsabteilung (AEMP)",
+
+      "Radiologie / CT / MRT / Angio",
+
+      "Funktionsdiagnostik (z. B. EEG, EKG, Lungenfunktion)",
+
+      "Dialyse",
+
+      "Ambulanz / Spezialambulanzen",
+
+      "Schmerzambulanz / Schmerztherapie",
+
+      "Interdisziplinäre Tagesklinik",
+
+      "Zentrale Patientenlogistik (pflegerisch organisiert)",
+
+      "Funktionsdienst Gynäkologie (z. B. Kreißsaalhilfe)"
+
+    ];
+
+
+
+    // Cluster definitionen
+    const CLUSTERS = [
+
+      { code: "BRU", name: "[BRU] GFO Klinik Brühl", sites: [
+
+        { code: "BRU", name: "GFO Klinik Brühl" }
+
+      ]},
+
+      { code: "ENG", name: "[ENG] GFO Klinik Engelskirchen", sites: [
+
+        { code: "ENG", name: "GFO Klinik Engelskirchen" }
+
+      ]},
+
+      { code: "GKB", name: "[GKB] GFO Kliniken Bonn", sites: [
+
+        { code: "GKB", name: "GFO Kliniken Bonn" },
+
+        { code: "BEU", name: "St. Josef Hospital Beuel" },
+
+        { code: "BON", name: "St. Marien Hospital Bonn" }
+
+      ]},
+
+      { code: "GKM", name: "[GKM] GFO Kliniken Mettmann-Süd", sites: [
+
+        { code: "GKM", name: "GFO Kliniken Mettmann-Süd" },
+
+        { code: "HIL", name: "St. Josef Krankenhaus Hilden" },
+
+        { code: "LAN", name: "St. Martinus Krankenhaus Langenfeld" }
+
+      ]},
+
+      { code: "GKN", name: "[GKN] GFO Kliniken Niederrhein", sites: [
+
+        { code: "GKN", name: "GFO Kliniken Niederrhein" },
+
+        { code: "DIN", name: "St. Vinzenz-Hospital Dinslaken" },
+
+        { code: "DUI", name: "St. Camillus Duisburg" },
+
+        { code: "MOE", name: "St. Josef Krankenhaus Moers" },
+
+        { code: "RHE", name: "St. Nikolaus Rheinberg" }
+
+      ]},
+
+      { code: "GKRB", name: "[GKRB] GFO Kliniken Rhein-Berg", sites: [
+
+        { code: "GKRB", name: "GFO Kliniken Rhein-Berg" },
+
+        { code: "BER", name: "Marien-Krankenhaus Bergisch Gladbach" }
+
+      ]},
+
+      { code: "GKS", name: "[GKS] GFO Kliniken Südwestfalen", sites: [
+
+        { code: "GKS", name: "GFO Kliniken Südwestfalen" },
+
+        { code: "LEN", name: "St. Josef Hospital Lennestadt" },
+
+        { code: "OLP", name: "St. Martinus Hospital Olpe" }
+
+      ]},
+
+      { code: "GKT", name: "[GKT] GFO Kliniken Troisdorf", sites: [
+
+        { code: "GKT", name: "GFO Kliniken Troisdorf" },
+
+        { code: "SIE", name: "St. Johannes Krankenhaus Sieglar" },
+
+        { code: "TRO", name: "St. Josef Hospital Troisdorf" }
+
+      ]},
+
+      { code: "WIS", name: "[WIS] GFO Klinik Wissen", sites: [
+
+        { code: "WIS", name: "GFO Klinik Wissen" }
+
+      ]}
+
+    ];
+
+
+
+    function generateServiceData(seed){
+
+      const baseTotalSoll = 148 + ((seed * 5) % 7); // 148 - 154
+
+      const deficiency = 1 + ((seed * 7) % 5);     // 1 - 5
+
+      const targetIst = baseTotalSoll - deficiency;
+
+
+
+      const weights = SERVICES.map((_, idx) => 0.8 + ((seed + idx * 4) % 5) / 5);
+
+      const weightSum = weights.reduce((acc, val) => acc + val, 0);
+
+
+
+      let sollAccum = 0;
+
+      let istAccum = 0;
+
+
+
+      const services = SERVICES.map((serviceName, idx) => {
+
+        const share = weights[idx] / weightSum;
+
+        let soll = Math.max(5, Math.round(baseTotalSoll * share));
+
+        let ist = Math.max(0, Math.round(targetIst * share));
+
+
+
+        const raeume = ((seed + idx * 3) % 9 === 0) ? 1 : 0;
+
+        const sono = ((seed + idx * 5) % 16 === 0) ? 1 : 0;
+
+        const sonder = ((seed + idx * 7) % 18 === 0) ? 2 : (((seed + idx) % 9 === 0) ? 1 : 0);
+
+        const ruf = (seed + idx) % 2;
+
+        const ex3 = Math.max(0, Math.round(ist * 0.65));
+
+        const ex1 = Math.max(0, Math.round(ist * 0.25));
+
+        const mfa = Math.max(0, Math.min(10, Math.round(share * 16) + ((seed + idx) % 3) - 1));
+
+        const anue = ((seed + idx * 2) % 4 === 0) ? 1 : 0;
+
+
+
+        sollAccum += soll;
+
+        istAccum += ist;
+
+
+
+        return {
+
+          name: serviceName,
+
+          soll,
+
+          ist,
+
+          raeume,
+
+          sono,
+
+          sonder,
+
+          ruf,
+
+          ex3,
+
+          ex1,
+
+          mfa,
+
+          anue,
+
+          delta: ist - soll
+
+        };
+
+      });
+
+
+
+      const last = services.length - 1;
+
+      const diffSoll = baseTotalSoll - sollAccum;
+
+      services[last].soll += diffSoll;
+
+      const diffIst = targetIst - istAccum;
+
+      services[last].ist += diffIst;
+
+      if(services[last].ist < 0){ services[last].ist = 0; }
+
+
+
+      services.forEach(service => {
+
+        if(service.ist > service.soll){
+
+          service.ist = service.soll - 1;
+
+        }
+
+        if(service.ist < 0){ service.ist = 0; }
+
+        service.delta = service.ist - service.soll;
+
+      });
+
+
+
+      return {
+
+        services,
+
+        target: {
+
+          soll: baseTotalSoll,
+
+          ist: targetIst,
+
+          deficiency
+
+        }
+
+      };
+
+    }
+
+
+
+    function summarizeServices(services){
+
+      let totalSoll = 0;
+
+      let totalIst = 0;
+
+      let raeumeAny = 0;
+
+      let sonoAny = 0;
+
+      let sonderMax = 0;
+
+      let rufAny = 0;
+
+      let anueAny = 0;
+
+      let ex3Sum = 0;
+
+      let ex1Sum = 0;
+
+      let mfaSum = 0;
+
+
+
+      services.forEach(service => {
+
+        totalSoll += service.soll;
+
+        totalIst += service.ist;
+
+        raeumeAny = raeumeAny || (service.raeume > 0 ? 1 : 0);
+
+        sonoAny = sonoAny || (service.sono > 0 ? 1 : 0);
+
+        sonderMax = Math.max(sonderMax, service.sonder);
+
+        if(service.ruf >= 1){ rufAny = 1; }
+
+        if(service.anue >= 1){ anueAny = 1; }
+
+        ex3Sum += service.ex3;
+
+        ex1Sum += service.ex1;
+
+        mfaSum += service.mfa;
+
+      });
+
+
+
+      const len = services.length || 1;
+
+
+
+      return {
+
+        soll: totalSoll,
+
+        ist: totalIst,
+
+        raeume: raeumeAny,
+
+        sono: sonoAny ? 1 : 0,
+
+        sonder: Math.min(2, sonderMax),
+
+        ruf: rufAny,
+
+        ex3: ex3Sum,
+
+        ex1: ex1Sum,
+
+        mfa: Math.min(10, Math.round(mfaSum / len)),
+
+        anue: anueAny,
+
+        delta: totalIst - totalSoll
+
+      };
+
+    }
+
+
+
+    (function initialiseClusterData(){
+
+      CLUSTERS.forEach((cluster, cIdx) => {
+
+        cluster.sites = cluster.sites.map((site, sIdx) => {
+
+          const generated = generateServiceData(cIdx * 7 + sIdx + 1);
+
+          const metrics = summarizeServices(generated.services);
+
+          metrics.soll = generated.target.soll;
+
+          metrics.ist = generated.target.ist;
+
+          metrics.delta = Math.max(-5, Math.min(0, metrics.ist - metrics.soll));
+
+          metrics.ruf = ((cIdx + sIdx) % 2 === 0) ? 1 : 0;
+
+          metrics.anue = ((cIdx + sIdx) % 3 === 0) ? 1 : 0;
+
+          return {
+
+            ...site,
+
+            clusterCode: cluster.code,
+
+            clusterName: cluster.name,
+
+            services: generated.services,
+
+            metrics
+
+          };
+
+        });
+
+      });
+
+    })();
+
+
+
+    const COLORS = ["#2563eb", "#10b981", "#f97316", "#9333ea", "#ef4444", "#0ea5e9", "#eab308", "#14b8a6", "#8b5cf6", "#ec4899"];
+
+
+
+    const clusterSelect = document.getElementById("cluster-select");
+
+    const metricSelect = document.getElementById("metric-select");
+
+    const chartCanvas = document.getElementById("benchmark-chart");
+
+    const legendBox = document.getElementById("benchmark-legend");
+
+    const tableBody = document.querySelector("#benchmark-table tbody");
+
+    const siteSelect = document.getElementById("site-select");
+
+    const serviceMetricSelect = document.getElementById("service-metric-select");
+
+    const serviceCanvas = document.getElementById("service-chart");
+
+
+
+    let chartInstance = null;
+
+    let serviceChart = null;
+
+
+
+    function populateSelects(){
+
+      clusterSelect.innerHTML = "";
+
+      const allOption = document.createElement("option");
+
+      allOption.value = "ALL";
+
+      allOption.textContent = "Alle Klinikverbünde";
+
+      clusterSelect.appendChild(allOption);
+
+      CLUSTERS.forEach(cluster => {
+
+        const opt = document.createElement("option");
+
+        opt.value = cluster.code;
+
+        opt.textContent = cluster.name;
+
+        clusterSelect.appendChild(opt);
+
+      });
+
+      clusterSelect.value = "ALL";
+
+
+
+      metricSelect.innerHTML = "";
+
+      if(serviceMetricSelect){ serviceMetricSelect.innerHTML = ""; }
+
+      METRICS.forEach((metric, index) => {
+
+        const opt = document.createElement("option");
+
+        opt.value = metric.key;
+
+        opt.textContent = metric.label;
+
+        if(index === 0){ opt.selected = true; }
+
+        metricSelect.appendChild(opt);
+
+
+
+        if(serviceMetricSelect){
+
+          const opt2 = document.createElement("option");
+
+          opt2.value = metric.key;
+
+          opt2.textContent = metric.label;
+
+          if(index === 0){ opt2.selected = true; }
+
+          serviceMetricSelect.appendChild(opt2);
+
+        }
+
+      });
+
+
+
+      populateSiteSelect();
+
+    }
+
+
+
+    function getSelectedSites(){
+
+      const clusterValue = clusterSelect.value || "ALL";
+
+      if(clusterValue === "ALL"){
+
+        const flattened = [];
+
+        CLUSTERS.forEach(cluster => cluster.sites.forEach(site => flattened.push(site)));
+
+        return flattened;
+
+      }
+
+      const cluster = CLUSTERS.find(c => c.code === clusterValue);
+
+      return cluster ? cluster.sites : [];
+
+    }
+
+
+
+    function populateSiteSelect(){
+
+      if(!siteSelect){ return; }
+
+      const previous = siteSelect.value;
+
+      const clusterValue = clusterSelect.value || "ALL";
+
+      const cluster = CLUSTERS.find(c => c.code === clusterValue);
+
+      const sites = clusterValue === "ALL" ? getSelectedSites() : (cluster ? cluster.sites : []);
+
+      siteSelect.innerHTML = "";
+
+      let hasSelection = false;
+
+      sites.forEach((site, idx) => {
+
+        const opt = document.createElement("option");
+
+        opt.value = site.code;
+
+        opt.textContent = `[${site.code}] ${site.name}`;
+
+        if(previous && previous === site.code){
+
+          opt.selected = true;
+
+          hasSelection = true;
+
+        }
+
+        siteSelect.appendChild(opt);
+
+      });
+
+      if(!hasSelection && sites.length){
+
+        siteSelect.value = sites[0].code;
+
+      }
+
+    }
+
+
+
+    function findSiteByCode(code){
+
+      for(const cluster of CLUSTERS){
+
+        const site = cluster.sites.find(s => s.code === code);
+
+        if(site){ return site; }
+
+      }
+
+      return null;
+
+    }
+
+
+
+    function formatValue(metricKey, value){
+
+      const metric = METRICS.find(m => m.key === metricKey) || {};
+
+      if(metric.bool){
+
+        return value >= 1 ? "Ja" : "Nein";
+
+      }
+
+      if(typeof value !== "number" || isNaN(value)){ return "0"; }
+
+      const rounded = Math.round(value);
+
+      const prefix = rounded > 0 ? "+" : "";
+
+      return `${prefix}${rounded}`;
+
+    }
+
+
+
+    function renderMetricCell(key, value){
+
+      const metric = METRICS.find(m => m.key === key) || {};
+
+      const formatted = formatValue(key, value);
+
+      if(metric.bool){
+
+        return `<td>${formatted}</td>`;
+
+      }
+
+      const cls = typeof value === "number" && value !== 0 ? (value > 0 ? "metric-positive" : "metric-negative") : "";
+
+      return `<td class="${cls}">${formatted}</td>`;
+
+    }
+
+
+
+    function buildLegend(metric, sites, colors){
+
+      legendBox.innerHTML = "";
+
+      sites.forEach((site, idx) => {
+
+        const span = document.createElement("span");
+
+        span.innerHTML = `<span class="dot" style="background:${colors[idx]}"></span><strong>${site.code}</strong> ${site.name}`;
+
+        legendBox.appendChild(span);
+
+      });
+
+    }
+
+
+
+    function buildTable(sites){
+
+      tableBody.innerHTML = "";
+
+      sites.forEach(site => {
+
+        const metrics = site.metrics;
+
+        const row = document.createElement("tr");
+
+        row.innerHTML =
+
+          `<td><strong>${site.clusterCode}</strong> ${site.clusterName}</td>` +
+
+          `<td><strong>${site.code}</strong> ${site.name}</td>` +
+
+          renderMetricCell("soll", metrics.soll) +
+
+          renderMetricCell("ist", metrics.ist) +
+
+          renderMetricCell("raeume", metrics.raeume) +
+
+          renderMetricCell("sono", metrics.sono) +
+
+          renderMetricCell("sonder", metrics.sonder) +
+
+          renderMetricCell("ruf", metrics.ruf) +
+
+          renderMetricCell("ex3", metrics.ex3) +
+
+          renderMetricCell("ex1", metrics.ex1) +
+
+          renderMetricCell("mfa", metrics.mfa) +
+
+          renderMetricCell("delta", metrics.delta) +
+
+          renderMetricCell("anue", metrics.anue);
+
+        tableBody.appendChild(row);
+
+      });
+
+    }
+
+
+
+    function buildChart(){
+
+      const metricKey = metricSelect.value || METRICS[0].key;
+
+      const metric = METRICS.find(m => m.key === metricKey) || METRICS[0];
+
+      const sites = getSelectedSites();
+
+      const colors = sites.map((_, idx) => COLORS[idx % COLORS.length]);
+
+      const labels = sites.map(site => `${site.clusterCode}-${site.code}`);
+
+      const data = sites.map(site => site.metrics[metricKey]);
+
+      const isBool = !!metric.bool;
+
+      const maxValue = data.reduce((acc, val) => {
+
+        const v = typeof val === "number" ? Math.abs(val) : 0;
+
+        return v > acc ? v : acc;
+
+      }, 0);
+
+
+
+      let axisMin, axisMax;
+
+      if(isBool){
+
+        axisMin = -0.1;
+
+        axisMax = 1.1;
+
+      } else if(metricKey === "delta"){
+
+        axisMin = -15;
+
+        axisMax = 0;
+
+      } else if(metricKey === "soll" || metricKey === "ist"){
+
+        axisMin = 0;
+
+        axisMax = Math.max(180, Math.ceil(maxValue / 10) * 10 + 10);
+
+      } else {
+
+        axisMin = 0;
+
+        axisMax = Math.max(20, Math.ceil(maxValue / 10) * 10 + 10);
+
+      }
+
+
+
+      if(chartInstance){
+
+        chartInstance.destroy();
+
+      }
+
+
+
+      chartInstance = new Chart(chartCanvas, {
+
+        type: "bar",
+
+        data: {
+
+          labels,
+
+          datasets: [{
+
+            label: metric.label,
+
+            data,
+
+            backgroundColor: colors.map(c => `${c}66`),
+
+            borderColor: colors,
+
+            borderWidth: 1.5
+
+          }]
+
+        },
+
+        options: {
+
+          maintainAspectRatio: false,
+
+          indexAxis: "x",
+
+          scales: {
+
+            y: {
+
+              min: axisMin,
+
+              max: axisMax,
+
+              grid: { color: "#e2e8f0" },
+
+              ticks: {
+
+                color: "#475569",
+
+                callback: value => {
+
+                  if(isBool){ return value >= 1 ? "Ja" : "Nein"; }
+
+                  return value;
+
+                }
+
+              }
+
+            },
+
+            x: {
+
+              grid: { display: false },
+
+              ticks: { color: "#475569" }
+
+            }
+
+          },
+
+          plugins: {
+
+            legend: { display: false },
+
+            tooltip: {
+
+              callbacks: {
+
+                label: ctx => {
+
+                  const value = ctx.parsed.y;
+
+                  return `${metric.label}: ${formatValue(metricKey, value)}`;
+
+                }
+
+              }
+
+            }
+
+          }
+
+        }
+
+      });
+
+
+
+      buildLegend(metric, sites, colors);
+
+      buildTable(sites);
+
+    }
+
+
+
+    function buildServiceChart(){
+
+      if(!serviceCanvas || !siteSelect || !serviceMetricSelect){ return; }
+
+      if(!siteSelect.value){ populateSiteSelect(); }
+
+      const site = findSiteByCode(siteSelect.value);
+
+      if(!site){ return; }
+
+
+
+      const metricKey = serviceMetricSelect.value || METRICS[0].key;
+
+      const metric = METRICS.find(m => m.key === metricKey) || METRICS[0];
+
+      const labels = site.services.map(service => service.name);
+
+      const data = site.services.map(service => metric.bool ? (service[metricKey] >= 1 ? 1 : 0) : service[metricKey]);
+
+
+
+      if(serviceChart){
+
+        serviceChart.destroy();
+
+      }
+
+
+
+      const isBool = !!metric.bool;
+
+      const maxValue = data.reduce((acc, val) => {
+
+        const v = typeof val === "number" ? Math.abs(val) : 0;
+
+        return v > acc ? v : acc;
+
+      }, 0);
+
+
+
+      let axisMin, axisMax;
+
+      if(isBool){
+
+        axisMin = -0.1;
+
+        axisMax = 1.1;
+
+      } else if(metricKey === "delta"){
+
+        axisMin = -5;
+
+        axisMax = 0;
+
+      } else if(metricKey === "soll" || metricKey === "ist"){
+
+        axisMin = 0;
+
+        axisMax = Math.max(20, Math.ceil(maxValue / 5) * 5 + 5);
+
+      } else {
+
+        axisMin = 0;
+
+        axisMax = Math.max(10, Math.ceil(maxValue / 2) * 2 + 2);
+
+      }
+
+
+
+      serviceChart = new Chart(serviceCanvas, {
+
+        type: "bar",
+
+        data: {
+
+          labels,
+
+          datasets: [{
+
+            label: `${metric.label} [${site.code}]`,
+
+            data,
+
+            backgroundColor: "#2563eb66",
+
+            borderColor: "#2563eb",
+
+            borderWidth: 1.5
+
+          }]
+
+        },
+
+        options: {
+
+          maintainAspectRatio: false,
+
+          indexAxis: "y",
+
+          scales: {
+
+            x: {
+
+              min: axisMin,
+
+              max: axisMax,
+
+              grid: { color: "#e2e8f0" },
+
+              ticks: {
+
+                color: "#475569",
+
+                stepSize: isBool ? 1 : undefined,
+
+                callback: value => {
+
+                  if(isBool){ return value >= 1 ? "Ja" : "Nein"; }
+
+                  return value;
+
+                }
+
+              }
+
+            },
+
+            y: {
+
+              ticks: { color: "#475569" },
+
+              grid: { display: false }
+
+            }
+
+          },
+
+          plugins: {
+
+            legend: { display: false },
+
+            tooltip: {
+
+              callbacks: {
+
+                label: ctx => `${metric.label}: ${formatValue(metricKey, ctx.parsed.x)}`
+
+              }
+
+            }
+
+          }
+
+        }
+
+      });
+
+    }
+
+
+
+    populateSelects();
+
+    clusterSelect.addEventListener("change", () => {
+
+      populateSiteSelect();
+
+      buildChart();
+
+      buildServiceChart();
+
+    });
+
+    metricSelect.addEventListener("change", buildChart);
+
+    if(siteSelect){ siteSelect.addEventListener("change", buildServiceChart); }
+
+    if(serviceMetricSelect){ serviceMetricSelect.addEventListener("change", buildServiceChart); }
+
+
+
+    buildChart();
+
+    buildServiceChart();
+
+  </script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

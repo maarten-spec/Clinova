@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CliniCon &ndash; Geschuetzter Bereich Login</title>
+  <style>
+    :root{
+      --bg:#f5f7fb; --panel:#ffffff; --muted:#94a3b8; --text:#0f172a; --line:#e2e8f0;
+      --accent:#2563eb; --accent-weak:#dbeafe; --accent-strong:#1d4ed8;
+      --success:#16a34a; --shadow:0 18px 36px rgba(15,23,42,.08);
+      --gold:#facc15; --gold-strong:#eab308; --gold-bg:#fff8db;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text); background:var(--bg);
+    }
+
+    .shell{display:grid; grid-template-columns:240px 1fr; min-height:100dvh}
+
+    .side{
+      position:sticky; top:0; height:100dvh; background:#ffffffcc; backdrop-filter:saturate(180%) blur(10px);
+      border-right:1px solid var(--line); display:flex; flex-direction:column; align-items:stretch; gap:12px; padding:16px 12px;
+      width:240px; overflow:auto;
+    }
+    .brand{
+      display:flex; align-items:center; justify-content:center; padding:8px 10px; width:100%; text-decoration:none;
+    }
+    .brand img{width:180px; height:auto; object-fit:contain}
+
+    .nav{display:flex; flex-direction:column; gap:8px; width:100%; margin-top:8px}
+    .nav a{
+      --bg1:#fff; --bg2:#f9fbff;
+      display:flex; align-items:center; gap:12px;
+      text-decoration:none; color:var(--text);
+      padding:12px 14px; border-radius:14px; border:1px solid var(--line);
+      background:linear-gradient(180deg,var(--bg1),var(--bg2));
+      box-shadow:0 1px 0 rgba(15,23,42,.03);
+      transition:.18s ease transform, .18s ease box-shadow, .18s ease border-color, .18s ease background;
+    }
+    .nav a:hover{
+      transform:translateY(-1px);
+      border-color:#bfd7ff;
+      background:linear-gradient(180deg,#ffffff,#eef5ff);
+      box-shadow:0 6px 14px rgba(37,99,235,.12);
+    }
+    .nav a.active{
+      background:linear-gradient(180deg,#2563eb,#1d4ed8);
+      color:#fff; border-color:transparent;
+      box-shadow:0 10px 20px rgba(37,99,235,.25);
+    }
+    .nav a svg{
+      width:22px; height:22px; flex:0 0 22px;
+      opacity:.9;
+    }
+    .nav a.active svg{ opacity:1; filter:brightness(10) }
+
+    .nav a.secure{
+      background:linear-gradient(180deg,var(--gold-bg),#fffef4);
+      border-color:#fde68a;
+      color:#854d0e;
+      font-weight:600;
+    }
+    .nav a.secure:hover{
+      background:linear-gradient(180deg,#fff5b1,#fffef4);
+      box-shadow:0 6px 14px rgba(250,204,21,.25);
+      border-color:var(--gold);
+      transform:translateY(-1px);
+    }
+    .nav a.secure.active{
+      background:linear-gradient(180deg,var(--gold),var(--gold-strong));
+      color:#fff;
+      border:none;
+      box-shadow:0 10px 22px rgba(250,204,21,.35);
+    }
+
+    header{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:16px; padding:20px 24px; border-bottom:1px solid var(--line); background:#fff; position:sticky; top:0; z-index:2;
+    }
+    .topbar-left h1{ margin:0; font-size:1.6rem; letter-spacing:.02em }
+    .topbar-left p{ margin:6px 0 0; color:var(--muted); font-size:.98rem }
+    .product-logo{ height:56px; width:auto; object-fit:contain }
+
+    main{
+      padding:24px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:calc(100dvh - 160px);
+    }
+    footer{ padding:18px 24px; color:var(--muted); text-align:right }
+
+    @media (max-width: 960px){
+      .shell{ grid-template-columns:1fr }
+      .side{ position:relative; height:auto; width:100%; flex-direction:row; align-items:center; justify-content:space-between; padding:12px 16px }
+      .nav{ flex-direction:row; overflow-x:auto; padding-bottom:4px }
+      .nav a{ white-space:nowrap }
+      header{ position:relative }
+      main{ padding:20px; min-height:auto }
+    }
+
+    .login-box{
+      background:rgba(255,255,255,0.97);
+      border-radius:20px;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow);
+      padding:40px 50px;
+      width:100%; max-width:400px;
+      display:flex; flex-direction:column; gap:20px; text-align:center;
+    }
+    .login-logo{ width:180px; margin:0 auto }
+    h2{font-size:1.6rem; margin-bottom:0}
+    .login-intro{ margin:0; color:var(--muted); font-size:.95rem }
+    .input-group{display:flex; flex-direction:column; text-align:left; gap:6px}
+    label{font-weight:600; font-size:.9rem}
+    input{
+      border:none; border-bottom:2px solid #cbd5e1;
+      padding:8px; font-size:1rem; background:transparent; outline:none;
+      transition:border-color .2s;
+    }
+    input:focus{border-color:var(--accent)}
+    .btn{
+      background:var(--accent); color:#fff; border:none;
+      padding:12px; border-radius:12px; font-weight:700; cursor:pointer; font-size:1rem;
+      transition:background .2s, transform .2s;
+    }
+    .btn:hover{background:var(--accent-strong); transform:translateY(-1px)}
+    .error{color:#dc2626; font-size:.9rem; min-height:1.2em}
+    .login-note{margin:0; color:var(--muted); font-size:.85rem}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="side" aria-label="Hauptnavigation">
+      <a class="brand" href="index.html" aria-label="Startseite">
+        <img src="Bilder/CliniConLogo.png" alt="CliniCon Logo" />
+      </a>
+
+      <nav class="nav" id="mainNav">
+        <a href="index.html" data-key="index">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>
+          <span>Start</span>
+        </a>
+        <a href="0_PpUG-Rechner.html" data-key="ppug">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span>PPUG-Rechner</span>
+        </a>
+        <a href="0_PPBV-Berechnung.html" data-key="ppbv">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+          <span>PPBV-Berechnung</span>
+        </a>
+        <a href="0_Schichtbesetzung.html" data-key="schichten">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Schichtbesetzung</span>
+        </a>
+        <a href="0_Besetzungsbedarf.html" data-key="bedarf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Besetzungsbedarf</span>
+        </a>
+        <a href="0_Perzentilen-Berechnung.html" data-key="perzentilen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="3" x2="3" y2="21"/><line x1="21" y1="21" x2="3" y2="21"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>
+          <span>Perzentilen</span>
+        </a>
+
+        <a href="0_Login.html" class="secure" data-key="secure" aria-label="Geschuetzter Bereich">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Geschuetzter Bereich</span>
+        </a>
+      </nav>
+    </aside>
+
+    <div>
+      <header>
+        <div class="topbar-left">
+          <h1 id="pageHeading">CliniCon &ndash; Geschuetzter Bereich</h1>
+          <p id="pageSubheading">Anmeldung erforderlich</p>
+        </div>
+        <img class="product-logo" src="Bilder/CliniConLogo.png" alt="CliniCon Logo" />
+      </header>
+
+      <main id="main" role="main">
+        <form class="login-box" onsubmit="return login(event)">
+          <img class="login-logo" src="Bilder/CliniConLogo.png" alt="CliniCon Logo" />
+          <h2>Login</h2>
+          <p class="login-intro">Bitte melden Sie sich mit Ihrem Standortkuerzel und dem Passwort gfo an.</p>
+          <div class="input-group">
+            <label for="username">Benutzername</label>
+            <input type="text" id="username" placeholder="Benutzername" required />
+          </div>
+          <div class="input-group">
+            <label for="password">Passwort</label>
+            <input type="password" id="password" placeholder="Passwort" required />
+          </div>
+          <button type="submit" class="btn">Anmelden</button>
+          <div id="error" class="error" role="alert" aria-live="polite"></div>
+          <p class="login-note">&copy; CliniCon &ndash; Geschuetzter Bereich</p>
+        </form>
+      </main>
+
+      <footer>&copy; CliniCon</footer>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const path = (location.pathname.split('/').pop() || '').toLowerCase();
+      const map = {
+        'index.html':'index',
+        '0_ppug-rechner.html':'ppug',
+        '0_ppbv-berechnung.html':'ppbv',
+        '0_schichtbesetzung.html':'schichten',
+        '0_besetzungsbedarf.html':'bedarf',
+        '0_perzentilen-berechnung.html':'perzentilen',
+        '0_login.html':'secure'
+      };
+      const titles = {
+        index:['Start','Uebersicht & Schnellzugriff'],
+        ppug:['PPUG-Rechner','Untergrenzen schnell pruefen'],
+        ppbv:['PPBV-Berechnung','Parameter steuern & vergleichen'],
+        schichten:['Schichtbesetzung','Planung & Visualisierung'],
+        bedarf:['Besetzungsbedarf','Anforderung je Tag & Schicht'],
+        perzentilen:['Perzentilen-Rechner','Wachstum darstellen'],
+        secure:['Geschuetzter Bereich','Anmeldung erforderlich']
+      };
+      const key = map[path] || null;
+      if(key){
+        const link = document.querySelector('.nav a[data-key="'+key+'"]');
+        if(link) link.classList.add('active');
+        if(titles[key]){
+          document.getElementById('pageHeading').textContent = 'CliniCon \u2013 ' + titles[key][0];
+          document.getElementById('pageSubheading').textContent = titles[key][1];
+          document.title = 'CliniCon \u2013 ' + titles[key][0];
+        }
+      }
+    })();
+
+    const validUsers = [
+      "GFO-ZPD","GFO-SIE","GFO-BEU","GFO-BAH","GFO-TRO","GFO-DIN","GFO-MOE",
+      "GFO-DUI","GFO-BEN","GFO-BER","GFO-OLP","GFO-LEN","GFO-ENG","GFO-BRU",
+      "GFO-LAN","GFO-HIL","GFO-WIS","GFO-RHE"
+    ];
+    const PASSWORD = "gfo";
+
+    function login(e){
+      e.preventDefault();
+      const u = document.getElementById("username").value.trim().toUpperCase();
+      const p = document.getElementById("password").value.trim();
+      const err = document.getElementById("error");
+
+      if(validUsers.includes(u) && p === PASSWORD){
+        err.textContent = "";
+        window.location.href = "startseite.html";
+      } else {
+        err.textContent = "Benutzername oder Passwort ist falsch.";
+      }
+    }
+  </script>
+</body>
+</html>

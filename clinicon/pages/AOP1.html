@@ -1,0 +1,348 @@
+﻿<main id="kc-aop-advisor" class="kc-wrap">
+  <section class="kc-header">
+    <h1 class="kc-h1">AOP-Entscheidungsassistenz</h1>
+    <p class="kc-sub">Bias: <strong>ambulant bevorzugt</strong> – es sei denn, Red-Flags oder hohe Gesamtrisiken sprechen dagegen.</p>
+  </section>
+
+  <!-- KURZFORM: OPS, Anästhesie, Dauer, Blutungsrisiko -->
+  <section class="kc-card kc-grid-2">
+    <div>
+      <label class="kc-label">OPS-Code (optional)</label>
+      <input id="ops" class="kc-input" placeholder="z. B. 5-510.1" />
+      <p class="kc-hint">Der Algorithmus funktioniert auch ohne OPS. (Mapping kann später ergänzt werden.)</p>
+    </div>
+    <div>
+      <label class="kc-label">Anästhesieart</label>
+      <select id="anesthesia" class="kc-input">
+        <option value="regional">Regional/LA</option>
+        <option value="itn">ITN / Larynxmaske</option>
+        <option value="none">Keine</option>
+      </select>
+    </div>
+    <div>
+      <label class="kc-label">OP-Dauer (erwartet)</label>
+      <select id="duration" class="kc-input">
+        <option value="short">&le; 60 min</option>
+        <option value="mid">61–90 min</option>
+        <option value="long">&gt; 90 min</option>
+      </select>
+    </div>
+    <div>
+      <label class="kc-label">Blutungsrisiko</label>
+      <select id="bleed" class="kc-input">
+        <option value="low">Niedrig</option>
+        <option value="mod">Moderat</option>
+        <option value="high">Hoch</option>
+      </select>
+    </div>
+  </section>
+
+  <!-- K1: Patientenfaktoren -->
+  <section class="kc-card">
+    <h2 class="kc-h2">K1 – Patientenbezogene Faktoren</h2>
+    <div class="kc-grid-3">
+      <div>
+        <label class="kc-label">ASA-Klasse</label>
+        <select id="asa" class="kc-input">
+          <option value="1">ASA I</option>
+          <option value="2">ASA II</option>
+          <option value="3">ASA III</option>
+          <option value="4">ASA IV+</option>
+        </select>
+      </div>
+      <div>
+        <label class="kc-label">Alter</label>
+        <select id="age" class="kc-input">
+          <option value="adult">≥ 3 J. &amp; &le; 80 J.</option>
+          <option value="veryyoung">&lt; 3 J.</option>
+          <option value="veryold">&gt; 80 J.</option>
+        </select>
+      </div>
+      <div>
+        <label class="kc-label">Adipositas</label>
+        <select id="bmi" class="kc-input">
+          <option value="n">BMI &lt; 35</option>
+          <option value="m">BMI 35–40</option>
+          <option value="h">BMI &gt; 40</option>
+        </select>
+      </div>
+      <div class="kc-span-3 kc-chips">
+        <label class="kc-chip"><input type="checkbox" id="anticoag"> Therapeutische Antikoagulation</label>
+        <label class="kc-chip"><input type="checkbox" id="osa"> Ausgeprägte OSA (nicht optimiert)</label>
+        <label class="kc-chip"><input type="checkbox" id="frail"> Frailty/gebrechlich</label>
+      </div>
+    </div>
+  </section>
+
+  <!-- K2: Prozedur/Komplexität -->
+  <section class="kc-card">
+    <h2 class="kc-h2">K2 – Prozedur &amp; Komplexität</h2>
+    <div class="kc-grid-3">
+      <div>
+        <label class="kc-label">Implantat/Prothese</label>
+        <select id="implant" class="kc-input">
+          <option value="none">Nein</option>
+          <option value="minor">Klein (z. B. Schraube, Pin)</option>
+          <option value="major">Größer/mehrere</option>
+        </select>
+      </div>
+      <div>
+        <label class="kc-label">PONV-Risiko</label>
+        <select id="ponv" class="kc-input">
+          <option value="low">Niedrig</option>
+          <option value="high">Hoch</option>
+        </select>
+      </div>
+      <div>
+        <label class="kc-label">Schmerzerwartung</label>
+        <select id="pain" class="kc-input">
+          <option value="low">Gering</option>
+          <option value="mid">Moderat</option>
+          <option value="high">Hoch</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- K3: Infrastruktur/Organisation -->
+  <section class="kc-card">
+    <h2 class="kc-h2">K3 – Infrastruktur &amp; Organisation</h2>
+    <div class="kc-chips">
+      <label class="kc-chip"><input type="checkbox" id="pacu"> Aufwachraum/Monitoring verfügbar</label>
+      <label class="kc-chip"><input type="checkbox" id="painproto"> Schmerz-/Nausea-Protokoll vorhanden</label>
+      <label class="kc-chip"><input type="checkbox" id="escalation"> 24/7 Eskalationspfad vorhanden</label>
+    </div>
+  </section>
+
+  <!-- K4: Nachsorge & Soziales -->
+  <section class="kc-card">
+    <h2 class="kc-h2">K4 – Nachsorge &amp; soziales Umfeld</h2>
+    <div class="kc-grid-3">
+      <div>
+        <label class="kc-label">Begleitperson für 24 h</label>
+        <select id="escort" class="kc-input">
+          <option value="yes">Ja</option>
+          <option value="no">Nein</option>
+        </select>
+      </div>
+      <div>
+        <label class="kc-label">Heimweg/Entfernung</label>
+        <select id="distance" class="kc-input">
+          <option value="short">&le; 45 min</option>
+          <option value="long">&gt; 45 min</option>
+        </select>
+      </div>
+      <div>
+        <label class="kc-label">Mobilität zu Hause</label>
+        <select id="mobility" class="kc-input">
+          <option value="ok">Unproblematisch</option>
+          <option value="limited">Eingeschränkt (z. B. Treppen)</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- K5: Besondere Gründe -->
+  <section class="kc-card">
+    <h2 class="kc-h2">K5 – Sonderindikationen</h2>
+    <div class="kc-chips">
+      <label class="kc-chip"><input type="checkbox" id="prevcomp"> Frühere schwere Komplikation gleicher Art</label>
+      <label class="kc-chip"><input type="checkbox" id="psych"> Ausgeprägte Angst/Compliance-Probleme</label>
+    </div>
+  </section>
+
+  <!-- RED FLAGS -->
+  <section class="kc-card kc-danger">
+    <h2 class="kc-h2">Red-Flags (führen <em>immer</em> zu „stationär“)</h2>
+    <div class="kc-chips">
+      <label class="kc-chip"><input type="checkbox" id="unstable"> Hämodynamisch instabil / akute Sepsis</label>
+      <label class="kc-chip"><input type="checkbox" id="airway"> Kritischer Atemweg / nicht gesicherte Atemwegssituation</label>
+      <label class="kc-chip"><input type="checkbox" id="noConsent"> Keine Einwilligung/Nachsorge sichergestellt</label>
+    </div>
+  </section>
+
+  <!-- ERGEBNIS -->
+  <section class="kc-result kc-card">
+    <div class="kc-result-header">
+      <div id="rec-badge" class="kc-badge">Berechnung ausstehend …</div>
+      <button id="btn-export" class="kc-btn">Bewertung exportieren (JSON)</button>
+    </div>
+    <h2 class="kc-h2">Empfehlung</h2>
+    <p id="rec-text" class="kc-rec">–</p>
+    <details class="kc-details" open>
+      <summary>Begründung & Scoring anzeigen</summary>
+      <div id="rationale" class="kc-rationale"></div>
+    </details>
+  </section>
+
+  <style>
+    /* ——— minimal & namespaced ——— */
+    .kc-wrap{display:flex;flex-direction:column;gap:16px;padding:16px}
+    .kc-h1{margin:0 0 4px;font-size:1.4rem}
+    .kc-sub{margin:0;color:#555}
+    .kc-card{background:#fff;border:1px solid #e5e7eb;border-radius:14px;padding:14px}
+    .kc-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .kc-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    .kc-span-3{grid-column:1 / -1}
+    .kc-label{font-size:.85rem;color:#444;display:block;margin-bottom:6px}
+    .kc-input{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #d9dde3;border-radius:10px}
+    .kc-hint{font-size:.8rem;color:#777;margin:.3rem 0 0}
+    .kc-chips{display:flex;flex-wrap:wrap;gap:8px}
+    .kc-chip{display:inline-flex;align-items:center;gap:6px;border:1px dashed #e5e7eb;border-radius:999px;padding:8px 10px;font-size:.85rem;background:#fff}
+    .kc-danger{border-color:#ffd5d5;background:#fff7f7}
+    .kc-result-header{display:flex;gap:8px;align-items:center;justify-content:space-between}
+    .kc-badge{display:inline-block;border-radius:999px;padding:8px 12px;border:1px solid #e5e7eb;background:#f9fafb;font-weight:600}
+    .kc-badge.ok{background:#e8fff1;border-color:#bff0cf}
+    .kc-badge.warn{background:#fff9e6;border-color:#ffe3a3}
+    .kc-badge.bad{background:#ffecec;border-color:#ffb4b4}
+    .kc-rec{font-size:1.05rem}
+    .kc-details summary{cursor:pointer;font-weight:600}
+    .kc-btn{border:1px solid #d9dde3;background:#fff;border-radius:10px;padding:10px 12px;cursor:pointer}
+    @media (max-width: 900px){
+      .kc-grid-2, .kc-grid-3{grid-template-columns:1fr}
+    }
+  </style>
+
+  <script>
+    // ——— Scoring-Logik (ambulant bevorzugt) ———
+    // Score startet bei 0 (ambulant). Je höher, desto eher stationär.
+    // Schwellen:
+    // 0–2: ambulant empfohlen
+    // 3–5: ambulant mit Auflagen (Sicherheitsmaßnahmen)
+    // ≥6: stationär empfohlen
+    // Red-Flags => immer stationär (unabhängig vom Score)
+
+    function val(id){ const el = document.getElementById(id); return el?.value; }
+    function chk(id){ const el = document.getElementById(id); return !!el?.checked; }
+
+    function compute(){
+      const reasons = [];
+      let score = 0;
+
+      // Red Flags
+      const red = {unstable: chk('unstable'), airway: chk('airway'), noConsent: chk('noConsent')};
+      const hasRed = red.unstable || red.airway || red.noConsent;
+
+      // K1 – Patient
+      const asa = val('asa');
+      if(asa === '3'){ score += 2; reasons.push('ASA III: +2'); }
+      if(asa === '4'){ score += 4; reasons.push('ASA IV+: +4'); }
+
+      const age = val('age');
+      if(age === 'veryyoung'){ score += 2; reasons.push('< 3 Jahre: +2'); }
+      if(age === 'veryold'){ score += 2; reasons.push('> 80 Jahre: +2'); }
+
+      const bmi = val('bmi');
+      if(bmi === 'm'){ score += 1; reasons.push('BMI 35–40: +1'); }
+      if(bmi === 'h'){ score += 2; reasons.push('BMI > 40: +2'); }
+
+      if(chk('anticoag')){ score += 2; reasons.push('Therap. Antikoagulation: +2'); }
+      if(chk('osa')){ score += 2; reasons.push('Ausgeprägte OSA: +2'); }
+      if(chk('frail')){ score += 2; reasons.push('Frailty: +2'); }
+
+      // K2 – Prozedur
+      const dur = val('duration');
+      if(dur === 'mid'){ score += 1; reasons.push('Dauer 61–90 min: +1'); }
+      if(dur === 'long'){ score += 2; reasons.push('Dauer > 90 min: +2'); }
+
+      const bleed = val('bleed');
+      if(bleed === 'mod'){ score += 1; reasons.push('Blutungsrisiko moderat: +1'); }
+      if(bleed === 'high'){ score += 2; reasons.push('Blutungsrisiko hoch: +2'); }
+
+      const implant = val('implant');
+      if(implant === 'minor'){ score += 1; reasons.push('Kleines Implantat: +1'); }
+      if(implant === 'major'){ score += 2; reasons.push('Größeres/mehrere Implantate: +2'); }
+
+      const pain = val('pain'); // nur als Hinweis, kein fixer Score
+      const ponv = val('ponv');
+      if(ponv === 'high'){ score += 1; reasons.push('Hohes PONV-Risiko: +1'); }
+
+      // K3 – Infrastruktur (negative Punktwerte = pro ambulant)
+      if(chk('pacu') === false){ score += 4; reasons.push('Kein Aufwachraum/Monitoring: +4'); }
+      if(chk('escalation') === false){ score += 3; reasons.push('Kein 24/7-Eskalationspfad: +3'); }
+      if(chk('painproto') === false){ score += 1; reasons.push('Kein Schmerz/Nausea-Protokoll: +1'); }
+
+      // K4 – Nachsorge
+      if(val('escort') === 'no'){ score += 2; reasons.push('Keine 24h-Begleitperson: +2'); }
+      if(val('distance') === 'long'){ score += 1; reasons.push('Heimweg > 45 min: +1'); }
+      if(val('mobility') === 'limited'){ score += 1; reasons.push('Eingeschränkte Mobilität zuhause: +1'); }
+
+      // K5 – Sonderindikationen
+      if(chk('prevcomp')){ score += 2; reasons.push('Frühere schwere Komplikation: +2'); }
+      if(chk('psych')){ score += 1; reasons.push('Ausgeprägte Angst/Compliance: +1'); }
+
+      // Pro-ambulant Modifikatoren
+      const anesthesia = val('anesthesia');
+      if(anesthesia === 'regional'){ score -= 1; reasons.push('Regionalanästhesie: −1'); }
+      if(pain === 'low'){ score -= 1; reasons.push('Geringe Schmerzerwartung: −1'); }
+
+      // Ergebnis erzeugen
+      const badge = document.getElementById('rec-badge');
+      const recText = document.getElementById('rec-text');
+      const rationale = document.getElementById('rationale');
+
+      if(hasRed){
+        badge.className = 'kc-badge bad';
+        badge.textContent = 'Empfehlung: STATIONÄR (Red-Flag)';
+        recText.innerHTML = 'Mindestens eine Red-Flag ist erfüllt. Unabhängig vom Score wird <strong>stationär</strong> empfohlen.';
+      } else if(score <= 2){
+        badge.className = 'kc-badge ok';
+        badge.textContent = 'Empfehlung: ambulant';
+        recText.innerHTML = 'Die Risikokonstellation erlaubt eine <strong>ambulante</strong> Durchführung.';
+      } else if(score <= 5){
+        badge.className = 'kc-badge warn';
+        badge.textContent = 'Empfehlung: ambulant – mit Auflagen';
+        recText.innerHTML = 'Eine <strong>ambulante</strong> Durchführung ist möglich, jedoch mit <strong>zusätzlichen Sicherheitsmaßnahmen</strong> (z. B. optimierte Analgesie/Antiemese, enges Telefon-Follow-up, klare Eskalationswege).';
+      } else {
+        badge.className = 'kc-badge bad';
+        badge.textContent = 'Empfehlung: stationär';
+        recText.innerHTML = 'Die Gesamtrisiken sprechen für einen <strong>stationären</strong> Aufenthalt.';
+      }
+
+      // Begründung + Score
+      rationale.innerHTML = `
+        <p><strong>Gesamtscore:</strong> ${score}</p>
+        <ul>${reasons.map(r => `<li>${r}</li>`).join('')}</ul>
+        <p class="kc-hint">Hinweis: Dies ist ein <em>unterstützendes</em> Tool. Ärztliche Bewertung geht vor.</p>
+      `;
+      return {score, reasons, red, anesthesia, pain};
+    }
+
+    // Export
+    document.getElementById('btn-export').addEventListener('click', ()=>{
+      const data = {
+        ts: new Date().toISOString(),
+        ops: document.getElementById('ops').value || null,
+        inputs: {
+          anesthesia: val('anesthesia'), duration: val('duration'), bleed: val('bleed'),
+          asa: val('asa'), age: val('age'), bmi: val('bmi'),
+          anticoag: chk('anticoag'), osa: chk('osa'), frail: chk('frail'),
+          implant: val('implant'), ponv: val('ponv'), pain: val('pain'),
+          pacu: chk('pacu'), painproto: chk('painproto'), escalation: chk('escalation'),
+          escort: val('escort'), distance: val('distance'), mobility: val('mobility'),
+          prevcomp: chk('prevcomp'), psych: chk('psych'),
+          red_unstable: chk('unstable'), red_airway: chk('airway'), red_noConsent: chk('noConsent')
+        },
+        result: compute()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'aop_entscheidung.json';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // Recompute bei jeder Änderung
+    document.querySelectorAll('#kc-aop-advisor input, #kc-aop-advisor select').forEach(el=>{
+      el.addEventListener('input', compute);
+      el.addEventListener('change', compute);
+    });
+
+    // Defaults setzen (pro ambulant)
+    document.getElementById('pacu').checked = true;
+    document.getElementById('painproto').checked = true;
+    document.getElementById('escalation').checked = true;
+    compute();
+  </script>
+</main>

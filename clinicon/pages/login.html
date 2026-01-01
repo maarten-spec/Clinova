@@ -1,0 +1,235 @@
+<!-- Login Seite -->
+<style>
+  .login-page{
+    grid-column:1/-1;
+    width:100%;
+    min-height:calc(100dvh - 200px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+    background:var(--gold-bg);
+    border-radius:18px;
+    border:1px solid #fde68a;
+    box-shadow:0 12px 30px rgba(250,204,21,0.18);
+  }
+  .login-box{
+    background:#fffef9;
+    border-radius:20px;
+    border:1px solid var(--line);
+    box-shadow:var(--shadow);
+    padding:40px 48px;
+    width:100%;
+    max-width:420px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    text-align:center;
+  }
+  .login-logo{
+    width:180px;
+    margin:0 auto;
+  }
+  .login-box h2{
+    margin:0;
+    font-size:1.6rem;
+  }
+  .login-intro{
+    margin:0;
+    color:var(--muted);
+    font-size:0.98rem;
+  }
+  .input-group{
+    display:flex;
+    flex-direction:column;
+    text-align:left;
+    gap:6px;
+  }
+  .input-group label{
+    font-weight:600;
+    font-size:0.9rem;
+  }
+  .input-group input{
+    border:none;
+    border-bottom:2px solid #cbd5e1;
+    padding:8px;
+    font-size:1rem;
+    background:transparent;
+    outline:none;
+    transition:border-color 0.2s ease;
+  }
+  .input-group input:focus{
+    border-color:var(--accent);
+  }
+  .btn{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    padding:12px;
+    border-radius:12px;
+    font-weight:700;
+    cursor:pointer;
+    font-size:1rem;
+    transition:background 0.2s ease, transform 0.2s ease;
+  }
+  .btn:hover{
+    background:var(--accent-strong);
+    transform:translateY(-1px);
+  }
+  .error{
+    color:#dc2626;
+    font-size:0.9rem;
+    min-height:1.2em;
+  }
+  .login-note{
+    margin:0;
+    color:var(--muted);
+    font-size:0.85rem;
+  }
+  .turnstile-wrapper{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    align-items:center;
+    padding:4px 0 2px;
+  }
+  .turnstile-hint{
+    margin:0;
+    color:var(--muted);
+    font-size:0.85rem;
+  }
+  @media (max-width: 960px){
+    .login-page{
+      padding:24px;
+      min-height:auto;
+      border-radius:16px;
+    }
+    .login-box{
+      padding:32px 28px;
+    }
+  }
+</style>
+
+<section class="login-page">
+  <form class="login-box" onsubmit="return login(event)">
+    <img alt="CliniCon Logo" class="login-logo" src="../assets/Bilder/CliniConLogo.png" />
+    <h2>Interner Bereich</h2>
+    <p class="login-intro">Bitte melden Sie sich mit Ihrem Standortk&uuml;rzel und Ihrem pers&ouml;nlichen Passwort an.</p>
+    <div class="input-group">
+      <label for="username">Benutzername</label>
+      <input id="username" placeholder="Benutzername" required type="text" autocomplete="username" />
+    </div>
+    <div class="input-group">
+      <label for="password">Passwort</label>
+      <input id="password" placeholder="Passwort" required type="password" autocomplete="current-password" />
+    </div>
+    <div class="turnstile-wrapper">
+      <div
+        id="turnstile-container"
+        class="cf-turnstile"
+        data-sitekey=""
+        data-callback="onTurnstileSuccess"
+        data-expired-callback="onTurnstileExpired"
+        data-error-callback="onTurnstileError"
+      ></div>
+      <p class="turnstile-hint">Sicherheitspruefung durch Cloudflare Turnstile.</p>
+    </div>
+    <button class="btn" type="submit">Anmelden</button>
+    <div aria-live="polite" class="error" id="error" role="alert"></div>
+    <p class="login-note">&copy; CliniCon - Interner Bereich</p>
+  </form>
+</section>
+
+<script>
+  const API_LOGIN_URL = "https://divine-disk-6cb5.maarten-koomen.workers.dev";
+  const START_PAGE_BASE = "pages/internerBereich/GFO/1-Seite.html";
+  const START_HASH = "unterstartseite";
+    const TURNSTILE_SITE_KEY = "1x00000000000000000000AA"; // Cloudflare testing key; replace for production.
+  let turnstileToken = "";
+
+  (function(){
+    const container = document.getElementById("turnstile-container");
+    if(container && TURNSTILE_SITE_KEY){
+      container.setAttribute("data-sitekey", TURNSTILE_SITE_KEY);
+    }
+  })();
+
+  const buildStartUrl = (siteCode) => {
+    const base = START_PAGE_BASE;
+    const param = siteCode ? `?site=${encodeURIComponent(siteCode)}` : "";
+    const hash = START_HASH ? `#${START_HASH}` : "";
+    return `${base}${param}${hash}`;
+  };
+
+  function onTurnstileSuccess(token){
+    turnstileToken = token;
+    const errorField = document.getElementById("error");
+    if(errorField && errorField.textContent.toLowerCase().includes("sicherheitspruefung")){
+      errorField.textContent = "";
+    }
+  }
+
+  function onTurnstileExpired(){
+    turnstileToken = "";
+  }
+
+  function onTurnstileError(){
+    turnstileToken = "";
+    const errorField = document.getElementById("error");
+    if(errorField){
+      errorField.textContent = "Sicherheitspruefung konnte nicht geladen werden. Bitte neu versuchen.";
+    }
+  }
+
+  function resetTurnstile(){
+    turnstileToken = "";
+    try{
+      if(window.turnstile){
+        window.turnstile.reset();
+      }
+    }catch(_){}
+  }
+
+  async function login(event){
+    event.preventDefault();
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const errorField = document.getElementById("error");
+    errorField.textContent = "";
+
+    if(!username || !password){
+      errorField.textContent = "Bitte Benutzername und Passwort eingeben.";
+      return false;
+    }
+
+    if(!turnstileToken){
+      errorField.textContent = "Bitte die Sicherheitspruefung abschliessen.";
+      return false;
+    }
+
+    try{
+      const res = await fetch(API_LOGIN_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, turnstileToken })
+      });
+
+      if(!res.ok){
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Benutzername oder Passwort ist falsch.");
+      }
+
+      const data = await res.json();
+      const siteCode = (data.siteCode || username).trim().toUpperCase();
+      sessionStorage.setItem("cliniconSite", siteCode);
+      sessionStorage.setItem("cliniconUser", username.trim());
+      window.location.href = buildStartUrl(siteCode);
+      return false;
+    }catch(err){
+      errorField.textContent = err.message || "Anmeldung fehlgeschlagen.";
+      resetTurnstile();
+      return false;
+    }
+  }
+</script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>

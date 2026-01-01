@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CliniCon – Tool</title>
+
+  <style>
+    :root{
+      --bg:#f5f7fb; --panel:#ffffff; --muted:#94a3b8; --text:#0f172a; --line:#e2e8f0;
+      --accent:#2563eb; --accent-weak:#dbeafe; --accent-strong:#1d4ed8;
+      --success:#16a34a; --shadow:0 18px 36px rgba(15,23,42,.08);
+      --gold:#facc15; --gold-strong:#eab308; --gold-bg:#fff8db;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text); background:var(--bg);
+    }
+
+    .shell{display:grid; grid-template-columns:240px 1fr; min-height:100dvh}
+
+    /* ==== Sidebar ==== */
+    .side{
+      position:sticky; top:0; height:100dvh; background:#ffffffcc; backdrop-filter:saturate(180%) blur(10px);
+      border-right:1px solid var(--line); display:flex; flex-direction:column; align-items:stretch; gap:12px; padding:16px 12px;
+      width:240px; overflow:auto
+    }
+    .brand{
+      display:flex; align-items:center; justify-content:center; padding:8px 10px; width:100%; text-decoration:none
+    }
+    .brand img{width:180px; height:auto; object-fit:contain}
+
+    .nav{display:flex; flex-direction:column; gap:8px; width:100%; margin-top:8px}
+
+    /* Einheitliches Button-Design */
+    .nav a{
+      --bg1:#fff; --bg2:#f9fbff;
+      display:flex; align-items:center; gap:12px;
+      text-decoration:none; color:var(--text);
+      padding:12px 14px; border-radius:14px; border:1px solid var(--line);
+      background:linear-gradient(180deg,var(--bg1),var(--bg2));
+      box-shadow:0 1px 0 rgba(15,23,42,.03);
+      transition:.18s ease transform, .18s ease box-shadow, .18s ease border-color, .18s ease background;
+    }
+    .nav a:hover{
+      transform:translateY(-1px);
+      border-color:#bfd7ff;
+      background:linear-gradient(180deg,#ffffff,#eef5ff);
+      box-shadow:0 6px 14px rgba(37,99,235,.12);
+    }
+    .nav a.active{
+      background:linear-gradient(180deg,#2563eb,#1d4ed8);
+      color:#fff; border-color:transparent;
+      box-shadow:0 10px 20px rgba(37,99,235,.25);
+    }
+    .nav a svg{
+      width:22px; height:22px; flex:0 0 22px;
+      opacity:.9
+    }
+    .nav a.active svg{ opacity:1; filter:brightness(10) }
+
+    /* ==== Geschützter Bereich (Gold-Styling) ==== */
+    .nav a.secure{
+      background:linear-gradient(180deg,var(--gold-bg),#fffef4);
+      border-color:#fde68a;
+      color:#854d0e;
+      font-weight:600;
+    }
+    .nav a.secure:hover{
+      background:linear-gradient(180deg,#fff5b1,#fffef4);
+      box-shadow:0 6px 14px rgba(250,204,21,.25);
+      border-color:var(--gold);
+      transform:translateY(-1px);
+    }
+    .nav a.secure.active{
+      background:linear-gradient(180deg,var(--gold),var(--gold-strong));
+      color:#fff;
+      border:none;
+      box-shadow:0 10px 22px rgba(250,204,21,.35);
+    }
+
+    header{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:16px; padding:20px 24px; border-bottom:1px solid var(--line); background:#fff; position:sticky; top:0; z-index:2
+    }
+    .topbar-left h1{ margin:0; font-size:1.6rem; letter-spacing:.02em }
+    .topbar-left p{ margin:6px 0 0; color:var(--muted); font-size:.98rem }
+    .product-logo{ height:56px; width:auto; object-fit:contain }
+
+    main{ padding:24px; display:grid; gap:20px; grid-template-columns:repeat(12,1fr) }
+    .card{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:24px; box-shadow:var(--shadow) }
+
+    footer{ padding:18px 24px; color:var(--muted); text-align:right }
+
+    @media (max-width: 960px){
+      .shell{ grid-template-columns:1fr }
+      .side{ position:relative; height:auto; width:100%; flex-direction:row; align-items:center; justify-content:space-between; padding:12px 16px }
+      .nav{ flex-direction:row; overflow-x:auto; padding-bottom:4px }
+      .nav a{ white-space:nowrap }
+      header{ position:relative }
+      main{ grid-template-columns:1fr; padding:20px }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="side" aria-label="Hauptnavigation">
+      <a class="brand" href="index.html" aria-label="Startseite">
+        <img src="Bilder/CliniConLogo.png" alt="CliniCon Logo" />
+      </a>
+
+      <nav class="nav" id="mainNav">
+        <a href="index.html" data-key="index">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>
+          <span>Start</span>
+        </a>
+        <a href="0_PpUG-Rechner.html" data-key="ppug">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <span>PPUG-Rechner</span>
+        </a>
+        <a href="0_PPBV-Berechnung.html" data-key="ppbv">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+          <span>PPBV-Berechnung</span>
+        </a>
+        <a href="0_Schichtbesetzung.html" data-key="schichten">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Schichtbesetzung</span>
+        </a>
+        <a href="0_Besetzungsbedarf.html" data-key="bedarf">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Besetzungsbedarf</span>
+        </a>
+        <a href="0_Perzentilen-Berechnung.html" data-key="perzentilen">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="3" x2="3" y2="21"/><line x1="21" y1="21" x2="3" y2="21"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>
+          <span>Perzentilen</span>
+        </a>
+
+        <!-- Geschützter Bereich (neu, goldfarben) -->
+        <a href="0_Login.html" class="secure" data-key="secure" aria-label="Geschützter Bereich">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <span>Geschützter Bereich</span>
+        </a>
+      </nav>
+    </aside>
+
+    <div>
+      <header>
+        <div class="topbar-left">
+          <h1 id="pageHeading">CliniCon – Das Krankenhaus-Management-Tool</h1>
+          <p id="pageSubheading">Smarte Werkzeuge für Planung, Qualität und Navigation im Klinikalltag.</p>
+        </div>
+        <img class="product-logo" src="Bilder/CliniConLogo.png" alt="CliniCon Logo" />
+      </header>
+
+      <main id="main" role="main">
+        <!-- PAGE CONTENT HERE -->
+      </main>
+
+      <footer>© CliniCon</footer>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const path = (location.pathname.split('/').pop() || '').toLowerCase();
+      const map = {
+        'index.html':'index',
+        '0_ppug-rechner.html':'ppug',
+        '0_ppbv-berechnung.html':'ppbv',
+        '0_schichtbesetzung.html':'schichten',
+        '0_besetzungsbedarf.html':'bedarf',
+        '0_perzentilen-berechnung.html':'perzentilen',
+        '1_unterstartseite.html':'secure'
+      };
+      const titles = {
+        index:['Start','Übersicht & Schnellzugriff'],
+        ppug:['PPUG-Rechner','Untergrenzen schnell prüfen'],
+        ppbv:['PPBV-Berechnung','Parameter steuern & vergleichen'],
+        schichten:['Schichtbesetzung','Planung & Visualisierung'],
+        bedarf:['Besetzungsbedarf','Anforderung je Tag & Schicht'],
+        perzentilen:['Perzentilen-Rechner','Wachstum verständlich darstellen'],
+        secure:['Geschützter Bereich','Zugriff für autorisierte Nutzer']
+      };
+      const key = map[path] || null;
+      if(key){
+        const link = document.querySelector('.nav a[data-key="'+key+'"]');
+        if(link) link.classList.add('active');
+        if(titles[key]){
+          document.getElementById('pageHeading').textContent = 'CliniCon – ' + titles[key][0];
+          document.getElementById('pageSubheading').textContent = titles[key][1];
+          document.title = 'CliniCon – ' + titles[key][0];
+        }
+      }
+    })();
+  </script>
+</body>
+</html>

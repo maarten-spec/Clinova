@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)file:///C:/Users/Maart/CliniCon_UI/Besetzungsbedarf.html -->
+<html lang="de"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CliniCon - Startseite</title>
+  <link rel="stylesheet" href="../assets/typography.css" />
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --panel:#ffffff;
+      --muted:#94a3b8;
+      --text:#0f172a;
+      --line:#e2e8f0;
+      --accent:#2563eb;
+      --accent-weak:#dbeafe;
+      --accent-strong:#1d4ed8;
+      --success:#16a34a;
+      --font-base:"Roboto","Go","Segoe UI","Helvetica",Arial,sans-serif;
+      --font-size-base:16px;
+      --line-height-base:1.6;
+      --font-size-h1:1.9rem;
+      --font-size-h2:1.5rem;
+      --font-size-h3:1.2rem;
+      --font-size-h4:1.05rem;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--font-base);
+      font-size:var(--font-size-base);
+      line-height:var(--line-height-base);
+      color:var(--text); background:var(--bg);
+    }
+    h1,h2,h3,h4{
+      margin:0 0 8px;
+      letter-spacing:.01em;
+      line-height:1.3;
+      color:var(--text);
+    }
+    h1{ font-size:var(--font-size-h1); }
+    h2{ font-size:var(--font-size-h2); }
+    h3{ font-size:var(--font-size-h3); }
+    h4{ font-size:var(--font-size-h4); }
+
+    .shell{display:grid; grid-template-columns:240px 1fr; min-height:100dvh}
+
+    .side{
+      position:sticky; top:0; height:100dvh; background:#ffffffcc; backdrop-filter:saturate(180%) blur(10px);
+      border-right:1px solid var(--line); display:flex; flex-direction:column; align-items:flex-start; gap:12px; padding:16px 12px;
+      width:240px; overflow:hidden
+    }
+
+    .brand{display:flex; align-items:center; gap:10px; padding:6px 8px; width:100%}
+    .brand img{width:180px; height:auto; object-fit:contain}
+    .brand .title{font-weight:700; letter-spacing:.2px; white-space:nowrap}
+
+    .nav{display:flex; flex-direction:column; gap:6px; width:100%; margin-top:8px}
+    .nav a{ display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--text);
+      padding:10px 12px; border-radius:12px; border:1px solid transparent; transition:.15s ease all }
+    .nav a:hover{ background:var(--accent-weak); border-color:#bfd7ff }
+    .nav a.active{ background:var(--accent); color:white }
+    .nav svg{ min-width:22px }
+    .nav a.nav-spaced{
+      margin-top:54px;
+      background:#fff7d6;
+      border-color:#ffe8a3;
+      color:#604a14;
+    }
+    .nav a.nav-spaced:hover{
+      background:#ffefbc;
+      border-color:#ffdc82;
+    }
+
+    header{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:16px; padding:20px 24px; border-bottom:1px solid var(--line); background:#fff; position:sticky; top:0; z-index:2
+    }
+    .topbar-left h1{ margin:0; font-size:var(--font-size-h1); letter-spacing:.01em }
+    .topbar-left p{ margin:6px 0 0; color:var(--muted); font-size:1rem }
+    .product-logo{ height:56px; width:auto; object-fit:contain }
+
+    main{
+      padding:24px;
+      display:grid;
+      gap:20px;
+      grid-template-columns:repeat(12,1fr);
+      margin:0 auto;
+      width:100%;
+    }
+    .card{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:24px; box-shadow:0 18px 36px rgba(15,23,42,.08) }
+
+    .hero{
+      grid-column:1/-1; display:grid; gap:14px; text-align:center; justify-items:center; padding:32px;
+      background:linear-gradient(145deg, rgba(37,99,235,0.18), rgba(255,255,255,0.9)); border:1px solid rgba(37,99,235,0.2)
+    }
+    .hero h2{ margin:0; font-size:var(--font-size-h2); color:#0f172a }
+    .hero p{ margin:0; max-width:560px; color:#1f2937 }
+    .hero .cta{
+      display:inline-flex; align-items:center; gap:10px; padding:12px 24px; border-radius:999px;
+      background:var(--accent); color:#fff; text-decoration:none; font-weight:600; transition:.15s ease all
+    }
+    .hero .cta:hover{ background:var(--accent-strong) }
+
+    .quick-actions{ grid-column:1/-1; display:grid; gap:18px }
+    .quick-actions h3{ margin:0; font-size:var(--font-size-h3) }
+    .quick-links{ display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)) }
+    .quick-links a{
+      display:flex; align-items:center; gap:12px; padding:14px 18px; border-radius:14px;
+      text-decoration:none; color:var(--text); border:1px solid var(--line); transition:.15s ease all
+    }
+    .quick-links a:hover{ border-color:var(--accent); box-shadow:0 14px 28px rgba(37,99,235,.16); transform:translateY(-2px) }
+    .quick-links svg{ color:var(--accent-strong) }
+
+    .status-grid{ grid-column:1/-1; display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)) }
+    .status-card{ display:grid; gap:8px }
+    .status-card strong{ font-size:2rem }
+    .status-card span{ color:var(--muted); font-size:.95rem }
+
+    .chat-card{ grid-column:1/-1; display:grid; gap:18px }
+    .chat-window{
+      display:grid; gap:18px; padding:0; border-radius:18px; overflow:hidden;
+      border:1px solid rgba(37,99,235,0.12); box-shadow:0 24px 48px rgba(15,23,42,0.12)
+    }
+    .chat-header{
+      display:flex; align-items:center; gap:12px; padding:18px 22px;
+      background:linear-gradient(120deg, rgba(37,99,235,0.15), rgba(37,99,235,0.05));
+      border-bottom:1px solid rgba(37,99,235,0.12)
+    }
+    .chat-badge{
+      width:44px; height:44px; border-radius:50%; background:var(--accent);
+      display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; letter-spacing:.04em
+    }
+    .chat-title{ display:flex; flex-direction:column; gap:2px }
+    .chat-title strong{ font-size:1.1rem }
+    .chat-title span{ color:var(--muted); font-size:.95rem }
+    .chat-thread{ padding:22px; display:flex; flex-direction:column; gap:14px; background:#fff }
+    .chat-message{ display:flex; gap:12px; align-items:flex-start }
+    .chat-message.user{ flex-direction:row-reverse }
+    .chat-message.user .chat-bubble{
+      background:#0f172a; color:#fff; box-shadow:0 12px 24px rgba(15,23,42,0.2)
+    }
+    .chat-avatar{
+      width:36px; height:36px; border-radius:10px; background:var(--accent-weak);
+      display:flex; align-items:center; justify-content:center; color:var(--accent-strong); font-weight:600
+    }
+    .chat-message.user .chat-avatar{ display:none }
+    .chat-bubble{
+      padding:12px 16px; border-radius:16px; background:rgba(148,163,184,0.16);
+      max-width:460px; line-height:1.5; border:1px solid rgba(148,163,184,0.2)
+    }
+    .chat-meta{ display:flex; align-items:center; gap:6px; color:var(--muted); font-size:.8rem; margin-top:6px }
+    .chat-input{
+      padding:16px 18px; border-top:1px solid rgba(148,163,184,0.18); background:#f8fafc;
+      display:flex; align-items:center; gap:12px
+    }
+    .chat-input input{
+      flex:1; border:1px solid var(--line); background:#fff; border-radius:12px; padding:12px 14px;
+      font-size:1rem; transition:.15s ease border-color, .15s ease box-shadow
+    }
+    .chat-input input:focus{
+      outline:none; border-color:var(--accent-strong); box-shadow:0 0 0 3px rgba(37,99,235,0.18)
+    }
+    .chat-send{
+      display:inline-flex; align-items:center; gap:8px; padding:12px 18px; border-radius:12px;
+      background:var(--accent); color:#fff; border:none; font-weight:600; cursor:pointer; transition:.15s ease background
+    }
+    .chat-send:hover{ background:var(--accent-strong) }
+
+    /* Schedule timeline */
+    .schedule-card{
+      grid-column:1/-1; display:grid; gap:18px;
+      max-width:1280px; width:100%; margin:0 auto;
+    }
+    .schedule-header{
+      display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+      gap:16px
+    }
+    .schedule-header h2{ margin:0; font-size:var(--font-size-h2) }
+    .schedule-header p{ margin:6px 0 0; color:var(--muted); max-width:520px }
+    .schedule-legend{ display:flex; align-items:center; gap:18px; flex-wrap:wrap }
+    .legend-item{
+      appearance:none; border:1px dashed rgba(37,99,235,0.38);
+      background:linear-gradient(180deg,#fff,#f8fafc); display:inline-flex; align-items:center; gap:8px;
+      font-size:.9rem; color:#0f172a; border-radius:12px; padding:8px 14px; cursor:grab; user-select:none;
+      font-family:inherit; font-weight:600; text-transform:none; margin:0;
+      box-shadow:0 8px 16px rgba(15,23,42,0.08); transition:.15s ease transform,.15s ease box-shadow,.15s ease border-color;
+    }
+    .legend-item:focus-visible{
+      outline:2px solid var(--accent); outline-offset:3px
+    }
+    .legend-item:active{ cursor:grabbing; transform:translateY(1px); box-shadow:0 4px 10px rgba(15,23,42,0.12) }
+    .legend-item .legend-swatch,
+    .legend-item .legend-label{ pointer-events:none }
+    body.is-shift-dragging .legend-item{ cursor:grabbing }
+    body.is-shift-dragging .day-track{ cursor:copy }
+    .legend-item .legend-label{ color:#1f2937; font-weight:600 }
+    .legend-swatch{
+      width:32px; height:14px; border-radius:8px; border:1px solid rgba(15,23,42,0.2);
+      background:#334155
+    }
+    .legend-swatch.frueh{ background:#b9d0ff }
+    .legend-swatch.spaet{ background:#a9e2cb }
+    .legend-swatch.nacht{ background:#f7b8b2 }
+    .legend-swatch.flex{ background:#cebaf6 }
+
+    .summary-card{
+      grid-column:1/-1; display:grid; gap:18px;
+      max-width:1280px; width:100%; margin:0 auto;
+    }
+    .summary-header h3{ margin:0; font-size:var(--font-size-h3) }
+    .summary-header p{ margin:4px 0 0; color:var(--muted); max-width:520px }
+    .summary-track{
+      display:grid; grid-template-columns:140px 1fr; align-items:center; gap:18px;
+    }
+    .summary-label{ font-weight:600; color:#1f2937 }
+    .summary-grid{
+      position:relative; display:grid; grid-template-columns:repeat(96, minmax(16px,1fr));
+      height:34px; border-radius:12px; border:1px solid var(--line); overflow:hidden;
+      background:linear-gradient(90deg, rgba(148,163,184,0.14) 1px, transparent 1px);
+      background-size:calc(100%/96) 100%;
+    }
+    .summary-grid[data-type="frueh"] .summary-bar{ background:rgba(68,114,196,0.22); color:#1f2937 }
+    .summary-grid[data-type="spaet"] .summary-bar{ background:rgba(12,148,136,0.22); color:#0f172a }
+    .summary-grid[data-type="nacht"] .summary-bar{ background:rgba(220,38,38,0.18); color:#111827 }
+    .summary-grid[data-type="flex"] .summary-bar{ background:rgba(124,58,237,0.18); color:#111827 }
+    .summary-bar{
+      grid-column:var(--start)/span var(--duration); display:flex; align-items:center; justify-content:center;
+      font-size:.75rem; font-weight:600; border-radius:10px; border:1px solid rgba(15,23,42,0.12);
+      box-shadow:0 8px 16px rgba(15,23,42,0.1); transition:background .15s ease;
+    }
+    .time-scale{
+      position:relative; display:grid; grid-template-columns:140px repeat(96, minmax(16px,1fr));
+      align-items:end; gap:0; min-height:54px; color:#1f2937; font-size:.78rem; letter-spacing:.02em;
+      padding:0 0 8px
+    }
+    .time-scale::after{
+      content:''; position:absolute; left:140px; right:0; top:20px; bottom:0;
+      background:repeating-linear-gradient(90deg, rgba(148,163,184,0.28) 0 1px, transparent 1px calc(100%/96));
+      pointer-events:none; opacity:.55
+    }
+    .time-label{
+      grid-column:1; grid-row:1; align-self:end; font-weight:700; text-transform:uppercase;
+      color:var(--muted); padding:0 0 8px 18px; position:relative; z-index:1
+    }
+    .time-hour{
+      position:relative; display:flex; align-items:flex-end; justify-content:flex-start;
+      font-weight:600; font-size:.82rem; padding-left:8px; padding-bottom:4px;
+      grid-row:1; grid-column:var(--start, 2) / span var(--span, 4); z-index:1
+    }
+    .time-hour::after{
+      content:''; position:absolute; left:0; bottom:-8px; width:1px; height:20px; background:#475569
+    }
+    .time-hour.end{
+      position:absolute; right:0; bottom:4px; padding-left:0; padding-right:6px;
+      justify-content:flex-end; font-weight:600; z-index:1
+    }
+    .time-hour.end::after{
+      content:''; position:absolute; right:0; bottom:-8px; width:1px; height:22px; background:#1f2937
+    }
+    .schedule-grid{
+      display:grid; gap:0;
+      border:1px solid var(--line); border-radius:14px; overflow:hidden;
+      background:#fff;
+      box-shadow:inset 0 1px 0 rgba(148,163,184,0.25)
+    }
+    .day-row{
+      display:grid; grid-template-columns:140px repeat(96, minmax(16px,1fr));
+      align-items:center; border-bottom:1px solid rgba(148,163,184,0.25);
+      min-height:64px; background-image:linear-gradient(90deg, rgba(148,163,184,0.18) 1px, transparent 1px);
+      background-size: calc((100% - 140px)/96) 100%
+    }
+    .day-row:last-child{ border-bottom:none }
+    .day-label{
+      display:flex; align-items:center; justify-content:flex-start; padding:0 20px;
+      font-weight:700; font-size:1.03rem; color:#0f172a;
+      background:linear-gradient(90deg, rgba(226,232,240,0.85), rgba(248,250,252,0.45));
+      border-right:1px solid rgba(148,163,184,0.45); position:relative; min-height:100%
+    }
+    .day-label::after{
+      content:''; position:absolute; right:0; top:12px; bottom:12px; width:1px; background:rgba(148,163,184,0.35)
+    }
+    .day-track{
+      display:grid; grid-template-columns:repeat(96, minmax(16px,1fr));
+      grid-auto-rows:48px; grid-auto-flow:row dense; row-gap:12px;
+      position:relative; padding:16px 10px
+    }
+    .day-track.drop-target::before{
+      content:''; position:absolute; inset:8px;
+      border:2px dashed rgba(37,99,235,0.35); border-radius:14px;
+      pointer-events:none;
+    }
+    .shift{
+      position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+      color:#0f172a; border-radius:12px; padding:12px 28px;
+      box-shadow:0 12px 22px rgba(15,23,42,0.14); border:1px solid rgba(15,23,42,0.12); cursor:grab;
+      grid-column:var(--start)/span var(--duration); user-select:none; touch-action:none;
+      transition:box-shadow .15s ease, transform .15s ease, filter .15s ease, background .2s ease
+    }
+    .shift:focus-visible{
+      outline:3px solid rgba(37,99,235,0.45); outline-offset:2px
+    }
+    .shift.dragging{
+      box-shadow:0 24px 48px rgba(37,99,235,0.22); transform:translateY(-2px); filter:brightness(1.06); cursor:grabbing
+    }
+    .shift .shift-label{ font-weight:600; letter-spacing:.01em; white-space:nowrap }
+    .shift .shift-time{ font-size:.8rem; color:rgba(15,23,42,.7); letter-spacing:.02em }
+    .shift-handle{
+      position:absolute; top:50%; width:16px; height:32px; margin-top:-16px;
+      background:transparent; display:flex; align-items:center; justify-content:center;
+      pointer-events:auto; cursor:col-resize
+    }
+    .shift-handle::after{
+      content:''; width:6px; height:26px; border-radius:3px; background:rgba(15,23,42,0.28);
+      box-shadow:0 2px 6px rgba(15,23,42,0.12)
+    }
+    .shift-handle.start{ left:0; transform:translateX(-120%) }
+    .shift-handle.end{ right:0; transform:translateX(120%) }
+
+    .shift[data-type="frueh"]{ background:linear-gradient(180deg,#d6e4ff 0%,#b9d0ff 100%) }
+    .shift[data-type="spaet"]{ background:linear-gradient(180deg,#d7f4ea 0%,#a9e2cb 100%) }
+    .shift[data-type="nacht"]{ background:linear-gradient(180deg,#fde2e0 0%,#f7b8b2 100%) }
+    .shift[data-type="flex"]{ background:linear-gradient(180deg,#e9dcff 0%,#cebaf6 100%) }
+
+    .model-card{ grid-column:1/-1; display:grid; gap:16px }
+    .model-card h3{ margin:0; font-size:var(--font-size-h3) }
+    .model-card p{ margin:0; color:var(--muted) }
+    .model-options{ display:grid; gap:12px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)) }
+    .model-option{
+      display:flex; gap:12px; align-items:flex-start; padding:14px 16px; border-radius:12px;
+      border:1px solid var(--line); background:#f8fafc; transition:.15s ease border-color, .15s ease box-shadow
+    }
+    .model-option:hover{ border-color:var(--accent); box-shadow:0 14px 28px rgba(37,99,235,0.12) }
+    .model-option input{ margin-top:4px }
+    .model-option strong{ display:block; font-size:1rem }
+    .model-option span{ color:var(--muted); font-size:.9rem }
+
+    footer{ padding:18px 24px; color:var(--muted); text-align:right }
+
+    @media (max-width: 960px){
+      .shell{ grid-template-columns:1fr }
+      .side{ position:relative; height:auto; width:100%; flex-direction:row; align-items:center; justify-content:space-between; padding:12px 16px }
+      .nav{ flex-direction:row; overflow-x:auto; padding-bottom:4px }
+      .nav a{ white-space:nowrap }
+      header{ position:relative }
+    }
+    @media (max-width: 720px){
+      main{ padding:20px; grid-template-columns:repeat(6,1fr) }
+      .hero{ padding:24px }
+    }
+    @media (max-width: 520px){
+      main{ grid-template-columns:repeat(4,1fr) }
+      header{ flex-direction:column; align-items:flex-start }
+      .product-name{ letter-spacing:.16em }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <a class="brand" href="file:///C:/Users/Maart/CliniCon_UI/Besetzungsbedarf.html#">
+        <img src="./CliniCon - Startseite_files/Log.jpg" alt="GFO Logo">
+        <span class="title" aria-hidden="true"></span>
+      </a>
+
+      <nav class="nav">
+        <a class="active" href="file:///C:/Users/Maart/CliniCon_UI/index.html">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"></path></svg>
+          <span>Start</span>
+        </a>        <a href="file:///C:/Users/Maart/CliniCon_UI/klinikverbund.html">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Klinikverbund</span>
+        </a>        <a href="file:///C:/Users/Maart/CliniCon_UI/Benchmark.html">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="M7 13l3 3 7-7"></path></svg>
+          <span>Benchmark</span>
+        </a>        <a href="file:///C:/Users/Maart/CliniCon_UI/Besetzungsbedarf.html#">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"></path></svg>
+          <span>Stellenplan</span>
+        </a>        <a href="file:///C:/Users/Maart/CliniCon_UI/Besetzungsbedarf.html#">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M10 8h4v8h-4z"></path></svg>
+          <span>Stellenplan&nbsp;Berechnung</span>
+        </a>        <a href="file:///C:/Users/Maart/CliniCon_UI/Besetzungsbedarf.html#">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-6 8 6v12"></path><path d="M9 21V12h6v9"></path></svg>
+          <span>Station&nbsp;/ Abteilung</span>
+        </a>        <a class="nav-spaced" href="file:///C:/Users/Maart/CliniCon_UI/Fachabteilungen.html">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-6 8 6v12"></path><path d="M9 21V12h6v9"></path></svg>
+          <span>Fachabteilungen&nbsp;GFO</span>
+        </a>
+      </nav>
+    </aside>
+
+    <div>
+      <header>
+        <div class="topbar-left">
+          <h1>Startseite</h1>
+          <p>Willkommen im digitalen Klinikcockpit</p>
+        </div>
+        <img class="product-logo" src="./CliniCon - Startseite_files/CliniConLogo.png" alt="CliniCon Logo">
+      </header>
+
+      <main>
+        <section class="hero card">
+          <h2>Besetzungsbedarf planen</h2>
+          <p>Stellen Sie die Dienstzeiten Ihres Teams transparent dar und passen Sie die Belegung flexibel an. Nutzen Sie die Zeitleisten, um Regeldienste und Übergaben für jeden Wochentag zu veranschaulichen.</p>
+          <a class="cta" href="file:///C:/Users/Maart/CliniCon_UI/Besetzungsbedarf.html#">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5l7 7-7 7"></path></svg>
+            <span>Dienstplan exportieren</span>
+          </a>
+        </section>
+
+        <section class="card schedule-card">
+          <div class="schedule-header">
+            <div>
+              <h2>Regeldienst-Übersicht</h2>
+              <p>Die Timeline zeigt eine 24-Stunden-Skala von 06:00 Uhr bis zum Folgetag 06:00 Uhr. Verschieben oder skalieren Sie die Balken für jeden Wochentag in feinen 15-Minuten-Schritten.</p>
+            </div>
+            <div class="schedule-legend">
+              <button type="button" class="legend-item" data-type="frueh" aria-label="Frühdienst hinzufügen" draggable="true">
+                <span class="legend-swatch frueh"></span>
+                <span class="legend-label">Frühdienst</span>
+              </button>
+              <button type="button" class="legend-item" data-type="spaet" aria-label="Spätdienst hinzufügen" draggable="true">
+                <span class="legend-swatch spaet"></span>
+                <span class="legend-label">Spätdienst</span>
+              </button>
+              <button type="button" class="legend-item" data-type="nacht" aria-label="Nachtdienst hinzufügen" draggable="true">
+                <span class="legend-swatch nacht"></span>
+                <span class="legend-label">Nachtdienst</span>
+              </button>
+              <button type="button" class="legend-item" data-type="flex" aria-label="Flexdienst hinzufügen" draggable="true">
+                <span class="legend-swatch flex"></span>
+                <span class="legend-label">Flexdienst</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="time-scale time-scale-top">
+            <div class="time-label">Zeit</div>
+            <div class="time-hour" style="--start:2;">06:00</div>
+            <div class="time-hour" style="--start:6;">07:00</div>
+            <div class="time-hour" style="--start:10;">08:00</div>
+            <div class="time-hour" style="--start:14;">09:00</div>
+            <div class="time-hour" style="--start:18;">10:00</div>
+            <div class="time-hour" style="--start:22;">11:00</div>
+            <div class="time-hour" style="--start:26;">12:00</div>
+            <div class="time-hour" style="--start:30;">13:00</div>
+            <div class="time-hour" style="--start:34;">14:00</div>
+            <div class="time-hour" style="--start:38;">15:00</div>
+            <div class="time-hour" style="--start:42;">16:00</div>
+            <div class="time-hour" style="--start:46;">17:00</div>
+            <div class="time-hour" style="--start:50;">18:00</div>
+            <div class="time-hour" style="--start:54;">19:00</div>
+            <div class="time-hour" style="--start:58;">20:00</div>
+            <div class="time-hour" style="--start:62;">21:00</div>
+            <div class="time-hour" style="--start:66;">22:00</div>
+            <div class="time-hour" style="--start:70;">23:00</div>
+            <div class="time-hour" style="--start:74;">00:00</div>
+            <div class="time-hour" style="--start:78;">01:00</div>
+            <div class="time-hour" style="--start:82;">02:00</div>
+            <div class="time-hour" style="--start:86;">03:00</div>
+            <div class="time-hour" style="--start:90;">04:00</div>
+            <div class="time-hour" style="--start:94;">05:00</div>
+            <div class="time-hour end">06:00</div>
+          </div>
+
+          <div class="schedule-grid"><div class="day-row" data-day="Montag – Freitag"><div class="day-label">Montag – Freitag</div><div class="day-track" data-day="Montag – Freitag"><div class="shift" data-id="shift-38" data-type="frueh" data-name="Frühdienst" data-start="1" data-duration="32" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="1" aria-valuemax="65" aria-valuenow="1" aria-label="Frühdienst (Montag – Freitag)" style="--start: 1; --duration: 32;"><div class="shift-handle start"></div><span class="shift-label">Frühdienst</span><span class="shift-time">06:00 – 14:00</span><div class="shift-handle end"></div></div><div class="shift" data-id="shift-39" data-type="frueh" data-name="Frühdienst" data-start="5" data-duration="32" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="1" aria-valuemax="65" aria-valuenow="5" aria-label="Frühdienst (Montag – Freitag)" style="--start: 5; --duration: 32;"><div class="shift-handle start"></div><span class="shift-label">Frühdienst</span><span class="shift-time">07:00 – 15:00</span><div class="shift-handle end"></div></div><div class="shift" data-id="shift-40" data-type="frueh" data-name="Frühdienst" data-start="9" data-duration="32" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="1" aria-valuemax="65" aria-valuenow="9" aria-label="Frühdienst (Montag – Freitag)" style="--start: 9; --duration: 32;"><div class="shift-handle start"></div><span class="shift-label">Frühdienst</span><span class="shift-time">08:00 – 16:00</span><div class="shift-handle end"></div></div><div class="shift" data-id="shift-41" data-type="spaet" data-name="Spätdienst" data-start="33" data-duration="28" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="1" aria-valuemax="69" aria-valuenow="33" aria-label="Spätdienst (Montag – Freitag)" style="--start: 33; --duration: 28;"><div class="shift-handle start"></div><span class="shift-label">Spätdienst</span><span class="shift-time">14:00 – 21:00</span><div class="shift-handle end"></div></div><div class="shift" data-id="shift-42" data-type="spaet" data-name="Spätdienst" data-start="37" data-duration="28" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="1" aria-valuemax="69" aria-valuenow="37" aria-label="Spätdienst (Montag – Freitag)" style="--start: 37; --duration: 28;"><div class="shift-handle start"></div><span class="shift-label">Spätdienst</span><span class="shift-time">15:00 – 22:00</span><div class="shift-handle end"></div></div><div class="shift" data-id="shift-43" data-type="nacht" data-name="Nachtdienst" data-start="65" data-duration="32" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="1" aria-valuemax="65" aria-valuenow="65" aria-label="Nachtdienst (Montag – Freitag)" style="--start: 65; --duration: 32;"><div class="shift-handle start"></div><span class="shift-label">Nachtdienst</span><span class="shift-time">22:00 – 06:00</span><div class="shift-handle end"></div></div></div></div><div class="day-row" data-day="Samstag &amp; Sonntag"><div class="day-label">Samstag &amp; Sonntag</div><div class="day-track" data-day="Samstag &amp; Sonntag"><div class="shift" data-id="shift-44" data-type="frueh" data-name="Frühdienst" data-start="1" data-duration="32" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="1" aria-valuemax="65" aria-valuenow="1" aria-label="Frühdienst (Samstag &amp; Sonntag)" style="--start: 1; --duration: 32;"><div class="shift-handle start"></div><span class="shift-label">Frühdienst</span><span class="shift-time">06:00 – 14:00</span><div class="shift-handle end"></div></div><div class="shift" data-id="shift-45" data-type="spaet" data-name="Spätdienst" data-start="33" data-duration="28" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="1" aria-valuemax="69" aria-valuenow="33" aria-label="Spätdienst (Samstag &amp; Sonntag)" style="--start: 33; --duration: 28;"><div class="shift-handle start"></div><span class="shift-label">Spätdienst</span><span class="shift-time">14:00 – 21:00</span><div class="shift-handle end"></div></div><div class="shift" data-id="shift-46" data-type="nacht" data-name="Nachtdienst" data-start="65" data-duration="32" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="1" aria-valuemax="65" aria-valuenow="65" aria-label="Nachtdienst (Samstag &amp; Sonntag)" style="--start: 65; --duration: 32;"><div class="shift-handle start"></div><span class="shift-label">Nachtdienst</span><span class="shift-time">22:00 – 06:00</span><div class="shift-handle end"></div></div></div></div></div>
+
+        </section>
+
+        <section class="card summary-card">
+          <div class="summary-header">
+            <h3>Besetzungsdichte je Viertelstunde</h3>
+            <p>Zeigt, wie viele Teammitglieder pro Diensttyp in jedem 15-Minuten-Intervall gleichzeitig eingeplant sind.</p>
+          </div>
+          <div class="summary-track">
+            <span class="summary-label">Frühdienst</span>
+            <div class="summary-grid" data-type="frueh"><div class="summary-bar" title="06:00 – 07:00: 2 Frühdienste" style="--start: 1; --duration: 4;">2</div><div class="summary-bar" title="07:00 – 08:00: 3 Frühdienste" style="--start: 5; --duration: 4;">3</div><div class="summary-bar" title="08:00 – 14:00: 4 Frühdienste" style="--start: 9; --duration: 24;">4</div><div class="summary-bar" title="14:00 – 15:00: 2 Frühdienste" style="--start: 33; --duration: 4;">2</div><div class="summary-bar" title="15:00 – 16:00: 1 Frühdienste" style="--start: 37; --duration: 4;">1</div></div>
+          </div>
+          <div class="summary-track">
+            <span class="summary-label">Spätdienst</span>
+            <div class="summary-grid" data-type="spaet"><div class="summary-bar" title="14:00 – 15:00: 2 Spätdienste" style="--start: 33; --duration: 4;">2</div><div class="summary-bar" title="15:00 – 21:00: 3 Spätdienste" style="--start: 37; --duration: 24;">3</div><div class="summary-bar" title="21:00 – 22:00: 1 Spätdienste" style="--start: 61; --duration: 4;">1</div></div>
+          </div>
+          <div class="summary-track">
+            <span class="summary-label">Nachtdienst</span>
+            <div class="summary-grid" data-type="nacht"><div class="summary-bar" title="22:00 – 06:00: 2 Nachtdienste" style="--start: 65; --duration: 32;">2</div></div>
+          </div>
+          <div class="summary-track">
+            <span class="summary-label">Flexdienst</span>
+            <div class="summary-grid" data-type="flex"></div>
+          </div>
+        </section>
+
+        <section class="card model-card">
+          <div>
+            <h3>Dienstmodelle vergleichen</h3>
+            <p>Nutzen Sie die Modelle zur schnellen Umschaltung Ihrer Besetzungsvariante.</p>
+          </div>
+          <div class="model-options">
+            <label class="model-option">
+              <input type="radio" name="dienstmodell" value="standard" checked="">
+              <div>
+                <strong>Standard MO–SO</strong>
+                <span>Ein einheitliches Tagesbild für Montag bis Sonntag.</span>
+              </div>
+            </label>
+            <label class="model-option">
+              <input type="radio" name="dienstmodell" value="monfr">
+              <div>
+                <strong>MO–FR &amp; Wochenende</strong>
+                <span>Arbeitswoche und Wochenende getrennt darstellen.</span>
+              </div>
+            </label>
+            <label class="model-option">
+              <input type="radio" name="dienstmodell" value="individuell">
+              <div>
+                <strong>Individuelle Planung</strong>
+                <span>Alle Wochentage einzeln bearbeiten und vergleichen.</span>
+              </div>
+            </label>
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        CliniCon – GFO Kliniken Verbund
+      </footer>
+    </div>
+  </div>
+    <script>
+    (function(){
+      const SHIFT_COLUMNS = 96;
+      const TIMELINE_START_MINUTES = 6 * 60;
+      const MINUTES_PER_COLUMN = 15;
+      const MIN_DURATION = 1;
+      const scheduleGrid = document.querySelector('.schedule-grid');
+      const legendItems = document.querySelectorAll('.legend-item[data-type]');
+      const modelInputs = document.querySelectorAll('.model-option input[name="dienstmodell"]');
+      const summaryGrids = {
+        frueh: document.querySelector('.summary-grid[data-type="frueh"]'),
+        spaet: document.querySelector('.summary-grid[data-type="spaet"]'),
+        nacht: document.querySelector('.summary-grid[data-type="nacht"]'),
+        flex: document.querySelector('.summary-grid[data-type="flex"]')
+      };
+      const summaryTypes = Object.keys(summaryGrids).filter(type => summaryGrids[type]);
+      const summaryLabels = {
+        frueh:'Fr\u00FChdienste',
+        spaet:'Sp\u00E4tdienste',
+        nacht:'Nachtdienste',
+        flex:'Flexdienste'
+      };
+      const legendDefaults = {
+        frueh:{ label:'Fr\u00FChdienst', duration:32 },
+        spaet:{ label:'Sp\u00E4tdienst', duration:28 },
+        nacht:{ label:'Nachtdienst', duration:32 },
+        flex:{ label:'Flexdienst', duration:24 }
+      };
+
+      let summaryDirty = false;
+      let shiftCounter = 0;
+      let currentMode = getInitialMode();
+      const shiftMap = new Map();
+      const scheduleModels = {
+        individuell:{},
+        standard:{},
+        monfr:{}
+      };
+      const dayOrderTemplates = {
+        individuell:[],
+        standard:['Montag \u2013 Sonntag'],
+        monfr:['Montag \u2013 Freitag','Samstag & Sonntag']
+      };
+
+      const pointerState = {
+        shift:null,
+        pointerId:null,
+        action:'move',
+        startX:0,
+        startStart:0,
+        startDuration:0,
+        grabOffset:0,
+        columnWidth:0,
+        trackRect:null
+      };
+
+      parseInitialSchedule();
+      buildPresetModels();
+      setupLegendDnD();
+      setupModelSwitching();
+      renderSchedule(currentMode);
+      requestSummaryUpdate();
+
+      function getInitialMode(){
+        const checked = document.querySelector('.model-option input[name="dienstmodell"]:checked');
+        return checked ? checked.value : 'standard';
+      }
+
+      function parseInitialSchedule(){
+        const rows = Array.from(scheduleGrid.querySelectorAll('.day-row'));
+        rows.forEach(row => {
+          const day = row.dataset.day || row.querySelector('.day-label')?.textContent.trim() || 'Tag';
+          if(!dayOrderTemplates.individuell.includes(day)){
+            dayOrderTemplates.individuell.push(day);
+          }
+          const shiftEls = Array.from(row.querySelectorAll('.shift'));
+          scheduleModels.individuell[day] = shiftEls.map(el => {
+            const type = el.dataset.type || 'frueh';
+            const defaults = legendDefaults[type] || { label:'Dienst', duration:24 };
+            const label = el.querySelector('.shift-label')?.textContent.trim() || defaults.label;
+            const start = parseInt(el.dataset.start, 10) || 1;
+            const duration = parseInt(el.dataset.duration, 10) || defaults.duration;
+            return createShiftObject(day, type, label, start, duration);
+          });
+        });
+        scheduleGrid.innerHTML = '';
+      }
+
+      function buildPresetModels(){
+        const baseDay = dayOrderTemplates.individuell[0];
+        const weekendDay = scheduleModels.individuell['Samstag'] ? 'Samstag' :
+                           scheduleModels.individuell['Sonntag'] ? 'Sonntag' : baseDay;
+        scheduleModels.standard['Montag \u2013 Sonntag'] = cloneShiftList(scheduleModels.individuell[baseDay] || [], 'Montag \u2013 Sonntag');
+        scheduleModels.monfr['Montag \u2013 Freitag'] = cloneShiftList(scheduleModels.individuell[baseDay] || [], 'Montag \u2013 Freitag');
+        scheduleModels.monfr['Samstag & Sonntag'] = cloneShiftList(scheduleModels.individuell[weekendDay] || [], 'Samstag & Sonntag');
+      }
+
+      function setupLegendDnD(){
+        legendItems.forEach(item => {
+          item.setAttribute('draggable', 'true');
+          item.addEventListener('dragstart', onLegendDragStart);
+          item.addEventListener('dragend', onLegendDragEnd);
+          item.addEventListener('keydown', event => {
+            if(event.key === 'Enter' || event.key === ' '){
+              event.preventDefault();
+              quickAddShift(item.dataset.type);
+            }
+          });
+        });
+      }
+
+      function onLegendDragStart(event){
+        const type = event.currentTarget.dataset.type;
+        const defaults = legendDefaults[type];
+        if(!defaults) return;
+        const payload = JSON.stringify({ type, duration:defaults.duration, label:defaults.label });
+        event.dataTransfer.effectAllowed = 'copy';
+        event.dataTransfer.setData('application/json', payload);
+        event.dataTransfer.setData('text/plain', payload);
+        document.body.classList.add('is-shift-dragging');
+      }
+
+      function onLegendDragEnd(){
+        document.body.classList.remove('is-shift-dragging');
+      }
+
+      function quickAddShift(type){
+        const defaults = legendDefaults[type];
+        if(!defaults) return;
+        const targetDay = getCurrentDayOrder()[0];
+        if(!targetDay) return;
+        const modelData = scheduleModels[currentMode];
+        if(!modelData[targetDay]){
+          modelData[targetDay] = [];
+        }
+        modelData[targetDay].push(createShiftObject(targetDay, type, defaults.label, 1, defaults.duration));
+        renderSchedule(currentMode);
+        requestSummaryUpdate();
+      }
+
+      function setupModelSwitching(){
+        modelInputs.forEach(input => {
+          input.addEventListener('change', () => {
+            if(!input.checked) return;
+            currentMode = input.value;
+            if(!scheduleModels[currentMode]){
+              scheduleModels[currentMode] = {};
+            }
+            renderSchedule(currentMode);
+            requestSummaryUpdate();
+          });
+        });
+      }
+
+      function renderSchedule(mode){
+        const modelData = scheduleModels[mode];
+        if(!modelData) return;
+        sortModelRows(modelData);
+        shiftMap.clear();
+        scheduleGrid.innerHTML = '';
+
+        const order = getCurrentDayOrder();
+        order.forEach(dayLabel => {
+          if(!modelData[dayLabel]){
+            modelData[dayLabel] = [];
+          }
+        });
+
+        order.forEach(dayLabel => {
+          const row = document.createElement('div');
+          row.className = 'day-row';
+          row.dataset.day = dayLabel;
+
+          const label = document.createElement('div');
+          label.className = 'day-label';
+          label.textContent = dayLabel;
+          row.appendChild(label);
+
+          const track = document.createElement('div');
+          track.className = 'day-track';
+          track.dataset.day = dayLabel;
+          row.appendChild(track);
+          attachTrackDnD(track);
+
+          (modelData[dayLabel] || []).forEach(shiftObj => {
+            shiftObj.day = dayLabel;
+            const shiftEl = createShiftElement(shiftObj);
+            track.appendChild(shiftEl);
+          });
+
+          scheduleGrid.appendChild(row);
+        });
+
+        Array.from(scheduleGrid.querySelectorAll('.day-track .shift')).forEach(attachShiftHandlers);
+      }
+
+      function attachTrackDnD(track){
+        track.addEventListener('dragenter', event => {
+          const data = parseDragData(event);
+          if(!data) return;
+          event.preventDefault();
+          track.classList.add('drop-target');
+        });
+        track.addEventListener('dragover', event => {
+          const data = parseDragData(event);
+          if(!data) return;
+          event.preventDefault();
+          event.dataTransfer.dropEffect = 'copy';
+        });
+        track.addEventListener('dragleave', () => {
+          track.classList.remove('drop-target');
+        });
+        track.addEventListener('drop', event => {
+          const data = parseDragData(event);
+          track.classList.remove('drop-target');
+          if(!data) return;
+          event.preventDefault();
+          document.body.classList.remove('is-shift-dragging');
+          const defaults = legendDefaults[data.type];
+          if(!defaults) return;
+          const rect = track.getBoundingClientRect();
+          const offsetX = event.clientX - rect.left;
+          const columnWidth = rect.width / SHIFT_COLUMNS;
+          let start = Math.round(offsetX / columnWidth) + 1;
+          if(!Number.isFinite(start)) start = 1;
+          const maxStart = SHIFT_COLUMNS - defaults.duration + 1;
+          start = Math.max(1, Math.min(maxStart, start));
+          const dayLabel = track.dataset.day;
+          const modelData = scheduleModels[currentMode];
+          if(!modelData[dayLabel]){
+            modelData[dayLabel] = [];
+          }
+          modelData[dayLabel].push(createShiftObject(dayLabel, data.type, defaults.label, start, defaults.duration));
+          renderSchedule(currentMode);
+          requestSummaryUpdate();
+        });
+      }
+
+      function parseDragData(event){
+        if(!event.dataTransfer) return null;
+        const raw = event.dataTransfer.getData('application/json') || event.dataTransfer.getData('text/plain');
+        if(!raw) return null;
+        try{
+          const payload = JSON.parse(raw);
+          if(!payload.type) return null;
+          return payload;
+        }catch{
+          return null;
+        }
+      }
+
+      function attachShiftHandlers(shift){
+        shift.addEventListener('pointerdown', onPointerDown);
+        shift.addEventListener('keydown', onKeyDown);
+      }
+
+      function createShiftElement(shiftObj){
+        shiftMap.set(shiftObj.id, shiftObj);
+        const shift = document.createElement('div');
+        shift.className = 'shift';
+        shift.dataset.id = shiftObj.id;
+        shift.dataset.type = shiftObj.type;
+        shift.dataset.name = shiftObj.label;
+        shift.dataset.start = String(shiftObj.start);
+        shift.dataset.duration = String(shiftObj.duration);
+        shift.setAttribute('tabindex', '0');
+        shift.setAttribute('role', 'slider');
+        shift.setAttribute('aria-orientation', 'horizontal');
+        shift.setAttribute('aria-valuemin', '1');
+        shift.setAttribute('aria-valuemax', String(SHIFT_COLUMNS - shiftObj.duration + 1));
+        shift.setAttribute('aria-valuenow', String(shiftObj.start));
+        shift.setAttribute('aria-label', `${shiftObj.label} (${shiftObj.day})`);
+        shift.style.setProperty('--start', shiftObj.start);
+        shift.style.setProperty('--duration', shiftObj.duration);
+
+        const handleStart = document.createElement('div');
+        handleStart.className = 'shift-handle start';
+        shift.appendChild(handleStart);
+
+        const label = document.createElement('span');
+        label.className = 'shift-label';
+        label.textContent = shiftObj.label;
+        shift.appendChild(label);
+
+        const time = document.createElement('span');
+        time.className = 'shift-time';
+        time.textContent = formatShiftTime(shiftObj.start, shiftObj.duration);
+        shift.appendChild(time);
+
+        const handleEnd = document.createElement('div');
+        handleEnd.className = 'shift-handle end';
+        shift.appendChild(handleEnd);
+
+        return shift;
+      }
+
+      function createShiftObject(day, type, label, start, duration){
+        return {
+          id: `shift-${++shiftCounter}`,
+          day,
+          type,
+          label,
+          start,
+          duration
+        };
+      }
+
+      function cloneShiftList(list, dayLabel){
+        return (list || []).map(item => ({
+          id: `shift-${++shiftCounter}`,
+          day: dayLabel,
+          type: item.type,
+          label: item.label,
+          start: item.start,
+          duration: item.duration
+        }));
+      }
+
+      function getCurrentDayOrder(){
+        const baseOrder = dayOrderTemplates[currentMode] ? [...dayOrderTemplates[currentMode]] : [];
+        const modelData = scheduleModels[currentMode];
+        Object.keys(modelData).forEach(key => {
+          if(!baseOrder.includes(key)){
+            baseOrder.push(key);
+          }
+        });
+        return baseOrder;
+      }
+
+      function sortModelRows(modelData){
+        Object.keys(modelData).forEach(day => {
+          modelData[day].sort((a,b) => a.start - b.start);
+        });
+      }
+
+      function onPointerDown(event){
+        if(event.button !== 0) return;
+        const shift = event.currentTarget;
+        const shiftObj = shiftMap.get(shift.dataset.id);
+        if(!shiftObj) return;
+
+        pointerState.shift = shift;
+        pointerState.pointerId = event.pointerId;
+        pointerState.trackRect = shift.parentElement.getBoundingClientRect();
+        pointerState.columnWidth = pointerState.trackRect.width / SHIFT_COLUMNS;
+        pointerState.startX = event.clientX;
+        pointerState.startStart = shiftObj.start;
+        pointerState.startDuration = shiftObj.duration;
+        const target = event.target;
+        pointerState.grabOffset = 0;
+        if(target.classList.contains('shift-handle') && target.classList.contains('start')){
+          pointerState.action = 'resize-start';
+        }else if(target.classList.contains('shift-handle') && target.classList.contains('end')){
+          pointerState.action = 'resize-end';
+        }else{
+          pointerState.action = 'move';
+          const rect = shift.getBoundingClientRect();
+          pointerState.grabOffset = Math.min(Math.max(event.clientX - rect.left, 0), rect.width);
+        }
+        shift.setPointerCapture(event.pointerId);
+        shift.classList.add('dragging');
+        shift.addEventListener('pointermove', onPointerMove);
+        shift.addEventListener('pointerup', onPointerUp);
+        shift.addEventListener('pointercancel', onPointerUp);
+      }
+
+      function onPointerMove(event){
+        const shift = pointerState.shift;
+        if(!shift || event.pointerId !== pointerState.pointerId) return;
+        if(pointerState.action === 'move'){
+          const leftEdge = event.clientX - pointerState.grabOffset;
+          const offsetInTrack = leftEdge - pointerState.trackRect.left;
+          const startCandidate = Math.round(offsetInTrack / pointerState.columnWidth) + 1;
+          const actualStart = updateShiftPosition(shift, startCandidate);
+          pointerState.startStart = actualStart;
+        }else if(pointerState.action === 'resize-start'){
+          const deltaColumns = (event.clientX - pointerState.startX) / pointerState.columnWidth;
+          const desiredStart = pointerState.startStart + Math.round(deltaColumns);
+          const endLine = pointerState.startStart + pointerState.startDuration;
+          const clampedStart = Math.min(Math.max(desiredStart, 1), endLine - MIN_DURATION);
+          const newDuration = endLine - clampedStart;
+          const actualStart = updateShiftPosition(shift, clampedStart);
+          const actualDuration = updateShiftDuration(shift, newDuration);
+          pointerState.startStart = actualStart;
+          pointerState.startDuration = actualDuration;
+          pointerState.startX = event.clientX;
+        }else if(pointerState.action === 'resize-end'){
+          const deltaColumns = (event.clientX - pointerState.startX) / pointerState.columnWidth;
+          const desiredDuration = pointerState.startDuration + Math.round(deltaColumns);
+          const actualDuration = updateShiftDuration(shift, desiredDuration);
+          pointerState.startDuration = actualDuration;
+          pointerState.startX = event.clientX;
+        }
+      }
+
+      function onPointerUp(event){
+        const shift = pointerState.shift;
+        if(!shift || event.pointerId !== pointerState.pointerId) return;
+        shift.releasePointerCapture(event.pointerId);
+        shift.classList.remove('dragging');
+        shift.removeEventListener('pointermove', onPointerMove);
+        shift.removeEventListener('pointerup', onPointerUp);
+        shift.removeEventListener('pointercancel', onPointerUp);
+        pointerState.shift = null;
+        pointerState.pointerId = null;
+        pointerState.action = 'move';
+        pointerState.grabOffset = 0;
+        requestSummaryUpdate();
+      }
+
+      function onKeyDown(event){
+        const shift = event.currentTarget;
+        const currentStart = parseInt(shift.dataset.start, 10);
+        const currentDuration = parseInt(shift.dataset.duration, 10);
+        if(event.altKey && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')){
+          event.preventDefault();
+          const delta = event.key === 'ArrowLeft' ? -1 : 1;
+          updateShiftDuration(shift, currentDuration + delta);
+          return;
+        }
+        if(event.key === 'ArrowLeft' || event.key === 'ArrowRight'){
+          event.preventDefault();
+          const delta = event.key === 'ArrowLeft' ? -1 : 1;
+          updateShiftPosition(shift, currentStart + delta);
+        }
+      }
+
+      function updateShiftPosition(shift, rawStart){
+        const duration = parseInt(shift.dataset.duration, 10);
+        const minStart = 1;
+        const maxStart = SHIFT_COLUMNS - duration + 1;
+        const clamped = Math.min(Math.max(rawStart, minStart), maxStart);
+        shift.dataset.start = String(clamped);
+        shift.style.setProperty('--start', clamped);
+        shift.setAttribute('aria-valuenow', String(clamped));
+        shift.setAttribute('aria-valuemax', String(SHIFT_COLUMNS - duration + 1));
+        updateTimeLabel(shift, clamped, duration);
+        const shiftObj = shiftMap.get(shift.dataset.id);
+        if(shiftObj){
+          shiftObj.start = clamped;
+          sortRow(shiftObj.day);
+        }
+        requestSummaryUpdate();
+        return clamped;
+      }
+
+      function updateShiftDuration(shift, rawDuration){
+        const start = parseInt(shift.dataset.start, 10);
+        const minDuration = MIN_DURATION;
+        const maxDuration = SHIFT_COLUMNS - start + 1;
+        const clamped = Math.min(Math.max(rawDuration, minDuration), maxDuration);
+        shift.dataset.duration = String(clamped);
+        shift.style.setProperty('--duration', clamped);
+        shift.setAttribute('aria-valuemax', String(SHIFT_COLUMNS - clamped + 1));
+        updateTimeLabel(shift, start, clamped);
+        const shiftObj = shiftMap.get(shift.dataset.id);
+        if(shiftObj){
+          shiftObj.duration = clamped;
+          sortRow(shiftObj.day);
+        }
+        requestSummaryUpdate();
+        return clamped;
+      }
+
+      function sortRow(dayLabel){
+        const modelData = scheduleModels[currentMode];
+        if(modelData && modelData[dayLabel]){
+          modelData[dayLabel].sort((a,b) => a.start - b.start);
+        }
+      }
+
+      function updateTimeLabel(shift, startColumn, duration){
+        const label = shift.querySelector('.shift-time');
+        if(!label) return;
+        label.textContent = formatShiftTime(startColumn, duration);
+      }
+
+      function formatShiftTime(startColumn, duration){
+        const startMinutes = TIMELINE_START_MINUTES + (startColumn - 1) * MINUTES_PER_COLUMN;
+        const endMinutes = startMinutes + duration * MINUTES_PER_COLUMN;
+        return `${formatTime(startMinutes)} \u2013 ${formatTime(endMinutes)}`;
+      }
+
+      function requestSummaryUpdate(){
+        if(!summaryTypes.length) return;
+        if(summaryDirty) return;
+        summaryDirty = true;
+        requestAnimationFrame(() => {
+          summaryDirty = false;
+          refreshSummary();
+        });
+      }
+
+      function refreshSummary(){
+        const totals = {};
+        summaryTypes.forEach(type => {
+          totals[type] = new Array(SHIFT_COLUMNS).fill(0);
+        });
+        const modelData = scheduleModels[currentMode] || {};
+        Object.values(modelData).forEach(shifts => {
+          shifts.forEach(shift => {
+            const arr = totals[shift.type];
+            if(!arr) return;
+            const startIdx = shift.start - 1;
+            for(let i = 0; i < shift.duration; i++){
+              const idx = startIdx + i;
+              if(idx >= 0 && idx < SHIFT_COLUMNS){
+                arr[idx] += 1;
+              }
+            }
+          });
+        });
+        summaryTypes.forEach(type => {
+          const grid = summaryGrids[type];
+          if(!grid) return;
+          grid.innerHTML = '';
+          const counts = totals[type];
+          let i = 0;
+          while(i < SHIFT_COLUMNS){
+            const value = counts[i];
+            if(value > 0){
+              let span = 1;
+              while(i + span < SHIFT_COLUMNS && counts[i + span] === value) span++;
+              const bar = document.createElement('div');
+              bar.className = 'summary-bar';
+              bar.style.setProperty('--start', i + 1);
+              bar.style.setProperty('--duration', span);
+              const startMinutes = TIMELINE_START_MINUTES + i * MINUTES_PER_COLUMN;
+              const endMinutes = startMinutes + span * MINUTES_PER_COLUMN;
+              bar.textContent = value;
+              bar.title = `${formatTime(startMinutes)} \u2013 ${formatTime(endMinutes)}: ${value} ${summaryLabels[type] || 'Dienste'}`;
+              grid.appendChild(bar);
+              i += span;
+            }else{
+              i++;
+            }
+          }
+        });
+      }
+
+      function formatTime(totalMinutes){
+        const minutesInDay = 24 * 60;
+        const wrapped = ((totalMinutes % minutesInDay) + minutesInDay) % minutesInDay;
+        const hours = Math.floor(wrapped / 60);
+        const minutes = wrapped % 60;
+        return String(hours).padStart(2,'0') + ':' + String(minutes).padStart(2,'0');
+      }
+    })();
+  </script>
+
+
+</body></html>

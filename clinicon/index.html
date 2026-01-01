@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CliniCon - Portal</title>
+  <link rel="icon" href="assets/Bilder/CliniConLogo.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="shell">
+    <aside class="side" aria-label="Hauptnavigation">
+      <a class="brand" href="#" onclick="handleBrandClick(event); return false;">
+        <img src="assets/Bilder/CliniConLogo.png" alt="CliniCon Logo" />
+      </a>
+      <nav class="nav" id="mainNav">
+        <a href="#"
+           data-key="start"
+           data-path="pages/start.html"
+           data-title="Start"
+           data-subtitle="&Uuml;bersicht &amp; Schnellzugriff"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11.5 12 4l9 7.5" />
+            <path d="M5 10.5V20h14v-9.5" />
+            <path d="M9 20v-5a3 3 0 0 1 6 0v5" />
+          </svg>
+          <span>Start</span>
+        </a>
+        <a href="#"
+           data-key="dokumente"
+           data-path="pages/dokumente.html"
+           data-title="Roadmap und Updates"
+           data-subtitle="Produktplanung &amp; Versionshinweise"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 4.5h6.5L19 10v9.5a1.5 1.5 0 0 1-1.5 1.5H7A1.5 1.5 0 0 1 5.5 19.5v-13A1.5 1.5 0 0 1 7 5Z" />
+            <path d="M13.5 4.5V10H19" />
+            <path d="M8.5 13.5H15" />
+            <path d="M8.5 17H15" />
+          </svg>
+          <span>Roadmap und Updates</span>
+        </a>
+        <a href="#"
+           data-key="besetzungsbedarf"
+           data-path="pages/besetzungsbedarf.html"
+           data-title="Besetzungsbedarf"
+           data-subtitle="Personalbedarf pro Einheit"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h16v4H4z" />
+            <path d="M4 10h10v10H4z" />
+            <path d="M16 10h4v6h-4z" />
+            <path d="M8 14h2" />
+            <path d="M8 18h2" />
+            <path d="M18 12v2" />
+          </svg>
+          <span>Besetzungsbedarf</span>
+        </a>
+        <a href="#"
+           data-key="ppug"
+           data-path="pages/ppug-rechner.html"
+           data-title="PPUG-Rechner"
+           data-subtitle="Untergrenzen berechnen"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3.5" y="4" width="17" height="13" rx="2" />
+            <path d="M7 20h10" />
+            <path d="M9 12h6" />
+            <path d="M9 8h6" />
+          </svg>
+          <span>PPUG-Rechner</span>
+        </a>
+        <a href="#"
+           data-key="ppbv"
+           data-path="pages/ppbv-berechnung.html"
+           data-title="PPBV-Berechner"
+           data-subtitle="Parameter steuern &amp; vergleichen"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 20V9" />
+            <path d="M12 20V4" />
+            <path d="M17 20v-6" />
+            <path d="M5 20h14" />
+          </svg>
+          <span>PPBV-Berechner</span>
+        </a>
+        <a href="#"
+           data-key="schichtmatrix"
+           data-path="pages/schichtMatrix.html"
+           data-title="Schichtmatrix"
+           data-subtitle="Dienste &amp; VK-Bedarf kalkulieren"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20V6" />
+            <path d="M4 20h16" />
+            <path d="M8 14.5 10.5 11l3 4 4-6" />
+            <path d="M17 9h3v3" />
+          </svg>
+          <span>Schichtmatrix</span>
+        </a>
+        <a href="#"
+           data-key="schichtbesetzung"
+           data-path="pages/schichtbesetzung.html"
+           data-title="Schichtbesetzung"
+           data-subtitle="Planung &amp; Visualisierung"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4h6v6H4z" />
+            <path d="M14 4h6v6h-6z" />
+            <path d="M4 14h6v6H4z" />
+            <path d="M14 17h6" />
+            <path d="M17 14v6" />
+          </svg>
+          <span>Schichtbesetzung</span>
+        </a>
+        <a href="#"
+           class="secure"
+           data-key="login"
+           data-path="pages/login.html"
+           data-title="Interner Bereich"
+           data-subtitle="Anmeldung erforderlich"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 12.5a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 12 12.5Z" />
+            <path d="M6 19.5V18a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1.5" />
+            <path d="M16.5 10V7a4.5 4.5 0 1 0-9 0v3" />
+          </svg>
+          <span>Interner Bereich</span>
+        </a>
+        <a href="#"
+           class="nav-separator"
+           data-key="impressum"
+           data-path="pages/impressum.html"
+           data-title="Impressum"
+           data-subtitle="Angaben gem&auml;&szlig; &sect; 5 TMG"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 11.5v5" />
+            <path d="M12 7h.01" />
+            <rect x="4" y="3.5" width="16" height="17" rx="2" />
+          </svg>
+          <span>Impressum</span>
+        </a>
+      </nav>
+    </aside>
+    <div>
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 id="pageHeading">CliniCon - Portal</h1>
+          <p id="pageSubheading">W&auml;hlen Sie links eine Anwendung aus.</p>
+        </div>
+        <div class="mobile-nav">
+          <select id="mobileNav" aria-label="Navigation">
+          </select>
+        </div>
+        <img class="product-logo" src="assets/Bilder/CliniConLogo.png" alt="CliniCon Logo" />
+      </header>
+
+      <main id="mainContent" role="main">
+        <section class="card" style="text-align:center; padding:48px;">
+          <h2>Willkommen bei CliniCon</h2>
+          <p>Die Inhalte werden geladen. Bitte w&auml;hlen Sie eine Anwendung in der Navigation aus.</p>
+        </section>
+      </main>
+
+      <footer>&copy; CliniCon</footer>
+    </div>
+  </div>
+
+  <script>
+    const navLinks = () => Array.from(document.querySelectorAll('#mainNav a'));
+    const mobileNav = () => document.getElementById('mobileNav');
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      const main = document.getElementById('mainContent');
+      if(main && typeof main.scrollTo === 'function'){
+        main.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      }
+    };
+    const TEXT_FIXES = [
+      ['zun?chst','zunächst'],
+      ['Arbeitspl?tze','Arbeitsplätze'],
+      ['Krei?saal','Kreißsaal'],
+      ['R?ntgen','Röntgen'],
+      ['hinzuf?gen','hinzufügen'],
+      ['durchf?hren','durchführen'],
+      ['Ausf?llen','Ausfüllen'],
+      ['Ausf?lle','Ausfälle'],
+      ['Ben?tigte','Benötigte'],
+      ['Gesamtberechnung durchf?hren','Gesamtberechnung durchführen'],
+      ['weiteren Arbeitsplatz hinzuf?gen','weiteren Arbeitsplatz hinzufügen'],
+      ['Fehlzeiten ?','Fehlzeiten ÷'],
+      ['Einsatzbedarf ?','Einsatzbedarf ×'],
+      ['Bruttobedarf ?','Bruttobedarf ×'],
+      ['Feiertage ?','Feiertage –'],
+      ['l?nder','länder'],
+      ['f?r','für'],
+      ['n?chsten','nächsten'],
+      ['Menge ? Zeit','Menge × Zeit'],
+      ['Baden-W?rttemberg','Baden-Württemberg'],
+      ['Sachsen-Anhalt','Sachsen-Anhalt'],
+      ['Th?ringen','Thüringen'],
+      ['L?nderspezifische','Länderspezifische'],
+      ['K?nige','Könige'],
+      ['Ost-L?ndern','Ost-Ländern'],
+      ['Bu?-','Buß-'],
+      ['Mari?','Mariä'],
+      ['vollst?ndig','vollständig'],
+      ['Mo?Fr','Mo-Fr'],
+      ['zus?tzlich','zusätzlich'],
+      ['verf?gbare','verfügbare'],
+      ['verf?gba','verfügba'],
+      ['Abz?ge','Abzüge'],
+      ['Hilfskr?fte','Hilfskräfte'],
+      ['Pflegekr?fte','Pflegekräfte'],
+      ['Verh?ltnis','Verhältnis'],
+      ['zul?ssig','zulässig'],
+      ['k?nnen','können'],
+      ['VZ?','VZÄ'],
+      ['Gr??e','Größe'],
+      ['K?rper','Körper'],
+      ['k?rper','körper'],
+      ['Bezugsgr??e','Bezugsgröße']
+    ];
+
+    function normalizeTextContent(root){
+      const walker = document.createTreeWalker(
+        root,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode(node){
+            const parent = node.parentNode;
+            if(!parent) return NodeFilter.FILTER_REJECT;
+            const tag = parent.tagName;
+            if(tag === 'SCRIPT' || tag === 'STYLE') return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        }
+      );
+      while(walker.nextNode()){
+        const node = walker.currentNode;
+        let value = node.nodeValue;
+        let updated = value;
+        TEXT_FIXES.forEach(([from,to])=>{
+          if(updated.includes(from)){
+            updated = updated.split(from).join(to);
+          }
+        });
+        if(updated !== value){
+          node.nodeValue = updated;
+        }
+      }
+    }
+
+    function syncMobileSelect(link){
+      const select = mobileNav();
+      if(select && link && link.dataset.key){
+        select.value = link.dataset.key;
+      }
+    }
+
+
+    function setActive(el){
+      navLinks().forEach(a => a.classList.remove('active'));
+      el.classList.add('active');
+      syncMobileSelect(el);
+    }
+
+    async function loadPage(path, title, subtitle){
+      const content = document.getElementById('mainContent');
+      content.innerHTML = '<section class="card" style="text-align:center; padding:40px;">Inhalte werden geladen ...</section>';
+      try{
+        const res = await fetch(path);
+        if(!res.ok) throw new Error('Seite nicht gefunden.');
+        const html = await res.text();
+        content.innerHTML = html;
+        normalizeTextContent(content);
+        const scripts = Array.from(content.querySelectorAll('script'));
+        scripts.forEach(oldScript => {
+          const newScript = document.createElement('script');
+          Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+          newScript.textContent = oldScript.textContent;
+          oldScript.replaceWith(newScript);
+        });
+        document.getElementById('pageHeading').textContent = 'CliniCon - ' + title;
+        document.getElementById('pageSubheading').textContent = subtitle || '';
+        document.title = 'CliniCon - ' + title;
+      }catch(err){
+        content.innerHTML = '<section class="card" style="color:red; text-align:center;">'+err.message+'</section>';
+      }
+    }
+
+    function navigate(link, push = true){
+      const path = link.dataset.path;
+      const title = link.dataset.title || link.textContent.trim();
+      const subtitle = link.dataset.subtitle || '';
+      if(!path) return;
+      setActive(link);
+      scrollToTop();
+      loadPage(path, title, subtitle);
+      if(push){
+        const key = link.dataset.key || '';
+        history.pushState({path, title, subtitle, key}, '', '#' + key);
+      }
+    }
+
+    function handleNavClick(event, link){
+      event.preventDefault();
+      navigate(link);
+    }
+
+    function handleBrandClick(event){
+      event.preventDefault();
+      const startLink = document.querySelector('#mainNav a[data-key="start"]');
+      if(startLink){
+        navigate(startLink);
+      }
+    }
+
+    window.addEventListener('popstate', (event) => {
+      if(event.state){
+        const { path, title, subtitle, key } = event.state;
+        const active = key ? document.querySelector('#mainNav a[data-key="'+key+'"]') : null;
+        if(active){
+          setActive(active);
+        }
+        scrollToTop();
+        loadPage(path, title, subtitle);
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const select = mobileNav();
+      if(select){
+        select.innerHTML = '';
+        navLinks().forEach(link => {
+          if(!link.dataset.key) return;
+          const opt = document.createElement('option');
+          opt.value = link.dataset.key;
+          opt.textContent = link.textContent.trim();
+          select.appendChild(opt);
+        });
+        select.addEventListener('change', () => {
+          const key = select.value;
+          const target = document.querySelector('#mainNav a[data-key="'+key+'"]');
+          if(target){
+            navigate(target);
+          }
+        });
+      }
+      const map = navLinks().reduce((acc, link) => {
+        if(link.dataset.key){
+          acc[link.dataset.key] = link;
+        }
+        return acc;
+      }, {});
+      const key = (location.hash || '#start').replace('#','');
+      const normalizedKey = key === 'perzentilen' ? 'schichtmatrix' : key;
+      const link = map[normalizedKey] || map.start;
+      if(link){
+        navigate(link, false);
+        syncMobileSelect(link);
+      }
+      window.addEventListener('resize', () => {
+        if(window.innerWidth <= 960){
+          document.body.classList.add('is-mobile');
+        }else{
+          document.body.classList.remove('is-mobile');
+        }
+      });
+      if(window.innerWidth <= 960){
+        document.body.classList.add('is-mobile');
+      }
+    });
+  </script>
+</body>
+</html>

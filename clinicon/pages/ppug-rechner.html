@@ -1,0 +1,440 @@
+<section class="card" id="ppug-tool">
+  <div class="ppug-grid">
+    <div class="ppug-card">
+      <h2>PPUG-Rechner</h2>
+      <p class="muted">Berechnet die <strong>Mindestbesetzung</strong> und den <strong>Hilfskraftanteil</strong> nach PpUG.</p>
+
+      <div class="row top-row">
+        <label class="field span-4">
+          Bereich
+          <select id="ppug-area-a"></select>
+        </label>
+        <label class="field span-4">
+          Belegte Betten (Tag)
+          <input id="ppug-pat-day" type="number" min="0" step="1" value="24" />
+        </label>
+        <label class="field span-4">
+          Belegte Betten (Nacht)
+          <input id="ppug-pat-night" type="number" min="0" step="1" value="24" />
+        </label>
+      </div>
+
+      <div class="row">
+        <label class="field span-3">
+          Rundung
+          <select id="ppug-round">
+            <option value="ceil">Immer aufrunden (empfohlen)</option>
+            <option value="std">Standard (≥ 0,5 auf, sonst ab)</option>
+          </select>
+        </label>
+        <div class="span-9">
+          <div class="preset-wrap">
+            <button type="button" class="btn preset" id="p-16">16 Betten</button>
+            <button type="button" class="btn preset" id="p-18">18 Betten</button>
+            <button type="button" class="btn preset" id="p-24">24 Betten</button>
+            <button type="button" class="btn preset" id="p-32">32 Betten</button>
+            <button type="button" class="btn preset" id="p-36">36 Betten</button>
+            <button type="button" class="btn preset" id="p-40">40 Betten</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="result" id="ppug-out">
+        <div class="col left">
+          <div class="kpi large day">
+            <small>Mindestbesetzung Tag (gesamt)</small>
+            <strong id="kpi-day">&ndash;</strong>
+            <small id="kpi-day-split">Fachpersonen / Hilfskräfte: &ndash; / &ndash;</small>
+          </div>
+          <div class="row inner">
+            <div class="kpi small day">
+              <small>Verhältnis (Tag)</small>
+              <strong id="kpi-ratio-day">&ndash;</strong>
+              <small>Pat. : Pflegekraft</small>
+            </div>
+            <div class="kpi small day">
+              <small>Max. Hilfskräfte (Tag)</small>
+              <strong id="kpi-cap-day">&ndash; %</strong>
+              <small>Zulässiger Anteil</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col right">
+          <div class="kpi large night">
+            <small>Mindestbesetzung Nacht (gesamt)</small>
+            <strong id="kpi-night">&ndash;</strong>
+            <small id="kpi-night-split">Fachpersonen / Hilfskräfte: &ndash; / &ndash;</small>
+          </div>
+          <div class="row inner">
+            <div class="kpi small night">
+              <small>Verhältnis (Nacht)</small>
+              <strong id="kpi-ratio-night">&ndash;</strong>
+              <small>Pat. : Pflegekraft</small>
+            </div>
+            <div class="kpi small night">
+              <small>Max. Hilfskräfte (Nacht)</small>
+              <strong id="kpi-cap-night">&ndash; %</strong>
+              <small>Zulässiger Anteil</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ppug-card">
+      <h3 class="table-heading">Hinterlegte PpUG &amp; Hilfskraft-Grenzen (Stand: 15.10.2025)</h3>
+      <div class="table-wrap">
+        <table id="ppug-table">
+          <thead>
+            <tr>
+              <th>Bereich</th>
+              <th>Tag (Pat.:1)</th>
+              <th>Nacht (Pat.:1)</th>
+              <th>Max. Hilfskräfte Tag</th>
+              <th>Max. Hilfskräfte Nacht</th>
+            </tr>
+          </thead>
+          <tbody id="ppug-tbody"></tbody>
+        </table>
+      </div>
+      <p class="muted note">
+        Gemischte Stationen werden nicht abgebildet. Hier muss der Bereich mit der <strong>strengeren Personaluntergrenze</strong> gewählt werden.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  #ppug-tool{
+    width:100%;
+    display:block;
+    padding:0;
+  }
+  #ppug-tool .ppug-grid{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    gap:16px;
+    padding:12px;
+  }
+  #ppug-tool .ppug-card{
+    grid-column:1/-1;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    background:var(--panel, #fff);
+    border:1px solid var(--line, #e2e8f0);
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 18px 32px rgba(15,23,42,.06);
+  }
+  #ppug-tool h2{
+    margin:0;
+    font-size:1.35rem;
+    color:#0f172a;
+  }
+  #ppug-tool .table-heading{
+    margin:0;
+    font-size:1.2rem;
+    color:#0f172a;
+  }
+  #ppug-tool p.muted{
+    margin:4px 0 0;
+    color:var(--muted, #64748b);
+    font-size:.95rem;
+  }
+  #ppug-tool .note{
+    margin:0;
+  }
+  #ppug-tool .row{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    gap:12px;
+    align-items:end;
+  }
+  #ppug-tool .row.top-row{
+    margin-top:12px;
+  }
+  #ppug-tool .field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    font-size:.9rem;
+    color:#475569;
+  }
+  #ppug-tool .span-3{grid-column:span 3;}
+  #ppug-tool .span-4{grid-column:span 4;}
+  #ppug-tool .span-9{grid-column:span 9;}
+  #ppug-tool input,
+  #ppug-tool select{
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid var(--line, #e2e8f0);
+    background:#fff;
+    font:inherit;
+  }
+  #ppug-tool input:focus,
+  #ppug-tool select:focus{
+    outline:none;
+    border-color:var(--accent, #2563eb);
+    box-shadow:0 0 0 3px rgba(37,99,235,.18);
+  }
+  #ppug-tool .btn{
+    appearance:none;
+    border:1px solid var(--line, #e2e8f0);
+    border-radius:12px;
+    padding:10px 14px;
+    font-weight:600;
+    cursor:pointer;
+    background:#fff;
+    color:#0f172a;
+    transition:.18s ease all;
+  }
+  #ppug-tool .btn:hover{
+    border-color:var(--accent, #2563eb);
+  }
+  #ppug-tool .btn.preset.active{
+    background:rgba(37,99,235,.12);
+    border-color:var(--accent, #2563eb);
+    color:var(--accent, #2563eb);
+  }
+  #ppug-tool .preset-wrap{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  #ppug-tool .result{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    gap:12px;
+  }
+  #ppug-tool .col{
+    display:grid;
+    gap:12px;
+    grid-column:span 6;
+  }
+  #ppug-tool .kpi{
+    display:grid;
+    gap:6px;
+    padding:16px;
+    border:1px solid var(--line, #e2e8f0);
+    border-radius:14px;
+    background:#fff;
+    text-align:center;
+  }
+  #ppug-tool .kpi.large{
+    min-height:110px;
+  }
+  #ppug-tool .kpi.large small{
+    color:var(--muted, #64748b);
+    font-size:.95rem;
+  }
+  #ppug-tool .kpi.large strong{
+    font-size:2.1rem;
+    line-height:1.1;
+  }
+  #ppug-tool .kpi.small{
+    grid-column:span 6;
+  }
+  #ppug-tool .kpi.small strong{
+    font-size:1.2rem;
+  }
+  #ppug-tool .kpi.day{
+    background:#f0f9ff;
+  }
+  #ppug-tool .kpi.night{
+    background:#fff7ed;
+  }
+  #ppug-tool .table-wrap{
+    overflow:auto;
+    border:1px solid var(--line, #e2e8f0);
+    border-radius:12px;
+  }
+  #ppug-tool table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:820px;
+    background:#fff;
+  }
+  #ppug-tool th,
+  #ppug-tool td{
+    padding:10px 12px;
+    border-bottom:1px solid var(--line, #e2e8f0);
+    text-align:left;
+  }
+  #ppug-tool thead th{
+    background:#f8fafc;
+  }
+  @media (max-width: 960px){
+    #ppug-tool{
+      padding:20px;
+    }
+    #ppug-tool .ppug-grid{
+      grid-template-columns:1fr;
+    }
+    #ppug-tool .col{
+      grid-column:1/-1;
+    }
+    #ppug-tool .row,
+    #ppug-tool .result{
+      grid-template-columns:1fr;
+    }
+    #ppug-tool .span-3,
+    #ppug-tool .span-4,
+    #ppug-tool .span-9{
+      grid-column:1/-1;
+    }
+    #ppug-tool .kpi.small{
+      grid-column:1/-1;
+    }
+  }
+</style>
+
+<script>
+  (function(){
+    const get = id => document.getElementById(id);
+    const areaSelect = get('ppug-area-a');
+    if(!areaSelect) return;
+
+    const PPU_REGELN = [
+      {key:'intensiv',name:'Intensivmedizin',ratioDay:2,ratioNight:3,capDay:5,capNight:5},
+      {key:'geriatrie',name:'Geriatrie',ratioDay:10,ratioNight:20,capDay:15,capNight:20},
+      {key:'chir_ortho',name:'Allgemeine Chirurgie / Unfallchirurgie / Orthopädie',ratioDay:10,ratioNight:20,capDay:10,capNight:10},
+      {key:'innere_kardio',name:'Innere Medizin / Kardiologie',ratioDay:10,ratioNight:22,capDay:10,capNight:10},
+      {key:'herzchir',name:'Herzchirurgie',ratioDay:7,ratioNight:15,capDay:5,capNight:0},
+      {key:'neuro',name:'Neurologie',ratioDay:10,ratioNight:20,capDay:8,capNight:8},
+      {key:'stroke',name:'Neurologische Schlaganfalleinheit',ratioDay:3,ratioNight:5,capDay:0,capNight:0},
+      {key:'fruehrehab',name:'Neurologische Frührehabilitation',ratioDay:5,ratioNight:12,capDay:10,capNight:10},
+      {key:'paed_allg',name:'Allgemeine Pädiatrie',ratioDay:6,ratioNight:10,capDay:5,capNight:5},
+      {key:'paed_spez',name:'Spezielle Pädiatrie',ratioDay:6,ratioNight:14,capDay:5,capNight:5},
+      {key:'neo',name:'Neonatologische Pädiatrie',ratioDay:3.5,ratioNight:5,capDay:5,capNight:5},
+      {key:'gyn',name:'Gynäkologie & Geburtshilfe',ratioDay:7.5,ratioNight:15,capDay:5,capNight:0},
+      {key:'hno_rheuma_uro',name:'HNO, Rheumatologie & Urologie',ratioDay:10,ratioNight:22,capDay:10,capNight:5},
+      {key:'neurochir',name:'Neurochirurgie',ratioDay:9,ratioNight:18,capDay:10,capNight:5}
+    ];
+
+    const tbody = get('ppug-tbody');
+    PPU_REGELN.forEach(rule => {
+      const option = document.createElement('option');
+      option.value = rule.key;
+      option.textContent = rule.name;
+      areaSelect.appendChild(option);
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${rule.name}</td>
+        <td>${rule.ratioDay}</td>
+        <td>${rule.ratioNight}</td>
+        <td>${rule.capDay}%</td>
+        <td>${rule.capNight}%</td>
+      `;
+      tbody.appendChild(row);
+    });
+    areaSelect.value = 'chir_ortho';
+
+    const inputs = {
+      day: get('ppug-pat-day'),
+      night: get('ppug-pat-night'),
+      mode: get('ppug-round')
+    };
+
+    const outputs = {
+      totalDay: get('kpi-day'),
+      totalNight: get('kpi-night'),
+      splitDay: get('kpi-day-split'),
+      splitNight: get('kpi-night-split'),
+      ratioDay: get('kpi-ratio-day'),
+      ratioNight: get('kpi-ratio-night'),
+      capDay: get('kpi-cap-day'),
+      capNight: get('kpi-cap-night')
+    };
+
+    const presets = [
+      {id:'p-16', value:16},
+      {id:'p-18', value:18},
+      {id:'p-24', value:24},
+      {id:'p-32', value:32},
+      {id:'p-36', value:36},
+      {id:'p-40', value:40}
+    ];
+
+    const presetButtons = [];
+    function markActive(btn){
+      presetButtons.forEach(b => b.classList.remove('active'));
+      if(btn) btn.classList.add('active');
+    }
+
+    presets.forEach(({id,value}) => {
+      const btn = get(id);
+      if(!btn) return;
+      presetButtons.push(btn);
+      btn.addEventListener('click', () => {
+        inputs.day.value = value;
+        inputs.night.value = value;
+        markActive(btn);
+        calc();
+      });
+    });
+
+    function roundByMode(amount, mode){
+      return mode === 'ceil' ? Math.ceil(amount) : Math.round(amount);
+    }
+
+    function enforceCaps(total, capPct){
+      const maxHelpers = Math.floor(total * (capPct / 100));
+      const fach = Math.max(0, total - maxHelpers);
+      return {fach, hilf: total - fach};
+    }
+
+    function applyMinOne(split){
+      if(split.fach < 1){
+        const deficit = 1 - split.fach;
+        if(split.hilf >= deficit){
+          split.hilf -= deficit;
+        }
+        split.fach = 1;
+      }
+      split.fach = Math.ceil(split.fach);
+      split.hilf = Math.max(0, Math.floor(split.hilf));
+      return split;
+    }
+
+    function formatRatio(value){
+      return value.toString().replace('.', ',') + ' : 1';
+    }
+
+    function calc(){
+      const rule = PPU_REGELN.find(r => r.key === areaSelect.value);
+      if(!rule) return;
+
+      const patientsDay = parseInt(inputs.day.value || '0', 10) || 0;
+      const patientsNight = parseInt(inputs.night.value || '0', 10) || 0;
+      const mode = inputs.mode.value;
+
+      let needDay = roundByMode(patientsDay / rule.ratioDay, mode);
+      let needNight = roundByMode(patientsNight / rule.ratioNight, mode);
+
+      let splitDay = enforceCaps(needDay, rule.capDay);
+      let splitNight = enforceCaps(needNight, rule.capNight);
+
+      splitDay = applyMinOne(splitDay);
+      splitNight = applyMinOne(splitNight);
+
+      outputs.totalDay.textContent = splitDay.fach + splitDay.hilf;
+      outputs.totalNight.textContent = splitNight.fach + splitNight.hilf;
+      outputs.splitDay.textContent = `Fachpersonen / Hilfskräfte: ${splitDay.fach} / ${splitDay.hilf}`;
+      outputs.splitNight.textContent = `Fachpersonen / Hilfskräfte: ${splitNight.fach} / ${splitNight.hilf}`;
+      outputs.ratioDay.textContent = formatRatio(rule.ratioDay);
+      outputs.ratioNight.textContent = formatRatio(rule.ratioNight);
+      outputs.capDay.textContent = `${rule.capDay} %`;
+      outputs.capNight.textContent = `${rule.capNight} %`;
+    }
+
+    ['ppug-area-a','ppug-pat-day','ppug-pat-night','ppug-round'].forEach(id => {
+      const el = get(id);
+      if(el) el.addEventListener('input', calc);
+    });
+
+    calc();
+  })();
+</script>

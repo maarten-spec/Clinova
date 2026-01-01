@@ -1,0 +1,1260 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stellenplan Insights</title>
+  <link rel="stylesheet" href="../../../../style.css" />
+  <style>
+    :root{--bg:#f4f7fb;--panel:#fff;--muted:#6b7280;--text:#0f172a;--line:#e6e9ef;--accent:#1f4b82;--accent-strong:#12355c;--shadow:0 12px 36px rgba(15,23,42,.12);}
+    body{margin:0;font-family:var(--font-base);font-size:var(--font-size-base);line-height:var(--line-height-base);background:linear-gradient(180deg,#f7faff 0%,#eef3f9 100%);color:var(--text);}
+    main{padding:24px;display:flex;flex-direction:column;gap:20px;width:100%;max-width:none;margin:0 auto;}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;box-shadow:var(--shadow);width:100%;}
+    .hero{display:flex;flex-direction:column;gap:16px;padding:26px;background:linear-gradient(120deg,#f3f7ff 0%,#e8f1ff 40%,#f3f7ff 100%);border:1px solid #d9e4ff;width:100%;max-width:none;margin:0;box-sizing:border-box;border-radius:20px;box-shadow:0 18px 45px rgba(15,23,42,0.18);}
+    .hero-top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start;}
+    .pill{display:inline-flex;gap:8px;padding:9px 14px;border-radius:14px;background:linear-gradient(135deg,#1f4b82,#12355c);color:#fff;font-weight:800;box-shadow:0 12px 24px rgba(18,53,92,.25);}
+    h1{margin:0;font-size:1.9rem;}
+    .badge-bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
+    .badge-rect{padding:10px 14px;border:1px solid #d8e3f5;border-radius:12px;background:#fff;font-weight:800;color:#0f172a;box-shadow:0 6px 16px rgba(15,23,42,0.08);}
+    .kpi-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));}
+    .kpi{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff;box-shadow:0 10px 24px rgba(15,23,42,0.1);display:grid;gap:6px;align-items:center;text-align:center;}
+    .kpi span{color:var(--muted);font-size:0.9rem;}.kpi strong{font-size:1.35rem;}
+    .tabbar{display:flex;gap:10px;padding:10px 12px;border-radius:12px;background:#f9fbff;border:1px solid var(--line);box-shadow:var(--shadow);}
+    .tabbar button{border:1px solid var(--line);background:#fff;color:#0f172a;padding:10px 14px;border-radius:10px;font-weight:800;cursor:pointer;}
+    .tabbar button.active{background:linear-gradient(135deg,#1fa2ff,#2563eb);color:#fff;border-color:transparent;}
+    .controls{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-top:10px;margin-bottom:6px;}
+    .controls label{display:flex;flex-direction:column;gap:4px;font-weight:700;color:var(--text);}
+    .controls select,.controls input{padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff;min-width:140px;}
+    .controls button{padding:10px 14px;border-radius:10px;border:1px solid transparent;background:linear-gradient(135deg,#1f4b82,#12355c);color:#fff;font-weight:700;cursor:pointer;}
+    .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-items:stretch;}
+    .tile{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;box-shadow:0 8px 18px rgba(15,23,42,0.06);display:grid;gap:6px;align-items:center;justify-items:center;text-align:center;}
+    .tile span{color:var(--muted);} .tile strong{font-size:1.28rem;}
+    .chart-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));}
+    .chart{display:grid;gap:10px;background:linear-gradient(180deg,#f8fafc,#eef2f7);border:1px solid var(--line);border-radius:14px;padding:12px;}
+    .chart-meta{display:flex;gap:8px;align-items:center;color:var(--muted);font-weight:700;}
+    .chart-bars{display:flex;gap:6px;align-items:flex-end;min-height:160px;}
+    .chart-bar{flex:1;background:linear-gradient(180deg,#1f4b82,#12355c);border-radius:6px 6px 3px 3px;min-width:10px;}
+    .chart-bar.secondary{background:linear-gradient(180deg,#f9be00,#d99b00);} .chart-bar.tertiary{background:linear-gradient(180deg,#0ea5e9,#0284c7);}
+    .line-wide{width:100%;height:320px;}
+    .chart-axis{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;font-size:0.78rem;color:var(--muted);text-align:center;margin-top:6px;}
+    .line-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:0.9rem;color:var(--muted);}
+    .line-legend span{display:inline-flex;align-items:center;gap:6px;}
+    .line-dot{width:12px;height:12px;border-radius:999px;display:inline-block;}
+    .heatmap{display:grid;gap:6px;} .heatmap-head,.heatmap-row{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;} .heatmap-head div{text-align:center;font-size:0.8rem;color:#475569;} .heatmap-cell{height:28px;border-radius:4px;border:1px solid #fff;display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:#0f172a;}
+    .ratio-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:12px;}
+    .ratio-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:linear-gradient(180deg,#fff,#f8fafc);box-shadow:0 8px 18px rgba(15,23,42,0.06);display:grid;gap:8px;}
+    .ratio-card .ratio-header{display:flex;justify-content:space-between;gap:8px;align-items:flex-start;}
+    .ratio-card .ratio-name{font-weight:700;}
+    .ratio-card .ratio-meta{color:var(--muted);font-size:0.88rem;text-align:right;display:grid;gap:2px;}
+    .ratio-bar{height:14px;border-radius:999px;background:#e5e7eb;overflow:hidden;display:flex;box-shadow:inset 0 0 0 1px rgba(15,23,42,0.04);}
+    .ratio-bar span{display:block;height:100%;font-size:0.75rem;color:#fff;text-align:center;line-height:14px;}
+    .ratio-bar .pfk{background:linear-gradient(135deg,#22c55e,#16a34a);}
+    .ratio-bar .pfa{background:linear-gradient(135deg,#3b82f6,#1d4ed8);}
+    .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:0.9rem;color:var(--muted);} .legend span{display:inline-flex;align-items:center;gap:6px;} .dot{width:12px;height:12px;border-radius:999px;display:inline-block;}
+    .qual-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));}
+    .qual-panel{display:flex;flex-direction:column;gap:8px;}
+    .qual-table-wrap{border:1px solid var(--line);border-radius:10px;overflow:auto;}
+    .qual-table-wrap th,.qual-table-wrap td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:.95rem;}
+    .qual-table-wrap th{background:linear-gradient(135deg,#f7faff,#e8f1ff);font-weight:800;}
+    .qual-table-wrap tr:nth-child(even) td{background:#fafbfc;}
+    .qual-table-wrap tr.is-total td{font-weight:800;background:#f8fafc;}
+    .hint{color:var(--muted);font-size:.95rem;}
+    .cockpit-grid{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-top:6px;}
+    .cockpit-tile{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;box-shadow:0 8px 18px rgba(15,23,42,0.06);display:grid;gap:4px;}
+    .cockpit-tile span{color:#475569;font-size:0.9rem;} .cockpit-tile strong{font-size:1.3rem;}
+    /* Neue Insights-Styles (helle Variante) */
+    .insights-section{border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:0 12px 28px rgba(15,23,42,0.08);padding:16px;}
+    .insights-section+.insights-section{margin-top:12px;}
+    .insights-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap;}
+    .insights-head .title{display:flex;align-items:center;gap:8px;font-weight:700;}
+    .insights-tag{font-size:0.75rem;padding:3px 8px;border-radius:999px;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;font-weight:700;box-shadow:0 6px 16px rgba(22,163,74,0.2);}
+    .insights-sub{color:var(--muted);font-size:0.92rem;margin:2px 0 0;}
+    .pill-row-new{display:flex;flex-wrap:wrap;gap:8px;}
+    .pill-new{border-radius:12px;padding:10px 12px;display:flex;gap:8px;align-items:center;border:1px solid var(--line);background:linear-gradient(180deg,#fff,#f8fafc);box-shadow:0 8px 18px rgba(15,23,42,0.06);}
+    .pill-new .label{color:var(--muted);font-size:0.9rem;}
+    .pill-new .value{font-weight:700;}
+    .pill-new .badge{padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:0.78rem;}
+    .badge.ok{color:#16a34a;border-color:#16a34a;}
+    .badge.warn{color:#d97706;border-color:#d97706;}
+    .badge.danger{color:#b91c1c;border-color:#b91c1c;}
+    .donut-grid{display:flex;flex-wrap:wrap;gap:12px;}
+    .donut-card{border:1px solid var(--line);border-radius:14px;padding:12px;background:#fff;box-shadow:0 10px 22px rgba(15,23,42,0.07);display:flex;gap:10px;align-items:center;min-width:240px;}
+    .donut{position:relative;width:82px;height:82px;border-radius:50%;background:conic-gradient(#22c55e var(--pfk-angle,180deg), #3b82f6 var(--pfk-angle,180deg) 360deg);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 10px #fff;}
+    .donut::after{content:"";position:absolute;inset:22%;border-radius:50%;background:#fff;}
+    .donut span{position:relative;font-weight:700;color:#0f172a;}
+    .donut-legend{display:grid;gap:4px;font-size:0.9rem;color:var(--muted);}
+    .donut-legend .row{display:flex;align-items:center;gap:6px;}
+    .donut-dot{width:10px;height:10px;border-radius:999px;display:inline-block;}
+    .donut-dot.pfk{background:#22c55e;}
+    .donut-dot.pfa{background:#3b82f6;}
+    .spark-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;}
+    .spark-card{border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 10px 22px rgba(15,23,42,0.08);padding:12px;display:grid;gap:6px;}
+    .spark-meta{display:flex;justify-content:space-between;color:var(--muted);font-size:0.9rem;}
+    .sparkline{width:100%;height:40px;}
+    .capacity-row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;}
+    .capacity-card{border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 10px 22px rgba(15,23,42,0.08);padding:12px;min-width:200px;}
+    .thermo{width:22px;height:110px;border-radius:999px;background:linear-gradient(180deg,#e2e8f0,#cbd5e1);border:1px solid var(--line);padding:4px;display:flex;flex-direction:column-reverse;overflow:hidden;}
+    .thermo-fill{width:100%;border-radius:999px;background:linear-gradient(180deg,#22c55e,#facc15,#ef4444);}
+    .bubble-row{display:flex;flex-wrap:wrap;gap:10px;}
+    .bubble{border-radius:50%;border:2px solid var(--line);background:linear-gradient(180deg,#fff,#f8fafc);box-shadow:0 10px 22px rgba(15,23,42,0.08);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6px;min-width:60px;min-height:60px;}
+    .bubble-label{color:var(--muted);font-size:0.8rem;}
+    .line-card{border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:0 10px 22px rgba(15,23,42,0.08);padding:12px;}
+    .line-chart-svg{width:100%;height:90px;}
+    .scenario-panel{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;box-shadow:0 8px 18px rgba(15,23,42,0.06);display:grid;gap:10px;}
+    .scenario-head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;}
+    .scenario-totals{display:flex;gap:12px;flex-wrap:wrap;font-weight:700;color:#0f172a;}
+    .scenario-totals span{font-weight:600;}
+    .scenario-inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(60px,1fr));gap:6px;}
+    .scenario-inputs label{display:grid;gap:4px;font-size:0.84rem;color:var(--muted);}
+    .scenario-inputs input{padding:6px;border:1px solid var(--line);border-radius:10px;font:inherit;min-width:0;}
+    .scenario-controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:0.9rem;}
+    .scenario-controls input[type="range"]{width:180px;}
+    .pyramid{display:flex;flex-direction:column;gap:6px;}
+    .pyramid-level{display:flex;justify-content:center;}
+    .pyramid-box{border:1px dashed var(--line);border-radius:999px;padding:8px 16px;background:#f8fafc;}
+    .glass-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;}
+    .glass-card{border:1px solid rgba(148,163,184,0.5);border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(248,250,252,0.85));box-shadow:0 10px 24px rgba(15,23,42,0.06);padding:12px;}
+    .glass-card-title{font-weight:700;}
+    .glass-card-value{font-size:1.2rem;font-weight:700;color:#1f4b82;}
+    .glass-card-label{color:var(--muted);font-size:0.9rem;}
+    .section-hidden{display:none!important;}
+    @media(max-width:720px){main{padding:18px;}.controls input,.controls select{min-width:140px;}}
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card hero">
+      <div class="hero-top">
+        <div>
+          <div class="pill">Stellenplan Insights</div>
+          <h1>Cockpit &amp; Forecast</h1>
+          <p class="hint" style="margin:4px 0 0;">Direkte Daten aus <strong>stellenplan_employees</strong>. Heatmaps &amp; KPIs je Station.</p>
+        </div>
+        <div class="badge-bar">
+          <span class="badge-rect">Mandant: <span id="heroSiteLabel">-</span></span>
+          <span class="badge-rect">Jahr: <span id="heroYearLabel">-</span></span>
+          <span class="badge-rect">Abteilung: <span id="heroDeptLabel">-</span></span>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi"><span>VK gesamt</span><strong id="heroTotal">-</strong></div>
+        <div class="kpi"><span>Mitarbeitende</span><strong id="heroPeople">-</strong></div>
+        <div class="kpi"><span>Peak-Monat</span><strong id="heroPeak">-</strong></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="tabbar">
+        <button class="active" type="button" data-tab-btn="dashboard">Dashboard</button>
+        <button type="button" data-tab-btn="parameter">Parameter</button>
+        <button type="button" data-tab-btn="charts">Charts</button>
+        <button type="button" data-tab-btn="ziel">Ziel</button>
+        <button type="button" data-tab-btn="qual">Qualifikation</button>
+      </div>
+
+      <div data-tabs="dashboard">
+        <div class="controls">
+          <label>Station
+            <select id="deptSelect"></select>
+          </label>
+          <label>Jahr
+            <select id="yearSelect"></select>
+          </label>
+          <label>Szenario Delta (VK/Monat)
+            <input id="scenarioInput" type="number" step="0.1" value="0" />
+          </label>
+          <label>Zielwert (VK/Monat)
+            <input id="globalTarget" type="number" step="0.1" value="2" />
+          </label>
+          <button id="btnRefresh" type="button">Neu laden</button>
+        </div>
+        <div class="grid" style="margin-top:12px;">
+          <div class="tile"><span>VK Gesamt</span><strong id="kpiTotal">-</strong></div>
+          <div class="tile"><span>Forecast +12M</span><strong id="kpiForecast">-</strong></div>
+          <div class="tile"><span>Peak-Monat</span><strong id="kpiPeak">-</strong></div>
+        </div>
+        <div class="chart">
+          <div class="chart-meta">Verhältnis Pflegefachkraft / -assistenz</div>
+          <div id="heatmapRatios" class="ratio-grid"></div>
+        </div>
+        <div class="chart" style="margin-top:12px;">
+          <div class="chart-meta">Gesamt (Ist / Forecast / Szenario)</div>
+          <svg id="dashLineChart" class="line-wide" preserveAspectRatio="none"></svg>
+          <div class="chart-axis"><div>Jan</div><div>Feb</div><div>Mrz</div><div>Apr</div><div>Mai</div><div>Jun</div><div>Jul</div><div>Aug</div><div>Sep</div><div>Okt</div><div>Nov</div><div>Dez</div></div>
+        </div>
+        <div class="scenario-panel">
+        <div class="scenario-head">
+          <strong>Szenario-Anpassung je Monat</strong>
+          <div class="scenario-totals">Gesamt Szenario: <span id="scenarioTotal">-</span></div>
+        </div>
+        <div class="scenario-inputs" id="scenarioInputs"></div>
+        <div class="scenario-controls">
+            <label style="display:flex;gap:6px;align-items:center;">Krankheitsausfall aktiv
+              <input type="checkbox" id="sinToggle" checked />
+            </label>
+            <label style="display:flex;gap:6px;align-items:center;">Krankheitsausfall (%)
+              <input type="range" id="sinAmp" min="0" max="50" value="10" />
+              <span id="sinAmpLabel">10 %</span>
+            </label>
+        </div>
+      </div>
+        <div class="insights-section" style="margin-top:12px;">
+          <div class="insights-head">
+            <div class="title">Bereichswechsel nachverfolgen</div>
+            <span class="insights-tag">Audit</span>
+          </div>
+          <div class="grid">
+            <div class="tile" style="align-items:flex-start;gap:8px;justify-items:start;text-align:left;min-height:200px;">
+              <span>Letzte Versetzungen</span>
+              <div id="transferList" class="list" style="width:100%;max-height:240px;overflow:auto;"></div>
+            </div>
+            <div class="tile" style="align-items:flex-start;gap:8px;justify-items:start;text-align:left;min-height:200px;">
+              <span>Fluktuation pro Station</span>
+              <div id="fluktuationList" class="list" style="width:100%;max-height:240px;overflow:auto;"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Neue Insights-Elemente -->
+        <div class="insights-section">
+          <div class="insights-head">
+            <div>
+              <div class="title">Verhältnis Pflegefachkraft / Assistenz <span class="insights-tag">PFK / PFA / VK</span></div>
+              <p class="insights-sub">VK-Werte, Prozentverteilung und Gesamt je Station.</p>
+            </div>
+          </div>
+          <div id="ratioGridNew" class="ratio-grid"></div>
+        </div>
+
+        <div class="insights-section">
+          <div class="insights-head">
+            <div>
+              <div class="title">Glow KPI-Pills</div>
+              <p class="insights-sub">Gesamt-Kennzahlen aus deinen Stellenplandaten.</p>
+            </div>
+          </div>
+          <div id="pillRowNew" class="pill-row-new"></div>
+        </div>
+
+        <div class="insights-section">
+          <div class="insights-head">
+            <div>
+              <div class="title">Donut-Verteilung PFK / PFA</div>
+              <p class="insights-sub">Verteilung PFK/PFA je Station (Top 3).</p>
+            </div>
+          </div>
+          <div id="donutRowNew" class="donut-grid"></div>
+        </div>
+
+        <div class="insights-section">
+          <div class="insights-head">
+            <div>
+              <div class="title">Station-Trends (Sparkline)</div>
+              <p class="insights-sub">Mini-Trends je Station (Monate Jan–Dez).</p>
+            </div>
+          </div>
+          <div id="sparkGrid" class="spark-grid"></div>
+        </div>
+
+        <div class="insights-section">
+          <div class="insights-head">
+            <div class="title">Capacity Thermometer</div>
+            <p class="insights-sub">Deckungsgrad vs. globaler Zielwert.</p>
+          </div>
+          <div id="capacityRow" class="capacity-row"></div>
+        </div>
+
+        <div class="insights-section">
+          <div class="insights-head">
+            <div class="title">Cluster-Bubbles</div>
+            <p class="insights-sub">Stationsvolumen (VK) als Blasen.</p>
+          </div>
+          <div id="bubbleRowNew" class="bubble-row"></div>
+        </div>
+
+        <div class="insights-section">
+          <div class="insights-head">
+            <div class="title">Glow Line Chart</div>
+            <p class="insights-sub">VK-Verlauf (Ist &amp; Forecast).</p>
+          </div>
+          <div class="line-card">
+            <svg id="lineChartSvg" class="line-chart-svg" preserveAspectRatio="none"></svg>
+          </div>
+        </div>
+
+        <div class="insights-section">
+          <div class="insights-head">
+            <div class="title">Pyramidenübersicht</div>
+            <p class="insights-sub">Strukturierte Ansicht deiner Bereiche.</p>
+          </div>
+          <div class="pyramid">
+            <div class="pyramid-level"><div class="pyramid-box">Intensivstationen</div></div>
+            <div class="pyramid-level"><div class="pyramid-box">IMC / Überwachung</div></div>
+            <div class="pyramid-level"><div class="pyramid-box">Normalstationen</div></div>
+            <div class="pyramid-level"><div class="pyramid-box">Funktionsbereiche / OP / Endoskopie</div></div>
+          </div>
+        </div>
+
+        <div class="insights-section">
+          <div class="insights-head">
+            <div class="title">Glass Panels</div>
+            <p class="insights-sub">KPIs im Glas-/Neon-Stil.</p>
+          </div>
+          <div id="glassGrid" class="glass-grid"></div>
+        </div>
+        <div id="status" class="hint" style="margin-top:10px;"></div>
+      </div>
+    </section>
+
+    <section class="card" data-tabs="parameter">
+      <h3 style="margin-top:0;">Parameter (Wirtschaftsplan VK)</h3>
+      <p class="hint">VK-Gesamtwert (Dienstart 01) und nachgelagerte Verteilung je Station. Werte werden in der Parameter-Tabelle f&uuml;r den Standort/Jahr gespeichert.</p>
+      <div class="glass-grid" style="margin-bottom:12px;">
+        <div class="glass-card">
+          <div class="glass-card-title">Wirtschaftsplan Gesamt (Dienstart 01)</div>
+          <div class="glass-card-value" id="planTotalValue">-</div>
+          <div class="glass-card-label">Gesamt-VK f&uuml;r das ausgew&auml;hlte Jahr/Standort.</div>
+        </div>
+      </div>
+      <div class="controls" style="margin-bottom:10px;">
+        <label>Jahr
+          <select id="planYearSelect"></select>
+        </label>
+        <label>Wirtschaftsplan VK gesamt
+          <input id="planTotalInput" type="number" step="0.01" value="0" />
+        </label>
+        <button type="button" id="planSaveBtn">Speichern</button>
+      </div>
+      <div style="overflow:auto;">
+        <table id="planTable" style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th style="text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);">Station</th>
+              <th style="text-align:right;padding:10px 8px;border-bottom:1px solid var(--line);">Wirtschaftsplan VK</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div id="planSummary" class="hint" style="margin-top:10px;"></div>
+    </section>
+
+    <section class="card" data-tabs="ziel">
+      <h3 style="margin-top:0;">Monate (Ist + Forecast)</h3>
+      <div class="hint">Kombinierte Werte (Haupt + Zusatz). Forecast: einfache Trendgerade.</div>
+      <div style="overflow:auto;">
+        <table id="monthsTable"></table>
+      </div>
+    </section>
+
+    <section class="card" data-tabs="charts">
+      <h3 style="margin-top:0;">Verlauf gesamt</h3>
+      <div class="controls">
+        <label>Station
+          <select id="chartsDeptSelect"></select>
+        </label>
+        <label>Jahr
+          <select id="chartsYearSelect"></select>
+        </label>
+      </div>
+      <div class="chart" style="margin-top:12px;">
+        <div class="chart-meta">Balken Jan-Dez (Ist)</div>
+        <svg id="groupedChart" width="100%" height="320" preserveAspectRatio="none"></svg>
+        <div class="chart-axis"><div>Jan</div><div>Feb</div><div>Mrz</div><div>Apr</div><div>Mai</div><div>Jun</div><div>Jul</div><div>Aug</div><div>Sep</div><div>Okt</div><div>Nov</div><div>Dez</div></div>
+      </div>
+      <div class="chart" style="margin-top:12px;">
+        <div class="chart-meta">Monate (Ist vs Forecast)</div>
+        <svg id="bubbleChart" width="100%" height="220" preserveAspectRatio="none"></svg>
+        <div class="legend">
+          <span><span class="dot" style="background:#1f4b82;"></span> Ist</span>
+          <span><span class="dot" style="background:#f9be00;"></span> Forecast</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card qual-card" data-tabs="qual">
+      <div class="qual-head" style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-start;">
+        <div>
+          <h3 style="margin-top:0;">Qualifikationen &amp; Abdeckung</h3>
+          <p class="hint" style="margin:6px 0 6px;">Daten aus <strong>stellenplan_employees</strong> (Mandant &amp; Jahr siehe Badges).</p>
+          <ul id="hints" class="hint-list"></ul>
+        </div>
+        <div class="badge-bar">
+          <span class="badge-rect">Mandant: <span id="qualSiteLabel">-</span></span>
+          <span class="badge-rect">Abteilung: <span id="qualDeptLabel">-</span></span>
+          <span class="badge-rect">Jahr: <span id="qualYearLabel">-</span></span>
+        </div>
+      </div>
+      <div class="filter-bar" style="display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end;">
+        <label>Qualifikation filtern
+          <select id="qualFilter">
+            <option value="__all__">Alle</option>
+          </select>
+        </label>
+      </div>
+      <div class="cockpit-grid" id="qualSummaryTiles"></div>
+      <div class="qual-grid">
+        <div class="qual-panel">
+          <h4 style="margin:0;">Aktuelle Abteilung</h4>
+          <div class="qual-table-wrap">
+            <table id="qualDeptTable"></table>
+          </div>
+        </div>
+        <div class="qual-panel">
+          <h4 style="margin:0;">Stationen &amp; Haus</h4>
+          <div class="qual-table-wrap">
+            <table id="qualSummaryTable"></table>
+          </div>
+        </div>
+      </div>
+      <div class="qual-panel">
+        <h4 style="margin:0;">Alle Mitarbeitenden mit Qualifikationen (hausweit)</h4>
+        <div class="qual-table-wrap">
+          <table id="qualPeopleTable"></table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL_STORAGE='clinicon_supabase_url';
+    const SUPABASE_KEY_STORAGE='clinicon_supabase_key';
+    const MONTHS=['Jan','Feb','Mrz','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+    const MONTH_KEYS=['jan','feb','mrz','apr','mai','jun','jul','aug','sep','okt','nov','dez'];
+    const YEAR_MIN=2026;
+    const YEAR_MAX=2031;
+    const INVENTORY_PATH='../../../../Supabase Snippet Public Schema Column Inventory.csv';
+    const FALLBACK_TABLES=[
+      'stellenplan_employees_admin','stellenplan_employees_gfobah','stellenplan_employees_gfoben','stellenplan_employees_gfober','stellenplan_employees_gfobeu',
+      'stellenplan_employees_gfobru','stellenplan_employees_gfodin','stellenplan_employees_gfodui','stellenplan_employees_gfoeng','stellenplan_employees_gfohil',
+      'stellenplan_employees_gfolan','stellenplan_employees_gfolen','stellenplan_employees_gfomoe','stellenplan_employees_gfoolp','stellenplan_employees_gforhe',
+      'stellenplan_employees_gfosie','stellenplan_employees_gfotro','stellenplan_employees_gfowis','stellenplan_employees_gfozpd'
+    ];
+    const DEPT_ORDER=['Station 1','Station 2','Station 3','Station 4','Station 5','Station 6','Station 7','Endoskopie','OP','Sozialdienst','Pflegedienstleitung'];
+    const TABLE_EMP_BASE='stellenplan_employees';
+    const DEFAULT_SUPABASE_URL='https://fqilehnixnsujefyrdcy.supabase.co';
+    const DEFAULT_SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaWxlaG5peG5zdWplZnlyZGN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5MjIyNzUsImV4cCI6MjA3OTQ5ODI3NX0.Ml1J-YsID7_CXX7LbLZM4ayhWpV08FBSZc3rgVuwqt4';
+    const SUPABASE_URL=(window.SUPABASE_URL||localStorage.getItem(SUPABASE_URL_STORAGE)||DEFAULT_SUPABASE_URL).trim();
+    const SUPABASE_ANON_KEY=(window.SUPABASE_ANON_KEY||localStorage.getItem(SUPABASE_KEY_STORAGE)||DEFAULT_SUPABASE_KEY).trim();
+    const DEFAULT_API_BASE='https://divine-disk-6cb5.maarten-koomen.workers.dev';
+    const API_BASE_URL=(window.CLINICON_API_BASE||localStorage.getItem('clinicon_api_base')||DEFAULT_API_BASE).trim();
+    const supabaseClient=(typeof window.supabase!=='undefined'&&SUPABASE_URL&&SUPABASE_ANON_KEY)?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
+    const SITE_LABEL=(sessionStorage.getItem('cliniconSite')||'').trim();
+    const SITE_CODE=SITE_LABEL.toLowerCase().replace(/[^a-z0-9_]/g,'');
+    const HAS_SITE=Boolean(SITE_CODE);
+    const tableName=(base)=>SITE_CODE?`${base}_${SITE_CODE}`:base;
+    const clampYear=(y)=>Math.max(YEAR_MIN,Math.min(YEAR_MAX,Number(y)||YEAR_MIN));
+    const YEAR_RANGE=Array.from({length:YEAR_MAX - YEAR_MIN + 1}, (_,i)=>YEAR_MIN+i);
+    let inventory={tables:FALLBACK_TABLES.slice(),years:YEAR_RANGE.slice()};
+    const siteFromTable=(t)=>(t.replace(/^stellenplan_employees_?/,'')||'base').toUpperCase();
+    async function loadInventory(){
+      if(inventory.tables.length && inventory.years.length) return inventory;
+      try{
+        const res = await fetch(INVENTORY_PATH);
+        if(res.ok){
+          const text = await res.text();
+          const lines = text.trim().split(/\r?\n/).slice(1);
+          const tables = [];
+          const yearSet = new Set();
+          lines.forEach(line => {
+            const m = line.match(/\"?(stellenplan_employees_[^,\"]+)\"?,?\"\"\\{(.+)\\}\"\"/);
+            if(!m) return;
+            tables.push(m[1].trim());
+            m[2].split(',').forEach(col => {
+              const ym = col.match(/^(jan|feb|mrz|apr|mai|jun|jul|aug|sep|okt|nov|dez)_(\d{4})$/i);
+              if(ym){
+                const y = Number(ym[2]);
+                if(y <= YEAR_MAX) yearSet.add(y);
+              }
+            });
+          });
+          inventory = { tables, years: Array.from(yearSet).sort((a,b)=>a-b) };
+        }
+      }catch(e){
+        console.warn('Inventory fetch failed, using fallback.', e);
+      }
+      if(!inventory.tables.length){
+        inventory.tables = FALLBACK_TABLES.slice();
+      }
+      if(!inventory.years.length){
+        inventory.years = Array.from({length: YEAR_MAX - YEAR_MIN + 1}, (_,i)=>YEAR_MIN+i);
+      }
+      return inventory;
+    }
+
+    const els={
+      tabButtons:Array.from(document.querySelectorAll('[data-tab-btn]')),
+      tabSections:Array.from(document.querySelectorAll('[data-tabs]')),
+      deptSelect:document.getElementById('deptSelect'),
+      yearSelect:document.getElementById('yearSelect'),
+      scenarioInput:document.getElementById('scenarioInput'),
+      globalTarget:document.getElementById('globalTarget'),
+      btnRefresh:document.getElementById('btnRefresh'),
+      kpiTotal:document.getElementById('kpiTotal'),
+      kpiForecast:document.getElementById('kpiForecast'),
+      kpiPeak:document.getElementById('kpiPeak'),
+      heroTotal:document.getElementById('heroTotal'),
+      heroPeople:document.getElementById('heroPeople'),
+      heroPeak:document.getElementById('heroPeak'),
+      heroSiteLabel:document.getElementById('heroSiteLabel'),
+      heroYearLabel:document.getElementById('heroYearLabel'),
+      heroDeptLabel:document.getElementById('heroDeptLabel'),
+      dashLineChart:document.getElementById('dashLineChart'),
+      chartsDeptSelect:document.getElementById('chartsDeptSelect'),
+      chartsYearSelect:document.getElementById('chartsYearSelect'),
+      groupedChart:document.getElementById('groupedChart'),
+      bubbleChart:document.getElementById('bubbleChart'),
+      heatmapRatios:document.getElementById('heatmapRatios'),
+      qualFilter:document.getElementById('qualFilter'),
+      qualDeptTable:document.getElementById('qualDeptTable'),
+      qualSummaryTable:document.getElementById('qualSummaryTable'),
+      qualPeopleTable:document.getElementById('qualPeopleTable'),
+      qualDeptLabel:document.getElementById('qualDeptLabel'),
+      qualYearLabel:document.getElementById('qualYearLabel'),
+      qualSiteLabel:document.getElementById('qualSiteLabel'),
+      qualSummaryTiles:document.getElementById('qualSummaryTiles'),
+      monthsTable:document.getElementById('monthsTable'),
+      status:document.getElementById('status'),
+      hints:document.getElementById('hints'),
+      ratioGridNew:document.getElementById('ratioGridNew'),
+      pillRowNew:document.getElementById('pillRowNew'),
+      donutRowNew:document.getElementById('donutRowNew'),
+      sparkGrid:document.getElementById('sparkGrid'),
+      capacityRow:document.getElementById('capacityRow'),
+      bubbleRowNew:document.getElementById('bubbleRowNew'),
+      lineChartSvg:document.getElementById('lineChartSvg'),
+      glassGrid:document.getElementById('glassGrid'),
+      planTable:document.getElementById('planTable'),
+      planTotalInput:document.getElementById('planTotalInput'),
+      planTotalValue:document.getElementById('planTotalValue'),
+      planSaveBtn:document.getElementById('planSaveBtn'),
+      planYearSelect:document.getElementById('planYearSelect'),
+      planSummary:document.getElementById('planSummary'),
+      scenarioInputs:document.getElementById('scenarioInputs'),
+      scenarioTotal:document.getElementById('scenarioTotal'),
+      sinAmp:document.getElementById('sinAmp'),
+      sinAmpLabel:document.getElementById('sinAmpLabel'),
+      sinToggle:document.getElementById('sinToggle'),
+      transferList:document.getElementById('transferList'),
+      fluktuationList:document.getElementById('fluktuationList'),
+    };
+
+    // Sofortige Defaults, damit Dropdowns nicht leer bleiben
+    function ensureDefaultOptions(){
+      if(els.yearSelect && !els.yearSelect.options.length){
+        els.yearSelect.innerHTML = YEAR_RANGE.map(y=>`<option value="${y}">${y}</option>`).join('');
+      }
+      if(els.chartsYearSelect && !els.chartsYearSelect.options.length){
+        els.chartsYearSelect.innerHTML = YEAR_RANGE.map(y=>`<option value="${y}">${y}</option>`).join('');
+      }
+      if(els.planYearSelect && !els.planYearSelect.options.length){
+        els.planYearSelect.innerHTML = YEAR_RANGE.map(y=>`<option value="${y}">${y}</option>`).join('');
+      }
+      if(els.deptSelect && !els.deptSelect.options.length){
+        els.deptSelect.innerHTML = `<option value="__all__" selected>Alle Stationen</option>`;
+      }
+      if(els.chartsDeptSelect && !els.chartsDeptSelect.options.length){
+        els.chartsDeptSelect.innerHTML = `<option value="__all__" selected>Alle Stationen</option>`;
+      }
+    }
+    ensureDefaultOptions();
+
+    const state={dept:'__all__',year:null,allEntries:[],currentTab:'dashboard',targets:{},selectedStation:'__all__'};
+    const PARAM_TABLE = SITE_CODE ? `parameter_${SITE_CODE}` : null;
+    let planTotalVal = 0;
+    let planMap = {};
+    let planDepts = [];
+    let forecastCache = [];
+    let scenarioDeltas = Array(12).fill(0);
+    function getPlanValue(dept){return Number(planMap[dept]||0);}
+    function buildDemoEntries(year){
+      const depts = ['Station 1','Station 2','Endoskopie','OP'];
+      const demo = [];
+      depts.forEach((d,idx)=>{
+        const base = 1.5 + idx*0.2;
+        const months = MONTH_KEYS.map((_,i)=>Number((base + Math.sin((i/12)*Math.PI*2)*0.3).toFixed(2)));
+        demo.push({
+          site:'DEMO',
+          dept:d,
+          year,
+          personalNumber:`DEMO-${idx}`,
+          name:`Demo Person ${idx+1}`,
+          qual:'Demo',
+          include:true,
+          months,
+          values:months,
+          type:'Mitarbeiter'
+        });
+      });
+      return demo;
+    }
+
+    function setActiveTab(tab){state.currentTab=tab;(els.tabButtons||[]).forEach(btn=>{const a=btn.dataset.tabBtn===tab;btn.classList.toggle('active',a);btn.setAttribute('aria-pressed',a?'true':'false');});(els.tabSections||[]).forEach(sec=>{const tabs=(sec.dataset.tabs||'').split(/\s+/).filter(Boolean);sec.classList.toggle('section-hidden',!tabs.includes(tab));});}
+    function sortDepts(ds){const order=new Map();DEPT_ORDER.forEach((d,i)=>order.set(d,i));return ds.sort((a,b)=>{const ia=order.has(a)?order.get(a):999;const ib=order.has(b)?order.get(b):999; if(ia!==ib) return ia-ib; return a.localeCompare(b,'de');});}
+    function fmt(n){const num=Number(n||0);return num.toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});}
+    function setStatus(msg,ok=true){if(!els.status)return;els.status.textContent=msg;els.status.style.color=ok?'#16a34a':'#b91c1c';}
+    const dbMonthCols=(year)=>MONTH_KEYS.map(k=>`${k}_${year}`);
+    function parseMonths(arr){if(Array.isArray(arr))return arr.map(v=>Number(v)||0); if(typeof arr==='string'){const c=arr.replace(/[{}]/g,''); if(!c)return Array(12).fill(0); return c.split(',').map(v=>Number(v)||0);} return Array(12).fill(0);}
+    function normalizeQuals(t){return (t||'').split(',').map(s=>s.trim()).filter(Boolean);}
+    function isExtraRow(row){const pn=(row.personal_number||row.personalNumber||'').toString().toUpperCase();return pn.startsWith('EX-');}
+    function heatColor(diff){if(diff<=-0.5)return '#f87171'; if(diff<-0.1)return '#fde68a'; if(diff<=0.1)return '#bbf7d0'; return '#22c55e';}
+    async function loadTransfers(){
+      if(!els.transferList || !els.fluktuationList) return;
+      const bases=[
+        API_BASE_URL,
+        'https://divine-disk-6cb5.maarten-koomen.workers.dev'
+      ].filter(Boolean);
+      let data=null,lastErr=null;
+      for(const base of bases){
+        try{
+          const res=await fetch(`${base}/api/audit?site=${encodeURIComponent(SITE_LABEL||'unknown')}&limit=50`,{cache:'no-store'});
+          const json=await res.json();
+          if(!res.ok) throw new Error(json.detail||json.error||'Audit-Log nicht ladbar');
+          data=json;
+          break;
+        }catch(err){
+          lastErr=err;
+        }
+      }
+      if(!data){
+        els.transferList.innerHTML=`<div class="hint">Audit-Log Fehler: ${(lastErr&&lastErr.message)||lastErr||'Unbekannt'}</div>`;
+        els.fluktuationList.innerHTML='<div class="hint">Keine Fluktuationsdaten.</div>';
+        return;
+      }
+      const items=(data.audit||[]).filter(it=>['transfer_staff_unit','transfer_staff_area'].includes((it.action||'').toLowerCase()));
+      els.transferList.innerHTML=items.map(it=>{
+        const ts=(it.created_at||'').toString().replace('T',' ').replace('Z','');
+        const dept=(it.result&&it.result.new_dept)||it.target_table||'-';
+        return `<div class="bubble bot" style="max-width:100%;text-align:left;">
+          <strong>${ts}</strong><br/>Aktion: ${it.action||'-'}<br/>Ziel: ${dept}<br/>Cmd: ${it.command||''}
+        </div>`;
+      }).join('') || '<div class="hint">Keine Versetzungen gefunden.</div>';
+      const counts={};
+      items.forEach(it=>{
+        const dept=(it.result&&it.result.new_dept)||'Unbekannt';
+        counts[dept]=(counts[dept]||0)+1;
+      });
+      const countEntries=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'de'));
+      els.fluktuationList.innerHTML=countEntries.map(([dept,val])=>`<div class="bubble bot" style="max-width:100%;text-align:left;">
+        <strong>${dept}</strong><br/>Wechsel: ${val}
+      </div>`).join('') || '<div class="hint">Keine Fluktuationsdaten.</div>';
+    }
+    function linearForecast(data,count=12){const vals=(data||[]).map(v=>Number(v)||0);const n=vals.length;if(!n)return Array(count).fill(0);const xMean=(n-1)/2;const yMean=vals.reduce((a,v)=>a+v,0)/n;let num=0,den=0;vals.forEach((v,i)=>{num+=(i-xMean)*(v-yMean);den+=(i-xMean)*(i-xMean);});const slope=den?num/den:0;const intercept=yMean - slope*xMean;const out=[];const total=Math.max(count,n);for(let i=0;i<total;i++){out.push(Math.max(0,intercept + slope*i));}return out.slice(0,count);}
+    function applyScenario(arr,delta){const d=Number(delta)||0;return (arr||[]).map(v=>Math.max(0,(Number(v)||0)+d));}
+    const avgMonths=arr=>{const list=parseMonths(arr||[]);const sum=list.reduce((a,b)=>a+b,0);return list.length?sum/list.length:0;};
+    function qualFlags(qs){
+      const list=(qs||[]).map(q=>q.toLowerCase());
+      const has=(needle)=>list.some(q=>q.includes(needle));
+      const isPfa = has('pfavk') || has('pflegefachassistenz') || has('pflegeassistenz') || has('pfa');
+      const isPfk = has('pfk') || has('pflegefachkraft') || has('pflegefachfrau') || has('pflegefachmann') || has('examin') || has('gesundheits');
+      return { isPfk, isPfa };
+    }
+
+    function buildDeptMetrics(entries){
+      const filtered=(entries||[]).filter(e=>e.include!==false && e.dept);
+      const map=new Map();
+      filtered.forEach(e=>{
+        const avg=avgMonths(e.months||e.values||[]);
+        const { isPfk, isPfa } = qualFlags(normalizeQuals(e.qual));
+        if(!map.has(e.dept)) map.set(e.dept,{dept:e.dept,pfk:0,pfa:0,months:Array(12).fill(0)});
+        const row=map.get(e.dept);
+        const months=parseMonths(e.months||e.values||[]);
+        months.forEach((v,i)=>row.months[i]+=v||0);
+        if(isPfk && isPfa){row.pfk+=avg/2;row.pfa+=avg/2;}
+        else if(isPfa){row.pfa+=avg;}
+        else{row.pfk+=avg;}
+      });
+      return Array.from(map.values()).map(r=>({...r,total:(r.pfk||0)+(r.pfa||0)})).filter(r=>r.total>0).sort((a,b)=>b.total-a.total);
+    }
+
+    function updateDeptOptions(depts){
+      if(!els.deptSelect)return;
+      const prev=els.deptSelect.value||state.dept||'__all__';
+      const opts=['__all__',...sortDepts(depts)];
+      const html=opts.map(v=>`<option value="${v}" ${v===prev?'selected':''}>${v==='__all__'?'Alle Stationen':v}</option>`).join('');
+      els.deptSelect.innerHTML=html;
+      if(els.chartsDeptSelect)els.chartsDeptSelect.innerHTML=html;
+      state.dept=opts.includes(prev)?prev:'__all__';
+      els.deptSelect.value=state.dept;
+      if(els.chartsDeptSelect)els.chartsDeptSelect.value=state.dept;
+      els.heroDeptLabel.textContent=state.dept==='__all__'?'Alle':state.dept;
+    }
+
+    function updateQualFilterOptions(){if(!els.qualFilter)return;const prev=els.qualFilter.value;const set=new Set();(state.allEntries||[]).forEach(e=>normalizeQuals(e.qual).forEach(q=>q&&set.add(q)));const opts=['__all__',...Array.from(set).sort((a,b)=>a.localeCompare(b,'de'))];els.qualFilter.innerHTML=opts.map(v=>`<option value="${v}" ${v===prev?'selected':''}>${v==='__all__'?'Alle':v}</option>`).join('');}
+
+    function renderHeatmap(entries){
+      const valid=(entries||[]).filter(e=>e.include!==false && e.dept);
+      const avgMonths=arr=>{const list=parseMonths(arr||[]);return list.length?list.reduce((a,b)=>a+b,0)/list.length:0;};
+      const byDept=new Map();
+      valid.forEach(e=>{
+        const avg=avgMonths(e.months||e.values||[]);
+        const { isPfk, isPfa } = qualFlags(normalizeQuals(e.qual));
+        if(!byDept.has(e.dept)) byDept.set(e.dept,{dept:e.dept,pfk:0,pfa:0});
+        const row=byDept.get(e.dept);
+        if(isPfk && isPfa){row.pfk+=avg/2; row.pfa+=avg/2;}
+        else if(isPfa){row.pfa+=avg;}
+        else{row.pfk+=avg;}
+      });
+      let ratioData=Array.from(byDept.values()).map(r=>({...r,total:(r.pfk||0)+(r.pfa||0)})).filter(r=>r.total>0);
+      if(state.dept && state.dept!=='__all__') ratioData=ratioData.filter(r=>r.dept===state.dept);
+      ratioData.sort((a,b)=>sortDepts([a.dept,b.dept])[0]===a.dept?-1:1);
+      if(state.dept==='__all__'&&ratioData.length){
+        const allPfk=ratioData.reduce((a,r)=>a+r.pfk,0);
+        const allPfa=ratioData.reduce((a,r)=>a+r.pfa,0);
+        ratioData.push({dept:'Gesamt Haus',pfk:allPfk,pfa:allPfa,total:allPfk+allPfa});
+      }
+      if(els.heatmapRatios){
+        if(!ratioData.length){
+          els.heatmapRatios.innerHTML='<div class="hint">Keine Daten</div>';
+        }else{
+          const cards=ratioData.map(r=>{
+            const pfkPct=r.total>0?(r.pfk/r.total)*100:0;
+            const pfaPct=r.total>0?(r.pfa/r.total)*100:0;
+            const pfkW=`${Math.max(4,pfkPct)}%`;
+            const pfaW=`${Math.max(4,pfaPct)}%`;
+            return `<div class="ratio-card">
+                <strong>${r.dept}</strong>
+                <div style="font-size:0.9rem;color:${'var(--muted)'};">PFK: ${fmt(r.pfk)} | PFA: ${fmt(r.pfa)} | VK: ${fmt(r.total)}</div>
+                <div class="ratio-bar"><span class="pfk" style="width:${pfkW};"></span><span class="pfa" style="width:${pfaW};"></span></div>
+                <div style="display:flex;justify-content:space-between;font-size:0.85rem;color:${'var(--muted)'};margin-top:4px;">
+                  <span>PFK ${pfkPct.toFixed(1)}%</span>
+                  <span>PFA ${pfaPct.toFixed(1)}%</span>
+                </div>
+              </div>`;
+          }).join('');
+          els.heatmapRatios.innerHTML=cards;
+        }
+      }
+    }
+
+    function renderRatioCards(metrics){
+      if(!els.ratioGridNew) return;
+      if(!metrics.length){els.ratioGridNew.innerHTML='<div class="hint">Keine Daten</div>';return;}
+      els.ratioGridNew.innerHTML=metrics.map(r=>{
+        const pfkPct=r.total>0?(r.pfk/r.total)*100:0;
+        const pfaPct=r.total>0?(r.pfa/r.total)*100:0;
+        return `<div class="ratio-card">
+          <div class="ratio-header">
+            <div class="ratio-name">${r.dept}</div>
+            <div class="ratio-meta">
+              <span><strong>${fmt(r.total)}</strong> VK gesamt</span>
+              <span>${pfkPct.toFixed(0)} % PFK · ${pfaPct.toFixed(0)} % PFA</span>
+            </div>
+          </div>
+          <div class="ratio-bar">
+            <span class="pfk" style="width:${Math.max(4,pfkPct)}%;">${pfkPct>12?pfkPct.toFixed(0)+'% PFK':''}</span>
+            <span class="pfa" style="width:${Math.max(4,pfaPct)}%;">${pfaPct>12?pfaPct.toFixed(0)+'% PFA':''}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;color:${'var(--muted)'};font-size:0.9rem;">
+            <span><strong>${r.pfk.toFixed(1)}</strong> VK PFK</span>
+            <span><strong>${r.pfa.toFixed(1)}</strong> VK PFA</span>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderDonuts(metrics){
+      if(!els.donutRowNew) return;
+      const top=metrics.slice(0,3);
+      if(!top.length){els.donutRowNew.innerHTML='<div class="hint">Keine Daten</div>';return;}
+      els.donutRowNew.innerHTML=top.map(m=>{
+        const pfkPct=m.total>0?(m.pfk/m.total)*100:0;
+        const pfaPct=100-pfkPct;
+        return `<div class="donut-card">
+          <div class="donut" style="--pfk-angle:${pfkPct*3.6}deg;"><span>${pfkPct.toFixed(0)}%</span></div>
+          <div class="donut-legend">
+            <div><strong>${m.dept}</strong></div>
+            <div class="row"><span class="donut-dot pfk"></span><span>PFK: ${m.pfk.toFixed(1)} VK (${pfkPct.toFixed(0)} %)</span></div>
+            <div class="row"><span class="donut-dot pfa"></span><span>PFA: ${m.pfa.toFixed(1)} VK (${pfaPct.toFixed(0)} %)</span></div>
+            <div style="color:var(--muted);">Gesamt: ${m.total.toFixed(1)} VK</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderPillsNew(metrics){
+      if(!els.pillRowNew) return;
+      const totalPFK=metrics.reduce((a,m)=>a+m.pfk,0);
+      const totalPFA=metrics.reduce((a,m)=>a+m.pfa,0);
+      const totalVK=totalPFK+totalPFA;
+      const pfkQuote=totalVK>0?(totalPFK/totalVK)*100:0;
+      const target=Number(els.globalTarget?.value||2)||2;
+      const avgPerDept=metrics.length?totalVK/metrics.length:0;
+      const coverage=target>0? (avgPerDept/target)*100 :0;
+      const pills=[
+        {label:'VK gesamt Pflege',value:`${fmt(totalVK)} VK`,state:'ok'},
+        {label:'PFK-Quote',value:`${pfkQuote.toFixed(1)} %`,state:pfkQuote>=70?'ok':pfkQuote>=60?'warn':'danger'},
+        {label:'Deckungsgrad Ø/Dept',value:`${coverage.toFixed(0)} %`,state:coverage>=90?'ok':coverage>=75?'warn':'danger'},
+        {label:'PFK VK',value:`${fmt(totalPFK)} VK`,state:'ok'},
+        {label:'PFA VK',value:`${fmt(totalPFA)} VK`,state:'warn'}
+      ];
+      els.pillRowNew.innerHTML=pills.map(p=>`<div class="pill-new">
+        <span class="label">${p.label}</span>
+        <span class="value">${p.value}</span>
+        <span class="badge ${p.state}">${p.state==='ok'?'OK':p.state==='warn'?'Achtung':'Alarm'}</span>
+      </div>`).join('');
+    }
+
+    function renderSparklines(metrics){
+      if(!els.sparkGrid) return;
+      const top=metrics.slice(0,3);
+      if(!top.length){els.sparkGrid.innerHTML='<div class="hint">Keine Daten</div>';return;}
+      const cards=top.map(m=>{
+        const max=Math.max(...m.months,1);
+        const pts=m.months.map((v,i)=>`${(i/11)*100},${30-(v/max)*30}`).join(' ');
+        const pfkPct=m.total>0?(m.pfk/m.total)*100:0;
+        return `<div class="spark-card">
+          <div class="spark-meta"><span>${m.dept}</span><span>${fmt(m.total)} VK</span></div>
+          <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+            <polyline fill="none" stroke="#1f4b82" stroke-width="1.8" points="${pts}" />
+          </svg>
+          <div class="spark-meta"><span>PFK-Anteil</span><span>${pfkPct.toFixed(0)} %</span></div>
+        </div>`;
+      }).join('');
+      els.sparkGrid.innerHTML=cards;
+    }
+
+    function renderCapacity(metrics){
+      if(!els.capacityRow) return;
+      const target=Number(els.globalTarget?.value||2)||2;
+      if(!metrics.length){els.capacityRow.innerHTML='<div class="hint">Keine Daten</div>';return;}
+      const cards=metrics.slice(0,3).map(m=>{
+        const coverage=target>0?(m.total/target)*100:0;
+        const height=Math.max(0,Math.min(100,coverage));
+        const status=coverage>=100?'ok':coverage>=80?'warn':'danger';
+        const statusLabel=status==='ok'?'stabil':status==='warn'?'kritisch':'Handlungsbedarf';
+        const color=status==='ok'?'#16a34a':status==='warn'?'#d97706':'#b91c1c';
+        return `<div class="capacity-card">
+          <div class="capacity-label" style="font-weight:700;">${m.dept}</div>
+          <div style="display:flex;gap:10px;align-items:flex-end;">
+            <div class="thermo"><div class="thermo-fill" style="height:${height}%;"></div></div>
+            <div style="color:var(--muted);font-size:0.9rem;">
+              Deckungsgrad: <strong>${coverage.toFixed(0)} %</strong><br/>
+              Ziel (VK/Monat): <strong>${target}</strong><br/>
+              Bewertung: <span style="color:${color};">${statusLabel}</span>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+      els.capacityRow.innerHTML=cards;
+    }
+
+    function renderBubbles(metrics){
+      if(!els.bubbleRowNew) return;
+      if(!metrics.length){els.bubbleRowNew.innerHTML='<div class="hint">Keine Daten</div>';return;}
+      const max=Math.max(...metrics.map(m=>m.total),1);
+      const bubbles=metrics.slice(0,6).map(m=>{
+        const size=50 + (m.total/max)*50;
+        return `<div class="bubble" style="width:${size}px;height:${size}px;">
+          <div>${m.dept}</div>
+          <div style="font-weight:700;">${m.total.toFixed(1)}</div>
+          <div class="bubble-label">VK</div>
+        </div>`;
+      }).join('');
+      els.bubbleRowNew.innerHTML=bubbles;
+    }
+
+    function renderLineChartSvg(actual,forecast){
+      if(!els.lineChartSvg) return;
+      if(!actual.length){els.lineChartSvg.innerHTML='';return;}
+      const width=100,height=40;
+      const max=Math.max(...actual,...forecast,1);
+      const pts=array=>array.map((v,i)=>`${(i/(array.length-1||1))*width},${height- (v/max)*30 -5}`).join(' ');
+      const lineActual=`<polyline fill="none" stroke="#22c55e" stroke-width="1.6" points="${pts(actual)}" />`;
+      const lineForecast=forecast.length?`<polyline fill="none" stroke="#38bdf8" stroke-dasharray="2 2" stroke-width="1.4" points="${pts(forecast)}" />`:'';
+      els.lineChartSvg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+      els.lineChartSvg.innerHTML=lineActual+lineForecast;
+    }
+    function renderDashLines(actual,forecast,scenario){
+      const svg=els.dashLineChart;
+      if(!svg)return;
+      const width=svg.clientWidth||svg.parentElement.clientWidth||900;
+      const height=320;
+      const pad={top:20,right:20,bottom:30,left:40};
+      const innerW=Math.max(1,width-pad.left-pad.right);
+      const innerH=Math.max(1,height-pad.top-pad.bottom);
+      const n=12;
+      const series=[actual||[],forecast||[],scenario||[]];
+      const max=Math.max(...series.flat().map(v=>Number(v)||0),1);
+      const x=i=>pad.left + (i/(n-1||1))*innerW;
+      const y=v=>pad.top + innerH - (Math.max(0,v)/max)*innerH;
+      const buildLine=arr=>arr.map((v,i)=>`${x(i)},${y(Number(v)||0)}`).join(' ');
+      const colors=['#1f4b82','#f9be00','#0ea5e9'];
+      const lines=series.map((arr,idx)=>{
+        if(!arr.length) return '';
+        return `<polyline fill="none" stroke="${colors[idx]}" stroke-width="2.2" points="${buildLine(arr)}" />`;
+      }).join('');
+      svg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+      svg.innerHTML=lines;
+    }
+
+    function renderGlassCards(metrics){
+      if(!els.glassGrid) return;
+      const totalPFK=metrics.reduce((a,m)=>a+m.pfk,0);
+      const totalPFA=metrics.reduce((a,m)=>a+m.pfa,0);
+      const totalVK=totalPFK+totalPFA;
+      const pfkQuote=totalVK>0?(totalPFK/totalVK)*100:0;
+      const cards=[
+        {title:'VK gesamt Pflege',value:`${fmt(totalVK)} VK`,label:'Alle Stationen summiert.'},
+        {title:'PFK-Quote',value:`${pfkQuote.toFixed(1)} %`,label:'Zielkorridor 70–80 %.'},
+        {title:'PFK VK',value:`${fmt(totalPFK)} VK`,label:'Pflegefachkräfte gesamt.'},
+        {title:'PFA VK',value:`${fmt(totalPFA)} VK`,label:'Pflegeassistenz gesamt.'},
+      ];
+      els.glassGrid.innerHTML=cards.map(c=>`<div class="glass-card">
+        <div class="glass-card-title">${c.title}</div>
+        <div class="glass-card-value">${c.value}</div>
+        <div class="glass-card-label">${c.label}</div>
+      </div>`).join('');
+    }
+
+    async function savePlanTotal(){
+      if(!supabaseClient || !PARAM_TABLE){setStatus('Supabase/Param-Tabelle nicht verf&uuml;gbar.', false);return;}
+      const year = clampYear(els.planYearSelect?.value || state.year);
+      const value = parseFloat(els.planTotalInput?.value||'0')||0;
+      const { error } = await supabaseClient
+        .from(PARAM_TABLE)
+        .upsert({ dept:'Dienstart 01', year, wirtschaftsplan_vk:value }, { onConflict:'dept,year' });
+      if(error){setStatus(error.message,false);return;}
+      planTotalVal = value;
+      if(els.planTotalValue) els.planTotalValue.textContent = fmt(value)+' VK';
+      setStatus('Wirtschaftsplan gespeichert.', true);
+      renderPlanSummary();
+    }
+
+    async function loadPlanTotal(){
+      if(!supabaseClient || !PARAM_TABLE){
+        if(els.planTotalValue) els.planTotalValue.textContent='-';
+        return;
+      }
+      const { data, error } = await supabaseClient
+        .from(PARAM_TABLE)
+        .select('wirtschaftsplan_vk')
+        .eq('dept','Dienstart 01')
+        .eq('year', state.year)
+        .limit(1)
+        .maybeSingle();
+      if(error){setStatus(error.message,false);return;}
+      const val = data?.wirtschaftsplan_vk ?? 0;
+      planTotalVal = val;
+      if(els.planTotalValue) els.planTotalValue.textContent = fmt(val)+' VK';
+      if(els.planTotalInput) els.planTotalInput.value = val;
+      renderPlanSummary();
+    }
+
+    function renderPlanEditor(depts){
+      if(!els.planTable) return;
+      const body=els.planTable.querySelector('tbody');
+      const list=depts&&depts.length?depts:[];
+      planDepts = list;
+      if(!list.length){body.innerHTML='<tr><td colspan="2">Keine Stationen gefunden.</td></tr>';return;}
+      const rows=list.map(dept=>{
+        const plan=getPlanValue(dept);
+        return `<tr>
+          <td style="padding:8px 8px;border-bottom:1px solid var(--line);">${dept}</td>
+          <td style="padding:8px 8px;border-bottom:1px solid var(--line);text-align:right;">
+            <input type="number" step="0.01" data-plan-dept="${dept.replace(/"/g,'&quot;')}" value="${plan.toFixed(2)}" style="width:120px;padding:8px;border-radius:10px;border:1px solid var(--line);" />
+          </td>
+        </tr>`;
+      }).join('');
+      body.innerHTML=rows;
+      renderPlanSummary(list);
+    }
+
+    function renderPlanSummary(depts=[]){
+      if(!els.planSummary) return;
+      const sum = (depts||[]).reduce((acc,d)=>acc + getPlanValue(d),0);
+      const rest = planTotalVal - sum;
+      els.planSummary.textContent = `Vergeben: ${fmt(sum)} VK · Rest: ${fmt(rest)} VK`;
+    }
+
+    function initScenarioInputs(){
+      if(!els.scenarioInputs) return;
+      els.scenarioInputs.innerHTML = MONTHS.map((m,i)=>`<label>${m}<input type="number" step="0.1" data-scen-month="${i}" value="${(scenarioDeltas[i]||0).toFixed(1)}" /></label>`).join('');
+      els.scenarioInputs.querySelectorAll('input[data-scen-month]').forEach(inp=>{
+        inp.addEventListener('input', ()=>{
+          const idx=Number(inp.dataset.scenMonth);
+          const val=parseFloat(inp.value)||0;
+          scenarioDeltas[idx]=val;
+          recalcScenario();
+        });
+      });
+      if(els.sinAmp) els.sinAmp.addEventListener('input', ()=>{
+        els.sinAmpLabel.textContent = `${els.sinAmp.value} %`;
+        recalcScenario();
+      });
+      if(els.sinToggle) els.sinToggle.addEventListener('change', recalcScenario);
+    }
+
+    function recalcScenario(actualMonths, forecastMonths){
+      const actual = Array.isArray(actualMonths) ? actualMonths : aggregateMonths(state.allEntries,state.dept);
+      const baseForecast = Array.isArray(forecastMonths) && forecastMonths.length
+        ? forecastMonths
+        : (forecastCache.length ? forecastCache : linearForecast(actual,12));
+      const ampPct = els.sinAmp ? Number(els.sinAmp.value)||0 : 0;
+      const useSin = els.sinToggle ? els.sinToggle.checked : false;
+      const sinBonus = new Array(12).fill(0).map((_,i)=>{
+        if(!useSin) return 0;
+        // peak around Dec/Jan
+        const phase = (i/12)*Math.PI*2;
+        return Math.sin(phase - Math.PI/2);
+      });
+      const maxSin = Math.max(...sinBonus.map(v=>Math.abs(v)))||1;
+      const normalizedSin = sinBonus.map(v=>v/maxSin);
+      // Krankheitsausfall wirkt als Reduktion (unterhalb Ist/Forecast)
+      const sinScaled = normalizedSin.map((v,i)=> -Math.abs(v) * (ampPct/100) * (baseForecast[i]||0));
+      const globalDelta = Number(els.scenarioInput?.value||0);
+      let runningAdd = 0;
+      const scenario = baseForecast.map((v,i)=>{
+        runningAdd += Number(scenarioDeltas[i])||0; // Zugänge wirken fortlaufend in Folgemonaten
+        const val = (Number(v)||0) + globalDelta + runningAdd + sinScaled[i];
+        return Math.max(0,val);
+      });
+      if(els.scenarioTotal){
+        const avg = scenario.reduce((a,b)=>a+b,0) / (scenario.length || 1);
+        els.scenarioTotal.textContent = `${fmt(avg)} Ø VK`;
+      }
+      renderDashLines(actual, baseForecast, scenario);
+    }
+
+    async function loadPlanValues(){
+      if(!supabaseClient || !PARAM_TABLE){planMap={};return;}
+      const { data, error } = await supabaseClient
+        .from(PARAM_TABLE)
+        .select('dept, wirtschaftsplan_vk')
+        .eq('year', state.year);
+      if(error){setStatus(error.message,false);return;}
+      planMap = {};
+      (data||[]).forEach(row => {
+        if(row.dept && row.dept !== 'Dienstart 01'){
+          planMap[row.dept] = Number(row.wirtschaftsplan_vk)||0;
+        }
+      });
+      renderPlanSummary(planDepts);
+    }
+
+    async function setPlanValueDb(dept,value){
+      if(!supabaseClient || !PARAM_TABLE) return;
+      const { error } = await supabaseClient
+        .from(PARAM_TABLE)
+        .upsert({ dept, year: state.year, wirtschaftsplan_vk:value }, { onConflict:'dept,year' });
+      if(error){setStatus(error.message,false);}
+    }
+
+    function renderDashLines(actual,forecast,scenario){
+      const svg=els.dashLineChart;
+      if(!svg)return;
+      const width=svg.clientWidth||svg.parentElement.clientWidth||900;
+      const height=320;
+      const pad={top:20,right:20,bottom:30,left:40};
+      const innerW=Math.max(1,width-pad.left-pad.right);
+      const innerH=Math.max(1,height-pad.top-pad.bottom);
+      const n=12;
+      const series=[actual||[],forecast||[],scenario||[]];
+      const max=Math.max(...series.flat().map(v=>Number(v)||0),1);
+      const x=(i)=>pad.left + (i/(n-1||1))*innerW;
+      const y=(v)=>pad.top + innerH - (Math.max(0,v)/max)*innerH;
+      const buildLine=(arr)=>arr.map((v,i)=>`${x(i)},${y(Number(v)||0)}`).join(' ');
+      const colors=['#1f4b82','#f9be00','#0ea5e9'];
+      const lines=series.map((arr,idx)=>{
+        if(!arr.length) return '';
+        return `<polyline fill="none" stroke="${colors[idx]}" stroke-width="2.2" points="${buildLine(arr)}" />`;
+      }).join('');
+      // Y-Achsen-Skala links/rechts mit VK-Werten
+      const tickCount=5;
+      const ticks=Array.from({length:tickCount},(_,i)=>max*(i/(tickCount-1)));
+      const tickLines=ticks.map(v=>{
+        const yy=y(v);
+        return `
+          <line x1="${pad.left-6}" y1="${yy}" x2="${pad.left}" y2="${yy}" stroke="#cbd5e1" stroke-width="1" />
+          <text x="${pad.left-8}" y="${yy+4}" font-size="11" fill="#475569" text-anchor="end">${fmt(v)}</text>
+          <line x1="${width-pad.right}" y1="${yy}" x2="${width-pad.right+6}" y2="${yy}" stroke="#cbd5e1" stroke-width="1" />
+          <text x="${width-pad.right+8}" y="${yy+4}" font-size="11" fill="#475569" text-anchor="start">${fmt(v)}</text>`;
+      }).join('');
+      svg.setAttribute('viewBox',`0 0 ${width} ${height}`);
+      svg.innerHTML=`<g>${tickLines}</g>${lines}`;
+    }
+    function renderGroupedBars(actual){const svg=els.groupedChart;if(!svg)return;const width=svg.clientWidth||svg.parentElement.clientWidth||900;const height=320;const pad={top:20,right:16,bottom:30,left:32};const innerW=Math.max(1,width-pad.left-pad.right);const innerH=Math.max(1,height-pad.top-pad.bottom);const n=12;const max=Math.max(...actual,1);const colW=innerW/n;const barW=Math.max(12,colW*0.5);let bars='';for(let i=0;i<n;i++){const x0=pad.left+colW*i;const val=actual[i]||0;const h=Math.max(4,(val/max)*innerH);const x=x0+(colW-barW)/2;const y=pad.top+innerH-h;bars+=`<rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="4" fill="#1f4b82"><title>${MONTHS[i]}: ${fmt(val)}</title></rect>`;}svg.setAttribute('viewBox',`0 0 ${width} ${height}`);svg.innerHTML=bars;}
+    function renderBubbleChart(actual,forecast){if(!els.bubbleChart)return;const svg=els.bubbleChart;const width=svg.clientWidth||svg.parentElement.clientWidth||600;const height=220;svg.setAttribute('viewBox',`0 0 ${width} ${height}`);const max=Math.max(...actual,...forecast,1);const colWidth=width/Math.max(1,actual.length);let circles='';actual.forEach((v,i)=>{const x=i*colWidth+colWidth/2;const y=height-(v/max)*(height-40)-20;const r=Math.max(6,Math.sqrt(Math.abs(v))*1.5);circles+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#1f4b82" fill-opacity="0.65"><title>${MONTHS[i]} Ist: ${fmt(v)}</title></circle>`;});forecast.forEach((v,i)=>{const x=i*colWidth+colWidth/2+6;const y=height-(v/max)*(height-40)-20;const r=Math.max(6,Math.sqrt(Math.abs(v))*1.5);circles+=`<circle cx="${x}" cy="${y}" r="${r}" fill="#f9be00" fill-opacity="0.55"><title>${MONTHS[i]} Forecast: ${fmt(v)}</title></circle>`;});svg.innerHTML=circles;}
+    function renderTable(actual,forecast,scenario,cA,cF,cS){const hasS=Array.isArray(scenario)&&scenario.length;const rows=[];rows.push(`<tr><th>Monat</th><th>Ist</th><th>Forecast</th><th>Szenario</th><th>Ist kum.</th><th>Forecast kum.</th><th>Szenario kum.</th></tr>`);MONTHS.forEach((m,i)=>{rows.push(`<tr><td>${m}</td><td>${fmt(actual[i]||0)}</td><td>${fmt(forecast[i]||0)}</td><td>${hasS?fmt(scenario[i]||0):'-'}</td><td>${fmt(cA[i]||0)}</td><td>${fmt(cF[i]||0)}</td><td>${hasS?fmt(cS[i]||0):'-'}</td></tr>`);});els.monthsTable.innerHTML=rows.join('');}
+    function renderHintsList(actual,forecast){const hints=[];const total=actual.reduce((a,b)=>a+b,0);const peak=Math.max(...actual,0);const idx=actual.indexOf(peak);if(peak>0&&idx>=0)hints.push(`Peak: ${MONTHS[idx]} mit ${fmt(peak)} VK.`);const avgF=forecast.reduce((a,b)=>a+b,0)/forecast.length||0;if(avgF<total/12)hints.push('Trend fallend: Forecast unter dem aktuellen Monatsmittel.');if(avgF>total/12)hints.push('Trend steigend: Forecast über dem aktuellen Monatsmittel.');return hints;}
+    function renderQualTiles(entries){if(!els.qualSummaryTiles)return;const active=entries.filter(e=>e.include!==false);const counts={};active.forEach(item=>normalizeQuals(item.qual).forEach(q=>{counts[q]=(counts[q]||0)+1;}));const totalQuals=Object.keys(counts).length;const totalPeople=active.length;const praxis=Object.entries(counts).filter(([q])=>q.toLowerCase().includes('praxisanleitung')).reduce((a,[,c])=>a+c,0);const hygiene=Object.entries(counts).filter(([q])=>q.toLowerCase().includes('hygiene')).reduce((a,[,c])=>a+c,0);els.qualSummaryTiles.innerHTML=[{label:'Mitarbeitende aktiv',value:totalPeople},{label:'Unterschiedliche Qualifikationen',value:totalQuals},{label:'Praxisanleitung',value:praxis},{label:'Hygiene',value:hygiene}].map(t=>`<div class="cockpit-tile"><span>${t.label}</span><strong>${t.value}</strong></div>`).join('');}
+    function renderQualTables(currentEntries,allEntries,filterQual='__all__'){if(els.qualDeptLabel)els.qualDeptLabel.textContent=state.dept||'-';if(els.qualYearLabel)els.qualYearLabel.textContent=state.year||'-';if(els.qualSiteLabel)els.qualSiteLabel.textContent=SITE_LABEL||'-';const build=list=>list.filter(e=>e.include!==false).map(e=>({dept:e.dept||state.dept||'-',name:(e.name||'').trim()||(e.personalNumber||'Unbenannt'),personalNumber:e.personalNumber||'',qualList:normalizeQuals(e.qual),type:e.type||'Mitarbeiter',months:e.months||e.values||[]}));const cur=build(currentEntries);const all=build(allEntries);const filtCur=filterQual==='__all__'?cur:cur.filter(e=>e.qualList.includes(filterQual));const filtAll=filterQual==='__all__'?all:all.filter(e=>e.qualList.includes(filterQual));if(els.qualDeptTable){if(!filtCur.length)els.qualDeptTable.innerHTML='<tr><td>Keine Qualifikationen erfasst.</td></tr>';else{const head='<tr><th>Name</th><th>Qualifikationen</th><th>Typ</th></tr>';const body=filtCur.map(r=>{const label=r.personalNumber?`${r.name} (${r.personalNumber})`:r.name;return `<tr><td>${label}</td><td>${r.qualList.join(', ')}</td><td>${r.type}</td></tr>`;}).join('');els.qualDeptTable.innerHTML=`<thead>${head}</thead><tbody>${body}</tbody>`;}}if(els.qualSummaryTable){if(!filtAll.length)els.qualSummaryTable.innerHTML='<tr><td>Keine Qualifikationen erfasst.</td></tr>';else{const by={};filtAll.forEach(r=>r.qualList.forEach(q=>{const k=`${q}|||${r.dept}`;by[k]=(by[k]||0)+1;}));const totals={};Object.entries(by).forEach(([k,c])=>{const [q]=k.split('|||');totals[q]=(totals[q]||0)+c;});const rows=[...Object.entries(by).map(([k,c])=>{const [q,d]=k.split('|||');return {q,d,c,isTotal:false};}).sort((a,b)=>a.q.localeCompare(b.q,'de')||a.d.localeCompare(b.d,'de')),...Object.entries(totals).map(([q,c])=>({q,d:'Gesamt Haus',c,isTotal:true}))];const head='<tr><th>Qualifikation</th><th>Abteilung</th><th>Anzahl</th></tr>';const body=rows.map(r=>`<tr${r.isTotal?' class="is-total"':''}><td>${r.q}</td><td>${r.d}</td><td style="text-align:right;">${r.c}</td></tr>`).join('');els.qualSummaryTable.innerHTML=`<thead>${head}</thead><tbody>${body}</tbody>`;}}if(els.qualPeopleTable){if(!filtAll.length)els.qualPeopleTable.innerHTML='<tr><td>Keine Qualifikationen erfasst.</td></tr>';else{const rows=filtAll.sort((a,b)=>a.dept.localeCompare(b.dept,'de')||a.name.localeCompare(b.name,'de'));const head='<tr><th>Mitarbeiter:in</th><th>Abteilung</th><th>Qualifikationen</th><th>Typ</th></tr>';const body=rows.map(r=>{const label=r.personalNumber?`${r.name} (${r.personalNumber})`:r.name;return `<tr><td>${label}</td><td>${r.dept}</td><td>${r.qualList.join(', ')}</td><td>${r.type}</td></tr>`;}).join('');els.qualPeopleTable.innerHTML=`<thead>${head}</thead><tbody>${body}</tbody>`;}}renderQualTiles(filtAll);}
+
+    
+    async function loadMeta(){
+      const inv = await loadInventory();
+      const list = inv.years && inv.years.length ? inv.years : [new Date().getFullYear()];
+      const yearHtml = list.map(y=>`<option value="${y}">${y}</option>`).join('');
+      if(els.yearSelect) els.yearSelect.innerHTML=yearHtml;
+      if(els.chartsYearSelect) els.chartsYearSelect.innerHTML=yearHtml;
+      if(els.planYearSelect) els.planYearSelect.innerHTML = yearHtml;
+      state.year=clampYear(list[0]||new Date().getFullYear());
+      if(els.yearSelect) els.yearSelect.value=state.year;
+      if(els.chartsYearSelect) els.chartsYearSelect.value=state.year;
+      if(els.planYearSelect) els.planYearSelect.value = state.year;
+      if(els.heroYearLabel) els.heroYearLabel.textContent=state.year;
+      if(els.heroSiteLabel) els.heroSiteLabel.textContent='ALLE';
+      if(els.qualSiteLabel) els.qualSiteLabel.textContent='ALLE';
+      // falls Dept-Optionen noch leer sind: Standard setzen
+      ensureDefaultOptions();
+    }
+
+
+    function aggregateMonths(entries,deptFilter='__all__'){const months=Array(12).fill(0);entries.filter(e=>e.include!==false&&(deptFilter==='__all__'||e.dept===deptFilter)).forEach(e=>parseMonths(e.months||e.values||[]).forEach((v,i)=>months[i]+=v||0));return months;}
+
+    
+    
+    async function loadData(){
+      const activeFilter=els.qualFilter?els.qualFilter.value:'__all__';
+      setStatus('Lade Daten ...',true);
+      if(!HAS_SITE){setStatus('Kein Mandant gesetzt. Bitte einloggen.', false); return;}
+      // Jahr aus Dropdown übernehmen
+      if(!state.year && els.yearSelect && els.yearSelect.value){
+        syncYear(els.yearSelect.value);
+      }
+      if(state.year < YEAR_MIN || state.year > YEAR_MAX){setStatus(`Jahr ${state.year} nicht verfuegbar (erwartet ${YEAR_MIN}-${YEAR_MAX}).`,false);}
+
+      const cols=dbMonthCols(state.year);
+      const allEntries=[];
+      const deptSet=new Set();
+      const selectCols=['dept','personal_number','name','qual',...cols].join(',');
+      if(!supabaseClient){setStatus('Supabase nicht konfiguriert.', false); return;}
+
+      let loaded=false;
+      // Mandanten-Tabelle direkt (stellenplan_employees_<mandant>), ohne Demo
+      try{
+        const table=tableName('stellenplan_employees');
+        const {data:rows,error}=await supabaseClient.from(table).select(selectCols);
+        if(error) throw new Error(error.message||'Laden fehlgeschlagen.');
+        (rows||[]).forEach(e=>{
+          const months=cols.map(c=>Number(e[c]||0));
+          const site=SITE_CODE.toUpperCase();
+          const entry={site,dept:e.dept||'Unbekannt',year:state.year,personalNumber:e.personal_number||'',name:e.name||e.personal_number||'Mitarbeiter:in',qual:e.qual||'',include:e.include!==false,months,values:months,type:'Mitarbeiter'};
+          allEntries.push(entry);
+          if(entry.dept) deptSet.add(entry.dept);
+        });
+        loaded=allEntries.length>0;
+      }catch(err){
+        setStatus(err.message||'Laden fehlgeschlagen.', false);
+        return;
+      }
+
+      if(!loaded){ setStatus('Keine Daten geladen (Tabelle leer oder nicht erreichbar).', false); return; }
+      setStatus('Fertig.');
+      state.allEntries = allEntries;
+      const depts=Array.from(deptSet).sort((a,b)=>a.localeCompare(b,'de'));
+      updateDeptOptions(depts);
+      updateQualFilterOptions();
+      state.dept = (state.dept && depts.includes(state.dept)) ? state.dept : '__all__';
+      if(els.deptSelect) els.deptSelect.value = state.dept;
+
+      await loadPlanValues();
+      renderPlanEditor(depts);
+      await loadPlanTotal();
+
+      const dept=state.dept;
+      const activeEntries=state.allEntries.filter(e=>e.include!==false&&(dept==='__all__'||e.dept===dept));
+      const combined=aggregateMonths(state.allEntries,dept);
+      const forecast=linearForecast(combined,12);
+      forecastCache = forecast.slice();
+      const total=combined.reduce((a,b)=>a+b,0);
+      const scenarioDelta=Number(els.scenarioInput?.value||0);
+      const scenario=applyScenario(forecast,scenarioDelta);
+      const cumA=combined.reduce((acc,v,i)=>{acc.push((acc[i-1]||0)+v);return acc;},[]);
+      const cumF=forecast.reduce((acc,v,i)=>{acc.push((acc[i-1]||0)+v);return acc;},[]);
+      const cumS=scenario.reduce((acc,v,i)=>{acc.push((acc[i-1]||0)+v);return acc;},[]);
+      const peak=Math.max(...combined,0);
+      const peakIdx=combined.indexOf(peak);
+
+      const uniqueHeads=new Set();
+      activeEntries.forEach(e=>{const key=`${e.site||''}:${e.personalNumber||e.name||''}`;uniqueHeads.add(key);});
+
+      els.kpiTotal.textContent=fmt(total);
+      els.kpiForecast.textContent=fmt(forecast.reduce((a,b)=>a+b,0));
+      els.kpiPeak.textContent=peak>0?`${MONTHS[peakIdx]} (${fmt(peak)})`:'-';
+      els.heroTotal.textContent=fmt(total);
+      els.heroPeople.textContent=uniqueHeads.size;
+      els.heroPeak.textContent=peak>0?`${MONTHS[peakIdx]} (${fmt(peak)})`:'-';
+
+      renderTable(combined,forecast,scenarioDelta!==0?scenario:null,cumA,cumF,cumS);
+      recalcScenario(combined, forecast);
+      renderGroupedBars(combined);
+      renderBubbleChart(combined,forecast);
+      const scopedEntries=state.dept==='__all__'?state.allEntries:state.allEntries.filter(e=>e.dept===state.dept);
+      const metrics=buildDeptMetrics(scopedEntries);
+      renderRatioCards(metrics);
+      renderDonuts(metrics);
+      renderPillsNew(metrics);
+      renderSparklines(metrics);
+      renderCapacity(metrics);
+      renderBubbles(metrics);
+      renderLineChartSvg(combined,forecast);
+      renderGlassCards(metrics);
+      renderHeatmap(state.allEntries);
+
+      const hints=[...renderHintsList(combined,forecast),...computeQualAlerts(state.allEntries)];
+      if(els.hints){els.hints.innerHTML=hints.length?hints.map(h=>`<li>${h}</li>`).join(''):'<li>Keine Hinweise.</li>';}
+
+      renderQualTables(activeEntries,state.allEntries,activeFilter);
+    }
+function computeQualAlerts(entries){const alerts=[];const active=(entries||[]).filter(e=>e.include!==false);const by=active.reduce((acc,e)=>{(acc[e.dept]=acc[e.dept]||[]).push(e);return acc;},{});Object.entries(by).forEach(([dept,list])=>{const total=list.length||1;const count=kw=>list.filter(e=>normalizeQuals(e.qual).some(q=>q.toLowerCase().includes(kw))).length;const praxis=count('praxisanleitung');const hygiene=count('hygiene');const anae=count('anästhesie')+count('anaesthesie')+count('intensiv');const notfall=count('notfall');const qA=anae/total;const qN=notfall/total;if(praxis<=1)alerts.push(`Station ${dept}: Nur ${praxis} Praxisanleiter:in erfasst (Frühwarnung).`);if(hygiene<=2)alerts.push(`Station ${dept}: Nur ${hygiene} Hygienefachkraft/Fachkräfte erfasst (Frühwarnung).`);if(qA<0.5)alerts.push(`Station ${dept}: Fachweiterbildung Anästhesie/Intensiv unter 50% (${Math.round(qA*100)}%).`);if(qN<0.5)alerts.push(`Station ${dept}: Fachweiterbildung Notfallpflege unter 50% (${Math.round(qN*100)}%).`);});return alerts;}
+
+    function syncDept(val){state.dept=val;if(els.deptSelect)els.deptSelect.value=val;if(els.chartsDeptSelect)els.chartsDeptSelect.value=val;}
+    function syncYear(val){state.year=clampYear(val);if(els.yearSelect)els.yearSelect.value=state.year;if(els.chartsYearSelect)els.chartsYearSelect.value=state.year;if(els.planYearSelect)els.planYearSelect.value=state.year;}
+    function bindEvents(){
+      els.deptSelect.addEventListener('change',()=>{syncDept(els.deptSelect.value);loadData().catch(err=>setStatus(err.message,false));});
+      if(els.chartsDeptSelect)els.chartsDeptSelect.addEventListener('change',()=>{syncDept(els.chartsDeptSelect.value);loadData().catch(err=>setStatus(err.message,false));});
+      els.yearSelect.addEventListener('change',()=>{syncYear(els.yearSelect.value);loadData().catch(err=>setStatus(err.message,false));});
+      if(els.chartsYearSelect)els.chartsYearSelect.addEventListener('change',()=>{syncYear(els.chartsYearSelect.value);loadData().catch(err=>setStatus(err.message,false));});
+      els.btnRefresh.addEventListener('click',()=>{loadData().catch(err=>setStatus(err.message,false));});
+      els.scenarioInput.addEventListener('input',()=>{loadData().catch(err=>setStatus(err.message,false));});
+      els.globalTarget.addEventListener('input',()=>{renderHeatmap(state.allEntries);});
+      if(els.qualFilter){els.qualFilter.addEventListener('change',()=>{const v=els.qualFilter.value;renderQualTables(state.allEntries.filter(e=>state.dept==='__all__'||e.dept===state.dept),state.allEntries,v);});}
+      els.tabButtons.forEach(btn=>btn.addEventListener('click',()=>setActiveTab(btn.dataset.tabBtn)));
+      if(els.planTable){
+        els.planTable.addEventListener('input',event=>{
+          const target=event.target;
+          if(!(target instanceof HTMLInputElement)) return;
+          const dept=target.dataset.planDept||'';
+          const val=parseFloat(target.value);
+          const num=Number.isFinite(val)?val:0;
+          planMap[dept]=num;
+          setPlanValueDb(dept,num);
+          const depts=Array.from(els.planTable.querySelectorAll('input[data-plan-dept]')).map(i=>i.dataset.planDept||'');
+          renderPlanSummary(depts);
+        });
+      }
+      if(els.planSaveBtn){
+        els.planSaveBtn.addEventListener('click', ()=>{savePlanTotal().catch(err=>setStatus(err.message,false));});
+      }
+      if(els.planYearSelect){
+        els.planYearSelect.addEventListener('change', ()=>{
+          syncYear(els.planYearSelect.value);
+          loadData().catch(err=>setStatus(err.message,false));
+        });
+      }
+      initScenarioInputs();
+    }
+
+    (async function init(){
+      setActiveTab(state.currentTab||'dashboard');
+      bindEvents();
+      if(!supabaseClient){setStatus('Supabase nicht konfiguriert. Bitte URL/Key setzen.',false);}
+      els.heroSiteLabel.textContent=SITE_LABEL||'ALLE';
+      els.qualSiteLabel.textContent=SITE_LABEL||'ALLE';
+      try{
+        await loadMeta();
+        // Daten nur laden, wenn Supabase vorhanden
+        if(supabaseClient){
+          await loadData();
+          await loadTransfers();
+        }else{
+          setStatus('Nur lokale Anzeige. Bitte Supabase-URL/Key setzen und \"Neu laden\" klicken.', false);
+        }
+      }catch(err){
+        setStatus(err.message,false);
+      }
+    })();
+  </script>
+</body>
+</html>

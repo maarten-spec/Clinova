@@ -1,0 +1,773 @@
+<section class="card page-frame" id="ppbv-tool">
+  <div class="ppug-card">
+    <header class="ppbv-hero card section-header">
+      <div>
+        <span class="badge">PPBV Erwachsene</span>
+        <h2>CliniCon &ndash; PPBV-Berechner</h2>
+        <p class="section-lead">Tagschicht nach PPBV, Nachtdienst nach PPUG &ndash; komplett im Layout des PPUG-Rechners.</p>
+        <p class="section-lead">Stand 12.06.2024 (&Auml;nderungen 05.12.2024) &middot; VZ&Auml;-Bezugsgr&ouml;&szlig;e &sect;2 Abs.7 (38,5 h/Woche) &middot; Tagschicht &sect;4 Abs.2 &middot; Nachtschicht &sect;4 Abs.3.</p>
+      </div>
+      <button id="btnFAQ" type="button" class="btn ghost">FAQ &ouml;ffnen</button>
+    </header>
+
+    <section class="ppbv-section">
+      <div class="section-head">
+        <div>
+          <h3>Tagschicht &ndash; PPBV Erwachsene (&sect;4 Abs.2 / &sect;12)</h3>
+          <p class="muted">Grundwert + Patientengruppen + Fallwerte.</p>
+        </div>
+        <button id="btnResetTag" type="button" class="btn ghost">Zur&uuml;cksetzen</button>
+      </div>
+      <div class="row">
+        <label class="field span-4">Vollstation&auml;r gesamt
+          <input id="vollGesamt" type="number" min="0" value="16" />
+        </label>
+        <label class="field span-4">davon Isolation
+          <input id="isoAnzahl" type="number" min="0" value="0" />
+        </label>
+        <label class="field span-4">Teilstation&auml;r (Anzahl)
+          <input id="teilAnzahlDummy" type="number" min="0" value="0" />
+        </label>
+      </div>
+      <div class="row">
+        <label class="field span-4">Aufnahmen vollstation&auml;r / einmalig (&sect;12 Abs.3)
+          <input id="aufnahmenEinmalig" type="number" min="0" value="0" />
+        </label>
+        <label class="field span-4">Teilstation&auml;r regelm&auml;&szlig;ig (&sect;12 Abs.4)
+          <input id="tsRegelmaessig" type="number" min="0" value="0" />
+        </label>
+        <div class="field span-4 add-group">
+          <label>Patientengruppe (&sect;9/&sect;12)</label>
+          <button id="btnAddRow" type="button" class="btn primary">Patientengruppe hinzuf&uuml;gen</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Patientengruppe</th>
+              <th>Voll</th>
+              <th>Teil</th>
+              <th>Min./Pat.</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="groupRows"></tbody>
+        </table>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-tile">
+          <small>Pflegegrundwert</small>
+          <strong><span id="grundwertMin">0</span> Min</strong>
+        </div>
+        <div class="kpi-tile">
+          <small>Gruppen-Minuten</small>
+          <strong><span id="gruppenMin">0</span> Min</strong>
+        </div>
+        <div class="kpi-tile">
+          <small>Fallwerte</small>
+          <strong><span id="fallwertMin">0</span> Min</strong>
+        </div>
+        <div class="kpi-tile highlight">
+          <small>Gesamtminuten Tag</small>
+          <strong><span id="tagMinGesamt">0</span> Min</strong>
+        </div>
+        <div class="kpi-tile">
+          <small>Pflege-Stunden Tag</small>
+          <strong><span id="tagHoursOut">0.00</span> h</strong>
+        </div>
+        <div class="kpi-tile">
+          <small>VZ&Auml; Tag (&Oslash;)</small>
+          <strong><span id="tagFTE">0.00</span></strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="ppbv-section">
+      <div class="section-head">
+        <div>
+          <h3>Nachtschicht &ndash; Empfehlung nach PPUG (&sect;4 Abs.3)</h3>
+          <p class="muted">Dropdown wie beim PPUG-Rechner: Quotient + Hilfskraft-Anteil werden automatisch ber&uuml;cksichtigt.</p>
+        </div>
+        <button id="btnResetNacht" type="button" class="btn ghost">Zur&uuml;cksetzen</button>
+      </div>
+      <div class="row">
+        <label class="field span-6">Bereich (PPUG-Verordnung)
+          <select id="nachtBereich"></select>
+        </label>
+        <label class="field span-3">Nachtstunden (&sect;2 Abs.11)
+          <input id="nachtHours" type="number" min="1" value="8" />
+        </label>
+        <label class="field span-3 checkbox">
+          <input id="isTagesklinik" type="checkbox" /> Tagesklinik / kein Nachtdienst
+        </label>
+      </div>
+      <div class="row">
+        <label class="field span-4">Berechnete Betten
+          <output id="nachtBettenInfo">0</output>
+        </label>
+        <div class="field span-8">
+          <label>PPUG-Nachtratio</label>
+          <p class="muted">Verh&auml;ltnis: <span id="nachtRatioInfo">-</span> &middot; Hilfskr&auml;fte max.: <span id="nachtCapInfo">-</span></p>
+        </div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-tile">
+          <small>Erforderliche Pflegekr&auml;fte (K&ouml;pfe)</small>
+          <strong><span id="nachtKopf">0.00</span></strong>
+        </div>
+        <div class="kpi-tile">
+          <small>Pflege-Stunden Nacht</small>
+          <strong><span id="nachtHoursOut">0.00</span> h</strong>
+        </div>
+        <div class="kpi-tile">
+          <small>VZ&Auml; Nacht (&Oslash;)</small>
+          <strong><span id="nachtFTE">0.00</span></strong>
+        </div>
+        <div class="kpi-tile">
+          <small>Fachpersonen (K&ouml;pfe)</small>
+          <strong><span id="nachtFachSplit">0.00</span></strong>
+        </div>
+        <div class="kpi-tile">
+          <small>Hilfskr&auml;fte (K&ouml;pfe)</small>
+          <strong><span id="nachtHilfSplit">0.00</span></strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="ppbv-section">
+      <div class="section-head">
+        <h3>Ergebnis & Kennzahlen</h3>
+      </div>
+      <div class="kpi-grid summary">
+        <div class="kpi-tile">
+          <small>Tagschicht (PPBV)</small>
+          <strong><span id="resTagFTE">0.00</span> VZ&Auml;</strong>
+        </div>
+        <div class="kpi-tile">
+          <small>Nachtschicht (PPUG)</small>
+          <strong><span id="resNachtFTE">0.00</span> VZ&Auml;</strong>
+        </div>
+        <div class="kpi-tile">
+          <small>Gesamtbedarf</small>
+          <strong><span id="resGesamt">0.00</span> VZ&Auml;</strong>
+        </div>
+        <div class="kpi-tile">
+          <small>Max. Hilfskr&auml;fte (20 %)</small>
+          <strong><span id="resHilfMax">0.00</span> VZ&Auml;</strong>
+        </div>
+        <div class="kpi-tile">
+          <small>Max. Auszubildende (10 %)</small>
+          <strong><span id="resAzubiMax">0.00</span> VZ&Auml;</strong>
+        </div>
+        <div class="kpi-tile ampel-card" id="ampelBox" role="status" aria-live="polite">
+          <div class="ampel-status">
+            <span class="ampel-dot" aria-hidden="true"></span>
+            <div>
+              <small id="ampelLabel">Taganteil</small>
+              <strong class="ampel-value" id="ampelValue">&ndash;</strong>
+            </div>
+          </div>
+          <p class="muted" id="ampelNote">Bewertet den Anteil der Tagschicht am Gesamtbedarf.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
+
+<div class="ppbv-modal" id="faqModal" aria-hidden="true">
+  <div class="modal-backdrop" data-close="faq"></div>
+  <div class="modal-panel">
+    <header>
+      <h3>FAQ &ndash; PPBV / PPUG</h3>
+    </header>
+    <div class="modal-body">
+      <div class="faq-grid">
+        <article class="faq-card">
+          <strong>Wie wird der Pflegegrundwert ermittelt?</strong>
+          <p>Vollstation&auml;re Patientinnen und Patienten flie&szlig;en mit 33 Minuten, Isolationen mit 123 Minuten ein. Teil- und besonderen Gruppen werden zus&auml;tzlich &uuml;ber die Tabelle gewichtet.</p>
+        </article>
+        <article class="faq-card">
+          <strong>Warum PPUG f&uuml;r die Nachtschicht?</strong>
+          <p>Die PPBV kennt keinen ausdr&uuml;cklichen Nacht-Schl&uuml;ssel. Daher orientiert sich die Empfehlung am PPUG-Bereich: Bettenbasis aus der Tagschicht, Betreuungsschl&uuml;ssel gem&auml;&szlig; Verordnung.</p>
+        </article>
+        <article class="faq-card">
+          <strong>Wie komme ich zu VZ&Auml;?</strong>
+          <p>Alle Minuten werden in Stunden umgerechnet und durch die Bezugsgr&ouml;&szlig;e (38,5 Wochenstunden / 7 Kalendertage) geteilt. So ergibt sich ein durchschnittlicher Tagesbedarf an Vollzeit&auml;quivalenten.</p>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <button type="button" class="btn ghost" id="btnFAQClose" data-close="faq">Schlie&szlig;en</button>
+    </footer>
+  </div>
+</div>
+
+<style>
+  #ppbv-tool {
+    padding: 0;
+    overflow: hidden;
+  }
+  #ppbv-tool .ppug-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 18px;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+    width: 100%;
+  }
+  #ppbv-tool .ppbv-hero {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    border-radius: 16px;
+    padding: 20px;
+    background: var(--panel,#fff);
+    border: 1px solid var(--line,#e2e8f0);
+    width: 100%;
+    box-sizing: border-box;
+    align-items: flex-start;
+    box-shadow: var(--shadow,0 18px 36px rgba(15,23,42,.08));
+  }
+  #ppbv-tool .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(37, 99, 235, .35);
+    background: #eef2ff;
+    font-weight: 600;
+    color: #1d4ed8;
+  }
+  #ppbv-tool h2 {
+    margin: 4px 0 8px;
+  }
+  #ppbv-tool .lead {
+    margin: 0;
+    font-weight: 600;
+    color: #0f172a;
+  }
+  #ppbv-tool .muted {
+    margin: 0;
+    color: #64748b;
+    font-size: .92rem;
+  }
+  #ppbv-tool .btn {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-weight: 600;
+    background: #fff;
+    color: #0f172a;
+    cursor: pointer;
+    transition: .18s ease all;
+  }
+  #ppbv-tool .btn:hover {
+    border-color: #2563eb;
+    color: #2563eb;
+  }
+  #ppbv-tool .btn.primary {
+    background: #2563eb;
+    color: #fff;
+    border-color: #2563eb;
+  }
+  #ppbv-tool .btn.primary:hover {
+    filter: brightness(1.05);
+  }
+  #ppbv-tool .btn.ghost {
+    background: transparent;
+  }
+  #ppbv-tool .ppbv-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    background: #f8fafc;
+  }
+  #ppbv-tool .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  #ppbv-tool .row {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 12px;
+  }
+  #ppbv-tool .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: .92rem;
+    color: #475569;
+  }
+  #ppbv-tool .span-3 { grid-column: span 3; }
+  #ppbv-tool .span-4 { grid-column: span 4; }
+  #ppbv-tool .span-6 { grid-column: span 6; }
+  #ppbv-tool .span-8 { grid-column: span 8; }
+  #ppbv-tool .field input,
+  #ppbv-tool select {
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid #d4d4d8;
+    font: inherit;
+  }
+  #ppbv-tool .field input:focus,
+  #ppbv-tool select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, .18);
+  }
+  #ppbv-tool .checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+  #ppbv-tool .table-wrap {
+    overflow: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #fff;
+  }
+  #ppbv-tool table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+  }
+  #ppbv-tool th,
+  #ppbv-tool td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+    font-size: .9rem;
+  }
+  #ppbv-tool th:last-child,
+  #ppbv-tool td:last-child {
+    text-align: right;
+  }
+  #ppbv-tool thead th {
+    background: #f1f5f9;
+    font-weight: 600;
+  }
+  #ppbv-tool .table-select,
+  #ppbv-tool .table-input {
+    width: 100%;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid #cbd5f5;
+    background: #fff;
+  }
+  #ppbv-tool .table-input {
+    text-align: right;
+  }
+  #ppbv-tool .table-minutes {
+    font-weight: 600;
+    color: #475569;
+  }
+  #ppbv-tool .text-right {
+    text-align: right;
+  }
+  #ppbv-tool .link-danger {
+    border: none;
+    background: none;
+    color: #dc2626;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #ppbv-tool .link-danger:hover {
+    text-decoration: underline;
+  }
+  #ppbv-tool .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  #ppbv-tool .kpi-grid.summary {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  #ppbv-tool .kpi-tile {
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  #ppbv-tool .kpi-tile strong {
+    font-size: 1.5rem;
+    color: #0f172a;
+  }
+  #ppbv-tool .kpi-tile.highlight {
+    background: #ecfccb;
+    border-color: #bef264;
+  }
+  #ppbv-tool .ampel-card {
+    background: #f1f5f9;
+    border-color: #cbd5f5;
+  }
+  #ppbv-tool .ampel-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #ppbv-tool .ampel-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: #94a3b8;
+  }
+  #ppbv-tool .ampel-card.success .ampel-dot { background: #10b981; }
+  #ppbv-tool .ampel-card.warn .ampel-dot { background: #f59e0b; }
+  #ppbv-tool .ampel-card.danger .ampel-dot { background: #ef4444; }
+  #ppbv-tool .ampel-value {
+    font-size: 1.75rem;
+  }
+  @media (max-width: 960px) {
+    #ppbv-tool .row {
+      grid-template-columns: 1fr;
+    }
+    #ppbv-tool .span-3,
+    #ppbv-tool .span-4,
+    #ppbv-tool .span-6,
+    #ppbv-tool .span-8 {
+      grid-column: 1 / -1;
+    }
+    #ppbv-tool .ppbv-hero {
+      flex-direction: column;
+    }
+  }
+  .ppbv-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px;
+    z-index: 50;
+  }
+  .ppbv-modal[aria-hidden="false"] {
+    display: flex;
+  }
+  .ppbv-modal .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, .5);
+  }
+  .ppbv-modal .modal-panel {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    width: 100%;
+    border-radius: 18px;
+    background: #fff;
+    box-shadow: 0 25px 40px rgba(15, 23, 42, .25);
+    overflow: hidden;
+  }
+  .ppbv-modal header,
+  .ppbv-modal footer {
+    padding: 18px 24px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .ppbv-modal footer {
+    border-bottom: none;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .ppbv-modal .modal-body {
+    padding: 24px;
+  }
+  .ppbv-modal .faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .ppbv-modal .faq-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+</style>
+
+<script>
+  (() => {
+    const WEEK_HOURS = 38.5;
+    const DAILY_FTE_DIVISOR = WEEK_HOURS / 7;
+    const PFLEGEGRUNDWERT = 33;
+    const PFLEGEGRUNDWERT_ISO = 123;
+    const FALLWERT = 75;
+
+    const GROUP_MINUTES = {
+      "A1/S1": 59,  "A1/S2": 76,  "A1/S3": 112, "A1/S4": 151,
+      "A2/S1": 114, "A2/S2": 131, "A2/S3": 167, "A2/S4": 206,
+      "A3/S1": 203, "A3/S2": 220, "A3/S3": 256, "A3/S4": 295,
+      "A4/S1": 335, "A4/S2": 352, "A4/S3": 388, "A4/S4": 427
+    };
+
+    const PPUG_RULES = [
+      { key: "intensiv", name: "Intensivmedizin", ratioDay: 2, ratioNight: 3, capDay: 5, capNight: 5 },
+      { key: "geriatrie", name: "Geriatrie", ratioDay: 10, ratioNight: 20, capDay: 15, capNight: 20 },
+      { key: "chir_ortho", name: "Allgemeine Chirurgie / Unfallchirurgie / Orthop&auml;die", ratioDay: 10, ratioNight: 20, capDay: 10, capNight: 10 },
+      { key: "innere_kardio", name: "Innere Medizin / Kardiologie", ratioDay: 10, ratioNight: 22, capDay: 10, capNight: 10 },
+      { key: "herzchir", name: "Herzchirurgie", ratioDay: 7, ratioNight: 15, capDay: 5, capNight: 0 },
+      { key: "neuro", name: "Neurologie", ratioDay: 10, ratioNight: 20, capDay: 8, capNight: 8 },
+      { key: "stroke", name: "Neurologische Schlaganfalleinheit", ratioDay: 3, ratioNight: 5, capDay: 0, capNight: 0 },
+      { key: "fruehrehab", name: "Neurologische Fr&uuml;hrehabilitation", ratioDay: 5, ratioNight: 12, capDay: 10, capNight: 10 },
+      { key: "paed_allg", name: "Allgemeine P&auml;diatrie", ratioDay: 6, ratioNight: 10, capDay: 5, capNight: 5 },
+      { key: "paed_spez", name: "Spezielle P&auml;diatrie", ratioDay: 6, ratioNight: 14, capDay: 5, capNight: 5 },
+      { key: "neo", name: "Neonatologische P&auml;diatrie", ratioDay: 3.5, ratioNight: 5, capDay: 5, capNight: 5 },
+      { key: "gyn", name: "Gyn&auml;kologie &amp; Geburtshilfe", ratioDay: 7.5, ratioNight: 15, capDay: 5, capNight: 0 },
+      { key: "hno_rheuma_uro", name: "HNO, Rheumatologie &amp; Urologie", ratioDay: 10, ratioNight: 22, capDay: 10, capNight: 5 },
+      { key: "neurochir", name: "Neurochirurgie", ratioDay: 9, ratioNight: 18, capDay: 10, capNight: 5 }
+    ];
+
+    const $ = (id) => document.getElementById(id);
+    const groupRowsEl = $("groupRows");
+    const nightSelect = $("nachtBereich");
+
+    function formatFixed(value) {
+      return Number.isFinite(value) ? value.toFixed(2) : "0.00";
+    }
+
+    function populateNightAreas() {
+      if (!nightSelect) return;
+      nightSelect.innerHTML = "";
+      PPUG_RULES.forEach((rule) => {
+        const opt = document.createElement("option");
+        opt.value = rule.key;
+        opt.textContent = rule.name;
+        nightSelect.appendChild(opt);
+      });
+      nightSelect.value = "chir_ortho";
+    }
+
+    function makeRow(group = "A1/S1", voll = 0, teil = 0) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>
+          <select class="table-select">
+            ${Object.keys(GROUP_MINUTES).map((key) => `<option value="${key}" ${key === group ? "selected" : ""}>${key}</option>`).join("")}
+          </select>
+        </td>
+        <td><input type="number" min="0" value="${voll}" class="table-input" /></td>
+        <td><input type="number" min="0" value="${teil}" class="table-input" /></td>
+        <td class="table-minutes">${GROUP_MINUTES[group]}</td>
+        <td class="text-right"><button class="link-danger" type="button">Entfernen</button></td>
+      `;
+      const select = tr.querySelector("select");
+      const inputs = tr.querySelectorAll("input");
+      const minutesCell = tr.querySelector(".table-minutes");
+      const btnRemove = tr.querySelector("button");
+      select.addEventListener("change", () => {
+        minutesCell.textContent = GROUP_MINUTES[select.value] || 0;
+        calcAll();
+      });
+      inputs.forEach((input) => input.addEventListener("input", calcAll));
+      btnRemove.addEventListener("click", () => {
+        tr.remove();
+        calcAll();
+      });
+      return tr;
+    }
+
+    function seedGroupRows() {
+      if (!groupRowsEl) return;
+      groupRowsEl.innerHTML = "";
+      groupRowsEl.appendChild(makeRow("A2/S2", 6, 0));
+      groupRowsEl.appendChild(makeRow("A3/S1", 4, 0));
+    }
+
+    function getNumber(id) {
+      const el = $(id);
+      if (!el) return 0;
+      const value = parseFloat(el.value);
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    function sumGroupMinutes() {
+      let total = 0;
+      if (!groupRowsEl) return total;
+      groupRowsEl.querySelectorAll("tr").forEach((row) => {
+        const select = row.querySelector("select");
+        const inputs = row.querySelectorAll("input");
+        const voll = parseFloat(inputs[0]?.value || "0") || 0;
+        const teil = parseFloat(inputs[1]?.value || "0") || 0;
+        const minutes = GROUP_MINUTES[select?.value] || 0;
+        total += minutes * voll;
+        total += 0.5 * minutes * teil;
+      });
+      return total;
+    }
+
+    function calcTag() {
+      const voll = Math.max(0, getNumber("vollGesamt"));
+      const iso = Math.min(Math.max(0, getNumber("isoAnzahl")), voll);
+      const grundwert = PFLEGEGRUNDWERT * (voll - iso) + PFLEGEGRUNDWERT_ISO * iso;
+      const gruppen = sumGroupMinutes();
+      const fallwerte = FALLWERT * (getNumber("aufnahmenEinmalig") + getNumber("tsRegelmaessig"));
+      const minuten = grundwert + gruppen + fallwerte;
+      const stunden = minuten / 60;
+      const tagFTE = stunden / DAILY_FTE_DIVISOR;
+      $("grundwertMin").textContent = Math.round(grundwert);
+      $("gruppenMin").textContent = Math.round(gruppen);
+      $("fallwertMin").textContent = Math.round(fallwerte);
+      $("tagMinGesamt").textContent = Math.round(minuten);
+      $("tagHoursOut").textContent = stunden.toFixed(2);
+      $("tagFTE").textContent = tagFTE.toFixed(2);
+      return { tagFTE };
+    }
+
+    function getNightRule() {
+      const value = nightSelect?.value;
+      return PPUG_RULES.find((rule) => rule.key === value) || PPUG_RULES[0];
+    }
+
+    function splitStaff(totalHeads, capPct) {
+      const maxHilf = totalHeads * (capPct / 100);
+      let hilf = Math.min(maxHilf, totalHeads);
+      let fach = Math.max(0, totalHeads - hilf);
+      if (totalHeads > 0 && fach < 1) {
+        fach = 1;
+        hilf = Math.max(0, totalHeads - fach);
+      }
+      return { fach, hilf };
+    }
+
+    function calcNight() {
+      const rule = getNightRule();
+      const betten = Math.max(0, getNumber("vollGesamt"));
+      const hours = Math.max(0, getNumber("nachtHours") || 0);
+      const isTagesklinik = $("isTagesklinik")?.checked;
+      $("nachtBettenInfo").textContent = betten.toString();
+      $("nachtRatioInfo").textContent = rule ? `1 : ${rule.ratioNight}` : "-";
+      $("nachtCapInfo").textContent = rule ? `${rule.capNight} %` : "-";
+
+      if (isTagesklinik || betten === 0 || !rule) {
+        $("nachtKopf").textContent = "0.00";
+        $("nachtHoursOut").textContent = "0.00";
+        $("nachtFTE").textContent = "0.00";
+        $("nachtFachSplit").textContent = "0.00";
+        $("nachtHilfSplit").textContent = "0.00";
+        return { nachtFTE: 0 };
+      }
+
+      const koepfe = betten / rule.ratioNight;
+      const stunden = koepfe * hours;
+      const teile = splitStaff(koepfe, rule.capNight);
+      const nachtFTE = stunden / DAILY_FTE_DIVISOR;
+      $("nachtKopf").textContent = formatFixed(koepfe);
+      $("nachtHoursOut").textContent = formatFixed(stunden);
+      $("nachtFTE").textContent = formatFixed(nachtFTE);
+      $("nachtFachSplit").textContent = formatFixed(teile.fach);
+      $("nachtHilfSplit").textContent = formatFixed(teile.hilf);
+      return { nachtFTE };
+    }
+
+    function updateAmpel(tagFTE, totalFTE) {
+      const box = $("ampelBox");
+      const share = totalFTE > 0 ? tagFTE / totalFTE : 0;
+      let state = "";
+      let title = "Kein Bedarf";
+      let note = "Bitte Eingaben pr&uuml;fen.";
+      if (totalFTE > 0) {
+        if (share >= 0.65) {
+          state = "success";
+          title = "Tagesfokus";
+          note = "Mindestens 65 % des Gesamtbedarfs entfallen auf die Tagschicht.";
+        } else if (share >= 0.5) {
+          state = "warn";
+          title = "Ausgewogen";
+          note = "Tag- und Nachtschicht sind nahezu ausgeglichen.";
+        } else {
+          state = "danger";
+          title = "Nachtlastig";
+          note = "Taganteil liegt unter 50 % des Gesamtbedarfs.";
+        }
+      }
+      if (box) {
+        box.className = `kpi-tile ampel-card ${state}`.trim();
+      }
+      $("ampelLabel").textContent = totalFTE > 0 ? `Taganteil ${ (share * 100).toFixed(1) } %` : "Taganteil";
+      $("ampelValue").textContent = title;
+      $("ampelNote").textContent = note;
+    }
+
+    function updateSummary(tagFTE, nachtFTE) {
+      const total = tagFTE + nachtFTE;
+      $("resTagFTE").textContent = formatFixed(tagFTE);
+      $("resNachtFTE").textContent = formatFixed(nachtFTE);
+      $("resGesamt").textContent = formatFixed(total);
+      $("resHilfMax").textContent = formatFixed(total * 0.2);
+      $("resAzubiMax").textContent = formatFixed(total * 0.1);
+      updateAmpel(tagFTE, total);
+    }
+
+    function calcAll() {
+      const { tagFTE } = calcTag();
+      const { nachtFTE } = calcNight();
+      updateSummary(tagFTE, nachtFTE);
+    }
+
+    const btnAddRow = $("btnAddRow");
+    btnAddRow?.addEventListener("click", () => {
+      groupRowsEl?.appendChild(makeRow());
+      calcAll();
+    });
+
+    $("btnResetTag")?.addEventListener("click", () => {
+      const defaults = {
+        vollGesamt: 16,
+        isoAnzahl: 0,
+        teilAnzahlDummy: 0,
+        aufnahmenEinmalig: 0,
+        tsRegelmaessig: 0
+      };
+      Object.entries(defaults).forEach(([id, value]) => {
+        const el = $(id);
+        if (el) el.value = value;
+      });
+      seedGroupRows();
+      calcAll();
+    });
+
+    $("btnResetNacht")?.addEventListener("click", () => {
+      if (nightSelect) nightSelect.value = "chir_ortho";
+      const nightHours = $("nachtHours");
+      if (nightHours) nightHours.value = 8;
+      const tk = $("isTagesklinik");
+      if (tk) tk.checked = false;
+      calcAll();
+    });
+
+    ["vollGesamt", "isoAnzahl", "teilAnzahlDummy", "aufnahmenEinmalig", "tsRegelmaessig", "nachtHours"].forEach((id) => {
+      $(id)?.addEventListener("input", calcAll);
+    });
+    nightSelect?.addEventListener("change", calcAll);
+    $("isTagesklinik")?.addEventListener("change", calcAll);
+
+    const faqModal = $("faqModal");
+    const closeFAQ = () => faqModal?.setAttribute("aria-hidden", "true");
+    const openFAQ = () => faqModal?.setAttribute("aria-hidden", "false");
+    $("btnFAQ")?.addEventListener("click", openFAQ);
+    $("btnFAQClose")?.addEventListener("click", closeFAQ);
+    faqModal?.addEventListener("click", (event) => {
+      if (event.target.dataset.close === "faq") closeFAQ();
+    });
+
+    populateNightAreas();
+    seedGroupRows();
+    calcAll();
+  })();
+</script>

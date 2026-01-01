@@ -1,0 +1,133 @@
+<!-- Startseite Inhalt -->
+<style>
+  .start-intro{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    text-align:center;
+    flex-wrap:wrap;
+    padding:8px 6px;
+  }
+  .start-intro img{
+    max-width:160px;
+    height:auto;
+    margin-bottom:4px;
+  }
+  .start-intro h2{
+    margin:0;
+  }
+  .start-intro .intro-copy{
+    display:grid;
+    gap:8px;
+    justify-items:center;
+    max-width:720px;
+  }
+  .start-intro .section-lead{
+    max-width:640px;
+  }
+  .highlight-card{
+    display:grid;
+    gap:10px;
+    height:100%;
+    align-content:flex-start;
+  }
+  .highlight-list{
+    list-style:none;
+    padding:0;
+    margin:0;
+    display:grid;
+    gap:8px;
+  }
+  .highlight-list li{
+    padding:10px 12px;
+    border:1px solid var(--line,#e2e8f0);
+    border-radius:12px;
+    background:#f8fafc;
+  }
+  .donate-section{
+    text-align:center;
+    display:grid;
+    gap:12px;
+    margin-top:0;
+    justify-items:center;
+    align-content:flex-start;
+    height:100%;
+  }
+  .donate-section h3{
+    margin:0;
+    font-size:var(--font-size-h2,1.5rem);
+  }
+  .donate-section p{
+    margin:0;
+    color:var(--muted);
+    font-size:var(--font-size-base);
+  }
+  .donate-section .paypal-wrap{
+    display:flex;
+    justify-content:center;
+  }
+  .start-row-secondary{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:18px;
+    align-items:stretch;
+    margin-top:18px;
+  }
+  .start-row-secondary .card{
+    height:100%;
+  }
+  @media(max-width: 960px){
+    .start-row-secondary{
+      grid-template-columns:1fr;
+    }
+    .start-intro img{ max-width:140px; }
+  }
+</style>
+<section class="card section-header start-intro">
+  <img src="../assets/Bilder/CliniConLogo.png" alt="CliniCon Logo" />
+  <div class="intro-copy">
+    <h2>Willkommen bei CliniCon</h2>
+    <p class="section-lead">Werkzeuge f&uuml;r Personal- und Schichtplanung, Berechnung von Personalbedarfen sowie praktische Helfer f&uuml;r den klinischen Alltag.</p>
+  </div>
+</section>
+
+<div class="start-row-secondary">
+  <section class="card highlight-card">
+    <h3>Neu im Portal</h3>
+    <p class="section-lead">Aktuelle Features f&uuml;r den Alltag.</p>
+    <ul class="highlight-list">
+      <li><strong>PPBV/PPUG Kombi</strong> &ndash; Tagschicht nach PPBV, Nachtschicht nach PPUG in einem Rechner.</li>
+      <li><strong>Schichtbesetzung</strong> &ndash; Drag &amp; Drop Timeline mit VK-Bedarf und Viertelstunden-Slots.</li>
+      <li><strong>GFO Interner Bereich</strong> &ndash; Fachabteilungen, Benchmark &amp; Stellenplan zentral durchsuchen.</li>
+    </ul>
+  </section>
+
+  <section class="card donate-section">
+    <h3>CliniCon unterst&uuml;tzen</h3>
+    <p>Wenn dir CliniCon hilft oder du das Community-Projekt unterst&uuml;tzen m&ouml;chtest, kannst du mich gerne auf einen Kaffee einladen. Vielen Dank!</p>
+    <div class="paypal-wrap">
+      <div id="paypal-donate-button-container"></div>
+    </div>
+
+    <script src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js" charset="UTF-8"></script>
+    <script>
+      (function renderDonate(){
+        if(window.PayPal && PayPal.Donation && PayPal.Donation.Button){
+          PayPal.Donation.Button({
+            env: 'production',
+            hosted_button_id: '',
+            business: 'maartenstuyvesant@gmail.com',
+            onComplete: function(){},
+            onError: function(){}
+          }).render('#paypal-donate-button-container');
+        }else{
+          setTimeout(renderDonate, 200);
+        }
+      })();
+    </script>
+  </section>
+</div>
+
+

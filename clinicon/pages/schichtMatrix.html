@@ -1,0 +1,562 @@
+<style>
+  .shift-page{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    padding:0;
+    background:transparent;
+    border:none;
+    box-shadow:none;
+  }
+  .shift-shell{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    padding:16px;
+    width:100%;
+  }
+  .shift-page .pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:7px 12px;
+    border-radius:12px;
+    background:rgba(37,99,235,0.1);
+    color:var(--text,#0f172a);
+    font-weight:700;
+    letter-spacing:.02em;
+  }
+  .shift-hero{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px;
+    align-items:flex-start;
+    justify-content:space-between;
+    padding:22px;
+    border:1px solid var(--line,#e2e8f0);
+    border-radius:18px;
+    background:var(--panel,#fff);
+    box-shadow:var(--shadow,0 18px 36px rgba(15,23,42,.08));
+  }
+  .shift-hero__copy h2{margin:6px 0 6px; font-size:1.6rem;}
+  .shift-hero__copy p{margin:0; max-width:720px; color:var(--muted,#64748b);}
+  .shift-hero__actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
+  .shift-hero__stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:10px;
+    min-width:260px;
+  }
+  .shift-hero__stats .stat{
+    padding:12px 14px;
+    border:1px solid var(--line,#e2e8f0);
+    border-radius:12px;
+    background:#fff;
+    box-shadow:0 10px 22px rgba(15,23,42,.08);
+    display:grid;
+    gap:4px;
+  }
+  .shift-hero__stats .stat span{color:var(--muted,#64748b); font-size:.9rem;}
+  .shift-hero__stats .stat strong{font-size:1.3rem;}
+
+  .shift-app{
+    --shift-bg:#f7f9fd;
+    --shift-panel:#ffffff;
+    --shift-muted:#64748b;
+    --shift-text:#0f172a;
+    --shift-line:#e2e8f0;
+    --shift-accent:#2563eb;
+    --shift-accent-strong:#1d4ed8;
+    font-family:var(--font-base,"Roboto","Segoe UI",sans-serif);
+    font-size:var(--font-size-base,16px);
+    line-height:var(--line-height-base,1.6);
+    color:var(--shift-text);
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  .shift-card{
+    background:#f8fafc;
+    border:1px solid var(--shift-line);
+    border-radius:16px;
+    padding:20px;
+    box-shadow:none;
+  }
+  .shift-card-head h2{margin:0; font-size:1.4rem;}
+  .shift-card-head p{margin:6px 0 0; color:var(--shift-muted);}
+
+  .shift-settings-grid{
+    display:grid;
+    gap:16px 20px;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    margin-top:14px;
+  }
+  .shift-settings-grid .shift-field{display:flex; flex-direction:column; gap:6px;}
+  .shift-settings-grid label{font-weight:700; color:var(--shift-text); font-size:.95rem;}
+
+  .shift-toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    margin:14px 0 12px;
+  }
+  .shift-toolbar-note{margin:0; color:var(--shift-muted); font-size:.95rem;}
+
+  .shift-table-scroll{
+    overflow:auto;
+    border-radius:12px;
+    border:1px solid var(--shift-line);
+  }
+  .shift-page table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+  }
+  .shift-page thead th{
+    position:sticky;
+    top:0;
+    background:linear-gradient(180deg,#f8fbff,#eef3ff);
+    z-index:2;
+    text-align:left;
+    padding:12px 10px;
+    font-size:.85rem;
+    font-weight:700;
+    color:var(--shift-text);
+    border-bottom:1px solid var(--shift-line);
+  }
+  .shift-page tbody td{
+    background:#fff;
+    padding:10px;
+    border-bottom:1px solid #eef2f6;
+    vertical-align:middle;
+  }
+  .shift-page tbody tr:nth-child(even) td{background:#f9fbff;}
+  .shift-table-value{
+    font-weight:700;
+    color:var(--shift-text);
+    text-align:right;
+    white-space:nowrap;
+  }
+
+  .shift-button{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    border-radius:12px;
+    border:1px solid var(--shift-line);
+    padding:12px 16px;
+    font-weight:700;
+    cursor:pointer;
+    background:#fff;
+    color:var(--shift-text);
+    transition:.18s ease all;
+  }
+  .shift-button--primary{
+    background:linear-gradient(135deg,#0f172a,#111827);
+    border-color:#0f172a;
+    color:#fff;
+    box-shadow:0 12px 30px rgba(15,23,42,.25);
+  }
+  .shift-button--primary:hover{transform:translateY(-1px);}
+  .shift-button--ghost{
+    background:rgba(37,99,235,0.08);
+    border-color:rgba(37,99,235,0.18);
+    color:var(--shift-accent);
+  }
+  .shift-button--danger{
+    background:#fff5f5;
+    border-color:#fecdd3;
+    color:#e11d48;
+  }
+
+  .shift-input{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid var(--shift-line);
+    border-radius:10px;
+    background:#fff;
+    font-size:.95rem;
+    font-family:inherit;
+    color:inherit;
+    transition:.16s ease border,.16s ease box-shadow;
+  }
+  .shift-input:focus{
+    outline:none;
+    border-color:var(--shift-accent);
+    box-shadow:0 0 0 3px rgba(37,99,235,0.18);
+  }
+  .shift-input--code{max-width:80px; text-transform:uppercase;}
+  .shift-input--time{max-width:140px;}
+  .shift-input--number{max-width:96px; padding-right:24px;}
+  .shift-input--days{max-width:140px; text-align:center;}
+  .shift-duration-display{
+    width:100%;
+    min-width:110px;
+    padding:12px 14px;
+    border:1px solid var(--shift-line);
+    border-radius:10px;
+    background:#f1f5f9;
+    font-size:.95rem;
+    text-align:center;
+    color:var(--shift-text);
+    cursor:default;
+  }
+
+  .shift-availability{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:12px;
+    margin-top:10px;
+  }
+  .shift-availability .mini-card{
+    border:1px solid var(--shift-line);
+    border-radius:12px;
+    padding:12px;
+    background:linear-gradient(180deg,#ffffff,#f7f9ff);
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    box-shadow:0 10px 24px rgba(15,23,42,.08);
+  }
+  .shift-availability span{font-size:.9rem; color:var(--shift-muted);}
+  .shift-availability strong{font-size:1.2rem;}
+  .shift-note{margin:12px 0 0; color:var(--shift-muted); font-size:.95rem;}
+
+  @media (max-width:720px){
+    .shift-hero{padding:16px;}
+    .shift-hero__actions{width:100%;}
+    .shift-button{flex:1 1 auto; justify-content:center;}
+  }
+</style>
+
+<section class="card page-frame shift-page">
+  <div class="shift-shell">
+    <div class="shift-hero">
+      <div class="shift-hero__copy">
+        <div class="pill">Schichtmatrix</div>
+        <h2>Dienste planen &amp; Vollzeitkr&auml;fte-Bedarf ermitteln</h2>
+        <p>Plane Dienste, ber&uuml;cksichtige Ausf&auml;lle und lass dir Stunden- sowie VK-Bedarf automatisch berechnen.</p>
+        <div class="shift-hero__actions">
+          <button type="button" class="shift-button shift-button--ghost" id="bp-addPreset">Beispieldienste laden</button>
+          <button type="button" class="shift-button shift-button--primary" id="bp-addRow">+ Dienst hinzuf&uuml;gen</button>
+        </div>
+      </div>
+      <div class="shift-hero__stats">
+        <div class="stat"><span>Wochen pro Jahr</span><strong id="bp-weeksPill">52,14</strong></div>
+        <div class="stat"><span>Stundenbedarf / Jahr</span><strong id="bp-sumH">0,0</strong></div>
+        <div class="stat"><span>VK-Bedarf</span><strong id="bp-fte">0,00</strong></div>
+      </div>
+    </div>
+
+    <div class="shift-app">
+      <section class="shift-card shift-card--settings">
+        <div class="shift-card-head">
+          <h2>Arbeitszeitangebot je VK</h2>
+          <p>Abwesenheiten, Feiertage und vertragliche Zeiten steuern.</p>
+        </div>
+        <div class="shift-settings-grid">
+          <div class="shift-field">
+            <label for="bp-dFeiertage">Freizeitausgleich Feiertage (Tage)</label>
+            <input id="bp-dFeiertage" class="shift-input shift-input--number" type="number" min="0" value="9">
+          </div>
+          <div class="shift-field">
+            <label for="bp-dVorfest">Freizeitausgleich Vorfesttage</label>
+            <input id="bp-dVorfest" class="shift-input shift-input--number" type="number" min="0" value="2">
+          </div>
+          <div class="shift-field">
+            <label for="bp-dUrlaub">Urlaub (Tage)</label>
+            <input id="bp-dUrlaub" class="shift-input shift-input--number" type="number" min="0" value="30">
+          </div>
+          <div class="shift-field">
+            <label for="bp-dZusatz">Zusatzurlaub (Schicht) (Tage)</label>
+            <input id="bp-dZusatz" class="shift-input shift-input--number" type="number" min="0" value="3">
+          </div>
+          <div class="shift-field">
+            <label for="bp-dFortb">Fortbildung (Tage)</label>
+            <input id="bp-dFortb" class="shift-input shift-input--number" type="number" min="0" value="3">
+          </div>
+          <div class="shift-field">
+            <label for="bp-dKrank">Krankheit / krankes Kind (Tage)</label>
+            <input id="bp-dKrank" class="shift-input shift-input--number" type="number" min="0" value="14">
+          </div>
+          <div class="shift-field">
+            <label for="bp-stdProTag">Vertragliche Arbeitszeit (Std/Tag)</label>
+            <input id="bp-stdProTag" class="shift-input shift-input--number" type="number" min="1" step="0.1" value="7.7">
+          </div>
+          <div class="shift-field">
+            <label for="bp-wochen">Wochen pro Jahr</label>
+            <input id="bp-wochen" class="shift-input shift-input--number" type="number" min="1" step="0.01" value="52.14">
+          </div>
+          <div class="shift-field">
+            <label for="bp-ftYear">Feiertage pro Jahr (FT/Jahr)</label>
+            <input id="bp-ftYear" class="shift-input shift-input--number" type="number" min="0" value="10">
+          </div>
+          <div class="shift-field">
+            <label for="bp-vftYear">Vorfesttage pro Jahr (VFT/Jahr)</label>
+            <input id="bp-vftYear" class="shift-input shift-input--number" type="number" min="0" value="5">
+          </div>
+        </div>
+      </section>
+
+      <section class="shift-card shift-card--table">
+        <div class="shift-card-head">
+          <h2>Schichtmatrix</h2>
+          <p>Dienste, Besetzungsst&auml;rke und Feiertage pro Jahr erfassen.</p>
+        </div>
+        <div class="shift-toolbar">
+          <p class="shift-toolbar-note">
+            Formel je Zeile: <em>Dauer &times; Summe (Mo&ndash;So) &times; Wochen/Jahr</em> + <em>Dauer &times; VFT &times; VFT/Jahr</em> + <em>Dauer &times; FT &times; FT/Jahr</em> &minus; 30&nbsp;Min Pause.
+          </p>
+        </div>
+        <div class="shift-table-scroll">
+          <table id="bp-tbl">
+            <thead>
+              <tr>
+                <th>K&uuml;rzel</th>
+                <th>Beginn</th>
+                <th>Ende</th>
+                <th>Dauer</th>
+                <th>Mo</th>
+                <th>Di</th>
+                <th>Mi</th>
+                <th>Do</th>
+                <th>Fr</th>
+                <th>Sa</th>
+                <th>So</th>
+                <th>VFT</th>
+                <th>FT</th>
+                <th>Stunden/Jahr</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="bp-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="shift-card shift-card--availability">
+        <div class="shift-availability">
+          <div class="mini-card">
+            <span>Verf&uuml;gbare Tage</span>
+            <strong id="bp-availDays">200</strong>
+          </div>
+          <div class="mini-card">
+            <span>Arbeitszeitangebot</span>
+            <strong><span id="bp-availHours">1&nbsp;540</span> Std/Jahr</strong>
+          </div>
+        </div>
+        <p class="shift-note">Der berechnete Vollzeitkr&auml;fte-Bedarf nutzt dein Arbeitszeitangebot und alle eingetragenen Dienste.</p>
+      </section>
+    </div>
+  </div>
+</section>
+
+<script>
+(() => {
+  const $ = selector => document.querySelector(selector);
+  const tbody = $('#bp-body');
+  const dayKeys = ['mo','di','mi','do','fr','sa','so'];
+
+  const timeToMinutes = time => {
+    if(!time || !time.includes(':')) return 0;
+    const [h,m] = time.split(':').map(Number);
+    if(Number.isNaN(h)) return 0;
+    return (h * 60) + (Number.isNaN(m) ? 0 : m);
+  };
+
+  const durationInHours = (start, end) => {
+    let s = timeToMinutes(start);
+    let e = timeToMinutes(end);
+    if(e <= s) e += 1440;
+    return (e - s) / 60;
+  };
+
+  const weeksPerYear = () => parseFloat($('#bp-wochen').value) || 52.14;
+  const vftPerYear = () => parseFloat($('#bp-vftYear').value) || 0;
+  const ftPerYear = () => parseFloat($('#bp-ftYear').value) || 0;
+
+  const formatHours = value => (Number.isFinite(value) ? value.toLocaleString('de-DE',{minimumFractionDigits:1, maximumFractionDigits:1}) : '0,0');
+  const formatNumber = value => (Number.isFinite(value) ? value.toLocaleString('de-DE',{minimumFractionDigits:2, maximumFractionDigits:2}) : '0,00');
+
+  const createInput = ({ type = 'number', value = '0', min = '0', step = '1', className = '' }) => {
+    const input = document.createElement('input');
+    input.type = type;
+    input.value = value;
+    input.min = min;
+    input.step = step;
+    input.className = className;
+    return input;
+  };
+
+  const createCodeInput = value => {
+    const input = createInput({ type:'text', value, className:'shift-input shift-input--code' });
+    input.placeholder = 'F / S / N';
+    input.maxLength = 6;
+    input.addEventListener('input', () => { input.value = input.value.toUpperCase(); });
+    return input;
+  };
+
+  const createTimeInput = value => createInput({ type:'time', value, className:'shift-input shift-input--time', step:'300' });
+
+  const createDayInput = value => {
+    const input = createInput({ type:'number', value:String(value ?? 0), className:'shift-input shift-input--number shift-input--days' });
+    input.min = '0';
+    input.step = '1';
+    input.title = 'Besetzungsst\u00e4rke';
+    return input;
+  };
+
+  const createNumberDisplay = () => {
+    const display = document.createElement('div');
+    display.className = 'shift-duration-display';
+    display.textContent = '0,0';
+    return display;
+  };
+
+  function addRow(data = {}) {
+    const row = document.createElement('tr');
+
+    const cell = content => {
+      const td = document.createElement('td');
+      td.appendChild(content);
+      return td;
+    };
+
+    const codeInput = createCodeInput(data.kz ?? '');
+    const startInput = createTimeInput(data.start || '06:00');
+    const endInput = createTimeInput(data.ende || '14:15');
+    const durationDisplay = createNumberDisplay();
+
+    const dayInputs = dayKeys.map(key => createDayInput(data[key]));
+    const vftInput = createInput({ type:'number', value:String(data.vft ?? 1), className:'shift-input shift-input--number', min:'0', step:'1' });
+    const ftInput = createInput({ type:'number', value:String(data.ft ?? 1), className:'shift-input shift-input--number', min:'0', step:'1' });
+
+    const resultCell = document.createElement('td');
+    resultCell.className = 'shift-table-value';
+    resultCell.textContent = '0,0';
+
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.className = 'shift-button shift-button--ghost shift-button--danger';
+    deleteButton.textContent = 'L\u00f6schen';
+    deleteButton.addEventListener('click', () => {
+      row.remove();
+      updateTotals();
+    });
+
+    row.appendChild(cell(codeInput));
+    row.appendChild(cell(startInput));
+    row.appendChild(cell(endInput));
+    row.appendChild(cell(durationDisplay));
+    dayInputs.forEach(input => row.appendChild(cell(input)));
+    row.appendChild(cell(vftInput));
+    row.appendChild(cell(ftInput));
+    row.appendChild(resultCell);
+    const deleteCell = document.createElement('td');
+    deleteCell.appendChild(deleteButton);
+    row.appendChild(deleteCell);
+
+    const recalcRow = () => {
+      const hours = durationInHours(startInput.value, endInput.value);
+      const breakHours = 0.5;
+      const netHours = Math.max(0, hours - breakHours);
+      durationDisplay.textContent = formatHours(netHours);
+
+      const sumDays = dayInputs.reduce((acc, input) => acc + (parseFloat(input.value) || 0), 0);
+      const weekly = netHours * sumDays;
+      const yearly = (weekly * weeksPerYear()) +
+        (netHours * (parseFloat(vftInput.value) || 0) * vftPerYear()) +
+        (netHours * (parseFloat(ftInput.value) || 0) * ftPerYear());
+
+      const normalized = Math.max(0, yearly);
+      row.dataset.sum = String(normalized);
+      resultCell.textContent = formatHours(normalized);
+      updateTotals();
+    };
+
+    [
+      codeInput,
+      startInput,
+      endInput,
+      vftInput,
+      ftInput,
+      ...dayInputs
+    ].forEach(input => input.addEventListener('input', recalcRow));
+
+    tbody.appendChild(row);
+    recalcRow();
+  }
+
+  function updateWorkOffer() {
+    const holidays = parseFloat($('#bp-dFeiertage').value) || 0;
+    const preHolidays = parseFloat($('#bp-dVorfest').value) || 0;
+    const vacation = parseFloat($('#bp-dUrlaub').value) || 0;
+    const extra = parseFloat($('#bp-dZusatz').value) || 0;
+    const training = parseFloat($('#bp-dFortb').value) || 0;
+    const sick = parseFloat($('#bp-dKrank').value) || 0;
+    const hoursPerDay = parseFloat($('#bp-stdProTag').value) || 7.7;
+
+    const absences = holidays + preHolidays + vacation + extra + training + sick;
+    const availableDays = Math.max(0, 365 - 104 - absences);
+    const availableHours = Math.max(0, availableDays * hoursPerDay);
+
+    $('#bp-availDays').textContent = availableDays.toLocaleString('de-DE');
+    $('#bp-availHours').textContent = availableHours.toLocaleString('de-DE');
+
+    return { days: availableDays, hours: availableHours };
+  }
+
+  function updateTotals() {
+    let total = 0;
+    tbody.querySelectorAll('tr').forEach(tr => {
+      total += parseFloat(tr.dataset.sum || '0');
+    });
+
+    $('#bp-sumH').textContent = formatHours(total);
+    $('#bp-weeksPill').textContent = weeksPerYear().toLocaleString('de-DE',{minimumFractionDigits:2, maximumFractionDigits:2});
+
+    const offer = updateWorkOffer();
+    const fte = offer.hours > 0 ? total / offer.hours : 0;
+    $('#bp-fte').textContent = formatNumber(fte);
+  }
+
+  const availabilitySelectors = [
+    '#bp-dFeiertage',
+    '#bp-dVorfest',
+    '#bp-dUrlaub',
+    '#bp-dZusatz',
+    '#bp-dFortb',
+    '#bp-dKrank',
+    '#bp-stdProTag',
+    '#bp-wochen',
+    '#bp-ftYear',
+    '#bp-vftYear'
+  ];
+
+  availabilitySelectors.forEach(sel => {
+    $(sel).addEventListener('input', () => {
+      updateTotals();
+    });
+  });
+
+  const presets = [
+    { kz:'F', start:'06:00', ende:'14:15', mo:2, di:2, mi:2, do:2, fr:2, sa:1, so:1, vft:1, ft:1 },
+    { kz:'S', start:'13:45', ende:'22:00', mo:2, di:2, mi:2, do:2, fr:2, sa:1, so:1, vft:1, ft:1 },
+    { kz:'N', start:'21:30', ende:'06:30', mo:1, di:1, mi:1, do:1, fr:1, sa:1, so:1, vft:1, ft:1 }
+  ];
+
+  function seedPresets(){
+    tbody.innerHTML = '';
+    presets.forEach(preset => addRow(preset));
+  }
+
+  $('#bp-addRow').addEventListener('click', () => addRow());
+  $('#bp-addPreset').addEventListener('click', seedPresets);
+
+  updateTotals();
+  seedPresets();
+})();
+</script>

@@ -1,0 +1,9 @@
+{
+  "name": "clinicon-portal",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "echo \"Supabase client only - no backend server required\""
+  },
+  "dependencies": {}
+}

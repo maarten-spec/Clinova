@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stellenplan Gesamt</title>
+  <link rel="stylesheet" href="../../../../style.css" />
+  <style>
+    :root{
+      --bg:#eef3f7; --panel:#ffffff; --muted:#94a3b8; --text:#0f172a; --line:#e2e8f0;
+      --accent:#2563eb; --accent-weak:#dbeafe; --accent-strong:#1d4ed8; --shadow:0 18px 36px rgba(15,23,42,.08);
+    }
+    body{
+      margin:0;
+      font-family:var(--font-base);
+      font-size:var(--font-size-base);
+      line-height:var(--line-height-base);
+      background:radial-gradient(circle at 18% 18%, rgba(59,130,246,0.08), transparent 28%), #f7f9fc;
+      color:var(--text);
+    }
+    main{
+      padding:24px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      width:100%;
+      max-width:none;
+      margin:0 auto;
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:20px;
+      box-shadow:var(--shadow);
+    }
+    .hero{display:flex; flex-direction:column; gap:14px; padding:24px; border-radius:20px; width:100%; max-width:none; margin:0; box-sizing:border-box; background:linear-gradient(120deg,#f3f7ff 0%,#e8f1ff 40%,#f3f7ff 100%); border:1px solid #d9e4ff; box-shadow:0 18px 45px rgba(15,23,42,0.18);}
+    .hero-top{display:flex; flex-wrap:wrap; justify-content:space-between; gap:14px; align-items:flex-start;}
+    .hero-copy{display:flex; flex-direction:column; gap:6px;}
+    .pill{display:inline-flex; gap:8px; padding:9px 14px; border-radius:14px; background:linear-gradient(135deg,#1f4b82,#12355c); color:#fff; font-weight:700; box-shadow:0 12px 24px rgba(18,53,92,.25);}
+    h1{margin:0;}
+    .hero-meta{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:4px;}
+    .chip{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:12px; border:1px solid var(--line); background:#fff; box-shadow:0 10px 20px rgba(15,23,42,.06); font-weight:700; color:var(--text);}
+    .chip small{color:var(--muted); font-weight:600;}
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:flex-end;
+    }
+    .controls label{display:flex; flex-direction:column; gap:4px; font-weight:600; color:var(--text);}
+    .controls select{
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      font:inherit;
+      background:#fff;
+      min-width:140px;
+    }
+    .controls button{
+      padding:10px 14px;
+      border-radius:12px;
+      border:1px solid transparent;
+      background:linear-gradient(135deg, #2563eb, #1d4ed8);
+      color:#fff;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 10px 24px rgba(37,99,235,.16);
+    }
+    table{width:100%; border-collapse:collapse;}
+    th,td{padding:10px 7px; border-bottom:1px solid var(--line);}
+    th{background:#f8fafc; text-align:left;}
+    th.num, td.num{text-align:right;}
+    th:first-child, td:first-child{text-align:left;}
+    .totals-row td{font-weight:700; background:#f8fafc;}
+    .plan-input{width:100%; max-width:120px; padding:8px 8px; border:1px solid var(--line); border-radius:10px; font:inherit; text-align:right;}
+    .plan-input:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(37,99,235,.16);}
+    .delta-pos{color:#16a34a; font-weight:700;}
+    .delta-neg{color:#b91c1c; font-weight:700;}
+    .hint{color:var(--muted); font-size:.95rem;}
+    @media(max-width:960px){
+      main{padding:18px;}
+      table{font-size:0.95rem;}
+      th,td{padding:8px 6px;}
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card hero">
+      <div class="hero-top">
+        <div class="hero-copy">
+          <div class="pill">Stellenplan Gesamt</div>
+          <h1>Alle Abteilungen in einer &Uuml;bersicht</h1>
+          <p class="hint">Summiert VZ&auml; aus <strong>stellenplan_employees</strong> je Abteilung und Jahr.</p>
+          <div class="hero-meta">
+            <span class="chip"><small>Mandant</small><strong id="siteLabel">-</strong></span>
+            <span class="chip"><small>Jahr</small><strong id="heroYear">-</strong></span>
+            <span class="chip"><small>Abteilungen</small><strong id="heroDepts">-</strong></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="controls">
+        <label>Jahr
+          <select id="yearSelect"></select>
+        </label>
+        <button id="btnRefresh" type="button">Neu laden</button>
+      </div>
+      <div id="status" class="hint" style="margin-top:10px;"></div>
+      <div style="overflow:auto; margin-top:12px;">
+        <table id="deptTable"></table>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL_STORAGE = 'clinicon_supabase_url';
+    const SUPABASE_KEY_STORAGE = 'clinicon_supabase_key';
+    const UNION_VIEW = 'stellenplan_employees_all'; // optional: beschleunigt Laden, falls vorhanden
+    const MONTHS = ['Jan','Feb','Mrz','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+    const MONTH_KEYS = ['jan','feb','mrz','apr','mai','jun','jul','aug','sep','okt','nov','dez'];
+    const YEAR_MIN = 2026;
+    const YEAR_MAX = 2031;
+    const INVENTORY_PATH = '../../../../Supabase Snippet Public Schema Column Inventory.csv';
+    const FALLBACK_TABLES = [
+      'stellenplan_employees_admin','stellenplan_employees_gfobah','stellenplan_employees_gfoben','stellenplan_employees_gfober','stellenplan_employees_gfobeu',
+      'stellenplan_employees_gfobru','stellenplan_employees_gfodin','stellenplan_employees_gfodui','stellenplan_employees_gfoeng','stellenplan_employees_gfohil',
+      'stellenplan_employees_gfolan','stellenplan_employees_gfolen','stellenplan_employees_gfomoe','stellenplan_employees_gfoolp','stellenplan_employees_gforhe',
+      'stellenplan_employees_gfosie','stellenplan_employees_gfotro','stellenplan_employees_gfowis','stellenplan_employees_gfozpd'
+    ];
+    const KNOWN_DEPTS = ['Station 1','Station 2','Station 3','Station 4','Station 5','Station 6','Station 7','Endoskopie','OP','Sozialdienst','Pflegedienstleitung'];
+    const DEFAULT_SUPABASE_URL = 'https://fqilehnixnsujefyrdcy.supabase.co';
+    const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaWxlaG5peG5zdWplZnlyZGN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5MjIyNzUsImV4cCI6MjA3OTQ5ODI3NX0.Ml1J-YsID7_CXX7LbLZM4ayhWpV08FBSZc3rgVuwqt4';
+    const SUPABASE_URL = (window.SUPABASE_URL || localStorage.getItem(SUPABASE_URL_STORAGE) || DEFAULT_SUPABASE_URL).trim();
+    const SUPABASE_ANON_KEY = (window.SUPABASE_ANON_KEY || localStorage.getItem(SUPABASE_KEY_STORAGE) || DEFAULT_SUPABASE_KEY).trim();
+    const supabaseClient = (typeof window.supabase !== 'undefined' && SUPABASE_URL && SUPABASE_ANON_KEY)
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
+    const SITE_LABEL = (sessionStorage.getItem('cliniconSite') || '').trim();
+    const SITE_CODE = SITE_LABEL.toLowerCase().replace(/[^a-z0-9_]/g,'');
+    const HAS_SITE = Boolean(SITE_CODE);
+    const tableName = (base) => SITE_CODE ? `${base}_${SITE_CODE}` : base;
+    const clampYear = (y) => Math.max(YEAR_MIN, Math.min(YEAR_MAX, Number(y) || YEAR_MIN));
+    if(!localStorage.getItem(SUPABASE_URL_STORAGE) && SUPABASE_URL){
+      try{ localStorage.setItem(SUPABASE_URL_STORAGE, SUPABASE_URL); }catch(e){ /* ignore quota issues */ }
+    }
+    if(!localStorage.getItem(SUPABASE_KEY_STORAGE) && SUPABASE_ANON_KEY){
+      try{ localStorage.setItem(SUPABASE_KEY_STORAGE, SUPABASE_ANON_KEY); }catch(e){ /* ignore quota issues */ }
+    }
+
+    const els = {
+      yearSelect: document.getElementById('yearSelect'),
+      btnRefresh: document.getElementById('btnRefresh'),
+      status: document.getElementById('status'),
+      deptTable: document.getElementById('deptTable'),
+      siteLabel: document.getElementById('siteLabel'),
+      heroYear: document.getElementById('heroYear'),
+      heroDepts: document.getElementById('heroDepts'),
+    };
+
+    const state = {
+      year: null,
+      rows: [],
+    };
+    const PARAM_TABLE = SITE_CODE ? `parameter_${SITE_CODE}` : null;
+    let planMap = {};
+    const PLAN_KEY = 'stellenplan_gesamt_plan_v1';
+    let inventory = { tables: [], years: [] };
+    const siteFromTable = (t) => (t.replace(/^stellenplan_employees_?/,'') || 'base').toUpperCase();
+    const dbMonthCols = (year) => MONTH_KEYS.map(k => `${k}_${year}`);
+
+    async function loadInventory(){
+      if(inventory.tables.length && inventory.years.length) return inventory;
+      try{
+        const res = await fetch(INVENTORY_PATH);
+        if(res.ok){
+          const text = await res.text();
+          const lines = text.trim().split(/\r?\n/).slice(1);
+          const tables = [];
+          const yearSet = new Set();
+          lines.forEach(line => {
+            const m = line.match(/\"?(stellenplan_employees_[^,\"]+)\"?,?\"\"\{(.+)\}\"\"/);
+            if(!m) return;
+            const table = m[1].trim();
+            tables.push(table);
+            m[2].split(',').forEach(col => {
+              const ym = col.match(/^(jan|feb|mrz|apr|mai|jun|jul|aug|sep|okt|nov|dez)_(\d{4})$/i);
+              if(ym){
+                const y = Number(ym[2]);
+                if(y <= YEAR_MAX) yearSet.add(y);
+              }
+            });
+          });
+          inventory = { tables, years: Array.from(yearSet).sort((a,b)=>a-b) };
+        }
+      }catch(e){
+        console.warn('Inventory fetch failed, using fallback.', e);
+      }
+      if(!inventory.tables.length){
+        inventory.tables = FALLBACK_TABLES.slice();
+      }
+      if(!inventory.years.length){
+        inventory.years = Array.from({length: YEAR_MAX - YEAR_MIN + 1}, (_,i)=>YEAR_MIN+i);
+      }
+      return inventory;
+    }
+
+    function buildYearOptions(years){
+      const list = years && years.length ? years : Array.from({length: YEAR_MAX - YEAR_MIN + 1}, (_,i)=>YEAR_MIN+i);
+      return list.map(y => `<option value="${y}">${y}</option>`).join('');
+    }
+
+    function loadPlanStore(){
+      try{
+        return JSON.parse(localStorage.getItem(PLAN_KEY) || '{}');
+      }catch(e){
+        return {};
+      }
+    }
+    const planStore = loadPlanStore();
+    function savePlanStore(){
+      try{ localStorage.setItem(PLAN_KEY, JSON.stringify(planStore)); }catch(e){}
+    }
+    function planBucketKey(){
+      const site = SITE_CODE || 'default';
+      const year = state.year || new Date().getFullYear();
+      return `${site}-${year}`;
+    }
+    function getPlanValueLocal(dept){
+      const bucket = planStore[planBucketKey()] || {};
+      return Number(bucket[dept]) || 0;
+    }
+    function setPlanValue(dept, value){
+      const key = planBucketKey();
+      if(!planStore[key]) planStore[key] = {};
+      planStore[key][dept] = value;
+      savePlanStore();
+    }
+
+    function fmt(n){
+      const num = Number(n || 0);
+      return num.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2});
+    }
+
+    function setStatus(msg, ok=true){
+      els.status.textContent = msg;
+      els.status.style.color = ok ? '#16a34a' : '#b91c1c';
+    }
+
+    function getPlanValue(site, dept){
+      return Number(planMap[`${site}:${dept}`] || getPlanValueLocal(dept) || 0);
+    }
+
+    async function loadPlanValues(sites){
+      planMap = {};
+      if(!supabaseClient || !Array.isArray(sites) || !sites.length){
+        return;
+      }
+      for(const site of sites){
+        const paramTable = `parameter_${site.toLowerCase()}`;
+        const { data, error } = await supabaseClient
+          .from(paramTable)
+          .select('dept, wirtschaftsplan_vk')
+          .eq('year', state.year);
+        if(error) continue;
+        (data || []).forEach(row => {
+          if(row.dept){
+            planMap[`${site}:${row.dept}`] = Number(row.wirtschaftsplan_vk) || 0;
+          }
+        });
+      }
+    }
+
+    function parseMonths(arr){
+      if(Array.isArray(arr)) return arr.map(v=>Number(v)||0);
+      if(typeof arr === 'string'){
+        const cleaned = arr.replace(/[{}]/g,'');
+        if(!cleaned) return Array(12).fill(0);
+        return cleaned.split(',').map(v=>Number(v)||0);
+      }
+      return Array(12).fill(0);
+    }
+
+    async function loadMeta(){
+      const inv = await loadInventory();
+      const fallbackYear = clampYear(inv.years[0] || new Date().getFullYear());
+      els.yearSelect.innerHTML = buildYearOptions(inv.years);
+      state.year = fallbackYear;
+      els.yearSelect.value = state.year;
+      if(els.siteLabel) els.siteLabel.textContent = 'ALLE';
+      if(els.heroYear) els.heroYear.textContent = state.year;
+    }
+
+    function aggregate(emps, cols){
+      const map = new Map();
+      const seen = new Set();
+      const ensure = (dept, site) => {
+        const key = `${site}:${dept}`;
+        if(!map.has(key)){
+          map.set(key, {
+            dept,
+            site,
+            empCount:0,
+            months:Array(12).fill(0)
+          });
+        }
+        return map.get(key);
+      };
+      emps.forEach(e => {
+        if(e.include === false) return;
+        const site = e.site || 'UNBEKANNT';
+        const dept = e.dept || 'Unbekannt';
+        const pn = (e.personal_number || e.personalNumber || e.name || '').toString();
+        const headKey = `${site}:${dept}:${pn}`;
+        const target = ensure(dept, site);
+        if(!seen.has(headKey)){
+          target.empCount += 1;
+          seen.add(headKey);
+        }
+        const months = cols ? cols.map(c => Number(e[c]||0)) : parseMonths(e.months ?? e.values);
+        months.forEach((v,i) => target.months[i] += Number(v)||0);
+      });
+
+      return Array.from(map.values()).sort((a,b)=>{
+        if(a.site !== b.site) return a.site.localeCompare(b.site,'de');
+        return a.dept.localeCompare(b.dept,'de');
+      });
+    }
+
+    function renderTable(rows){
+      const safeRows = rows || [];
+      if(!safeRows.length){
+        els.deptTable.innerHTML = '<tr><td>Keine Daten gefunden.</td></tr>';
+        if(els.heroDepts) els.heroDepts.textContent = '0';
+        return;
+      }
+      const header = `<tr>
+        <th>Standort</th>
+        <th>Abteilung</th>
+        <th class="num">Wirtschaftsplan (VK)</th>
+        ${MONTHS.map(m=>`<th class="num">${m}</th>`).join('')}
+        <th class="num">&Oslash; Jahr</th>
+        <th class="num">Abweichung</th>
+        <th class="num">K&ouml;pfe</th>
+      </tr>`;
+      const body = safeRows.map(r => {
+        const total = r.months.reduce((a,b)=>a+b,0);
+        const avgYear = total/12;
+        const plan = getPlanValue(r.site, r.dept);
+        const delta = avgYear - plan;
+        const deltaClass = delta >= 0 ? 'delta-pos' : 'delta-neg';
+        return `<tr>
+          <td>${r.site || '-'}</td>
+          <td>${r.dept}</td>
+          <td class="num">${fmt(plan)}</td>
+          ${r.months.map(v=>`<td class="num">${fmt(v)}</td>`).join('')}
+          <td class="num">${fmt(avgYear)}</td>
+          <td class="num ${deltaClass}">${fmt(delta)}</td>
+          <td class="num">${r.empCount}</td>
+        </tr>`;
+      }).join('');
+      const totals = safeRows.reduce((acc, r) => {
+        acc.emp += r.empCount;
+        r.months.forEach((v,i)=> acc.months[i]+=v);
+        return acc;
+      }, { emp:0, months:Array(12).fill(0) });
+      const totalYear = totals.months.reduce((a,b)=>a+b,0);
+      const avgYearTotal = totalYear/12;
+      const planTotal = safeRows.reduce((sum,r)=>sum + getPlanValue(r.site, r.dept),0);
+      const deltaTotal = avgYearTotal - planTotal;
+      const deltaTotalClass = deltaTotal >= 0 ? 'delta-pos' : 'delta-neg';
+      const footer = `<tr class="totals-row">
+        <td colspan="2">Gesamt</td>
+        <td class="num">${fmt(planTotal)}</td>
+        ${totals.months.map(v=>`<td class="num">${fmt(v)}</td>`).join('')}
+        <td class="num">${fmt(avgYearTotal)}</td>
+        <td class="num ${deltaTotalClass}">${fmt(deltaTotal)}</td>
+        <td class="num">${totals.emp}</td>
+      </tr>`;
+      els.deptTable.innerHTML = header + body + footer;
+      if(els.heroDepts) els.heroDepts.textContent = safeRows.length;
+    }
+
+    
+    async function loadData(){
+      if(!supabaseClient){
+        setStatus('Supabase nicht konfiguriert.', false);
+        renderTable([]);
+        return;
+      }
+      setStatus('Lade Daten ...', true);
+      if(!HAS_SITE){
+        setStatus('Kein Mandant gesetzt. Bitte einloggen.', false);
+        renderTable([]);
+        return;
+      }
+      // Jahr aus Dropdown übernehmen
+      if(!state.year && els.yearSelect && els.yearSelect.value){
+        state.year = clampYear(els.yearSelect.value);
+      }
+      if(els.heroYear) els.heroYear.textContent = state.year;
+      if(state.year < YEAR_MIN || state.year > YEAR_MAX){
+        throw new Error(`Jahr ${state.year} nicht verfuegbar (erwartet ${YEAR_MIN}-${YEAR_MAX}).`);
+      }
+      const cols = dbMonthCols(state.year);
+      const allRows = [];
+      const siteCodes = [];
+      const selectCols = ['dept','personal_number','name',...cols].join(',');
+
+      // Mandanten-Tabelle direkt (stellenplan_employees_<mandant>)
+      const table = tableName('stellenplan_employees');
+      const { data, error } = await supabaseClient.from(table).select(selectCols);
+      if(error){ throw new Error(error.message || 'Laden fehlgeschlagen.'); }
+      (data || []).forEach(row => {
+        const site = SITE_CODE.toUpperCase();
+        if(!siteCodes.includes(site)) siteCodes.push(site);
+        allRows.push({ ...row, site });
+      });
+      if(!allRows.length){
+        throw new Error('Keine Daten geladen (Tabelle leer).');
+      }
+      await loadPlanValues(siteCodes);
+      const rows = aggregate(allRows, cols);
+      state.rows = rows;
+      renderTable(rows);
+      setStatus('Fertig.');
+    }
+
+
+    function bindEvents(){
+      els.yearSelect.addEventListener('change', () => {
+        state.year = clampYear(els.yearSelect.value);
+        els.yearSelect.value = state.year;
+        if(els.heroYear) els.heroYear.textContent = state.year;
+        loadData().catch(err => setStatus(err.message, false));
+      });
+      els.btnRefresh.addEventListener('click', () => {
+        loadData().catch(err => setStatus(err.message, false));
+      });
+    }
+
+    (async function init(){
+      bindEvents();
+      if(!supabaseClient){
+        setStatus('Supabase nicht konfiguriert. Bitte URL/Key setzen (localStorage clinicon_supabase_url / clinicon_supabase_key).', false);
+        return;
+      }
+      try{
+        await loadMeta();
+        await loadData();
+      }catch(err){
+        setStatus(err.message, false);
+      }
+    })();
+  </script>
+</body>
+</html>

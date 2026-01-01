@@ -1,0 +1,1048 @@
+﻿<!-- Besetzungsbedarf Tool -->
+<style>
+  #besetzungsbedarf-frame{
+    padding:0;
+    overflow:hidden;
+  }
+  #besetzungsbedarf-frame .page-frame__body{
+    padding:16px;
+  }
+  .besetzungsbedarf-app{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+  }
+  .besetzungsbedarf-app .besetzungsbedarf-container{
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+    width:100%;
+  }
+  .besetzungsbedarf-app .formula-block{
+    padding:0;
+    border:none;
+    border-radius:28px;
+    color:#fff;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    width:100%;
+  }
+  .besetzungsbedarf-app .formula-block.rose{background:#5e7fa2;color:#f8fafc;}
+  .besetzungsbedarf-app .formula-block.indigo{background:#9bbcc1;color:#0f172a;}
+  .besetzungsbedarf-app .formula-block.amber{background:#c7d36f;color:#24310d;}
+  .besetzungsbedarf-app .formula-block.mint{background:#b08a64;color:#302012;}
+  .besetzungsbedarf-app .formula-block.slate{background:#c24a2a;color:#fef2f2;}
+  .besetzungsbedarf-app .formula-header{
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:16px;
+    padding:26px 32px 0;
+  }
+  .besetzungsbedarf-app .formula-header h2{
+    margin:0;
+    font-size:1.45rem;
+    color:inherit;
+  }
+  .besetzungsbedarf-app .formula-header p{
+    margin:6px 0 0;
+    font-size:.95rem;
+    opacity:.9;
+    color:inherit;
+  }
+  .besetzungsbedarf-app .formula-meta{
+    display:block;
+    margin-top:6px;
+    font-size:.85rem;
+    font-weight:600;
+    opacity:.85;
+  }
+  .besetzungsbedarf-app .formula-value{
+    font-size:1.2rem;
+    font-weight:700;
+    text-align:right;
+    line-height:1.35;
+  }
+  .besetzungsbedarf-app .formula-value span{font-weight:800;}
+  .besetzungsbedarf-app .formula-value .meta{
+    display:block;
+    font-size:.85rem;
+    font-weight:500;
+    opacity:.8;
+    margin-bottom:4px;
+  }
+  .besetzungsbedarf-app .formula-panel{
+    background:#fff;
+    color:var(--text);
+    margin:24px 32px 32px;
+    padding:24px 28px;
+    border-radius:20px;
+  }
+  .besetzungsbedarf-app .formula-panel h2{margin:0 0 12px;}
+  .besetzungsbedarf-app .formula-panel + .formula-panel{margin-top:0;}
+  .besetzungsbedarf-app .grid{
+    display:grid;
+    gap:14px;
+  }
+  .besetzungsbedarf-app .grid.grid-2{grid-template-columns:1fr 1fr;}
+  .besetzungsbedarf-app .grid.grid-3{grid-template-columns:repeat(3,1fr);}
+  .besetzungsbedarf-app .grid.grid-4{grid-template-columns:repeat(4,1fr);}
+  @media (max-width:980px){
+    .besetzungsbedarf-app .grid.grid-2,
+    .besetzungsbedarf-app .grid.grid-3,
+    .besetzungsbedarf-app .grid.grid-4{
+      grid-template-columns:1fr;
+    }
+  }
+  .besetzungsbedarf-app label{
+    font-weight:600;
+    margin-bottom:6px;
+    display:block;
+  }
+  .besetzungsbedarf-app select,
+  .besetzungsbedarf-app input{
+    width:100%;
+    padding:10px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    font-size:1rem;
+    background:#fff;
+  }
+  .besetzungsbedarf-app .muted{color:var(--muted);}
+  .besetzungsbedarf-app .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--accent-weak);
+    color:#1e40af;
+    border:1px solid #bfdbfe;
+    padding:6px 10px;
+    border-radius:999px;
+    font-weight:600;
+  }
+  .besetzungsbedarf-app .table{
+    width:100%;
+    border-collapse:collapse;
+  }
+  .besetzungsbedarf-app .table th,
+  .besetzungsbedarf-app .table td{
+    border-bottom:1px solid #e5e7eb;
+    padding:8px 10px;
+    text-align:left;
+    vertical-align:middle;
+  }
+  .besetzungsbedarf-app .table th{
+    font-size:.9rem;
+    color:#475569;
+  }
+  .besetzungsbedarf-app .table th.art,
+  .besetzungsbedarf-app .table td.art,
+  .besetzungsbedarf-app .table th.weekday,
+  .besetzungsbedarf-app .table td.weekday{
+    text-align:center;
+    white-space:nowrap;
+  }
+  .besetzungsbedarf-app .kpi{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+  }
+  .besetzungsbedarf-app .kpi .item{
+    background:#f8fafc;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:12px;
+  }
+  .besetzungsbedarf-app .kpi .item b{
+    display:block;
+    font-size:1.1rem;
+  }
+  .besetzungsbedarf-app .btn{
+    background:var(--accent);
+    color:#fff;
+    border:none;
+    padding:10px 14px;
+    border-radius:10px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .besetzungsbedarf-app .btn:hover{background:var(--accent-strong);}
+  .besetzungsbedarf-app details.holidays{
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px;
+    background:#fff;
+  }
+  .besetzungsbedarf-app details.holidays summary{
+    font-weight:700;
+    cursor:pointer;
+  }
+  .besetzungsbedarf-app .legend{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-bottom:8px;
+  }
+  .besetzungsbedarf-app .pill{
+    padding:6px 10px;
+    border-radius:999px;
+    background:#eef2ff;
+    border:1px solid #c7d2fe;
+  }
+  .besetzungsbedarf-app .room-entry{
+    margin-bottom:18px;
+    padding:16px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:#fff;
+  }
+  .besetzungsbedarf-app .room-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .besetzungsbedarf-app .room-header label{
+    margin:0;
+  }
+  .besetzungsbedarf-app .remove-room{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    background:#fee2e2;
+    color:#991b1b;
+    border:1px solid #fecaca;
+    padding:6px 10px;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .besetzungsbedarf-app .remove-room:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+  }
+  .besetzungsbedarf-app .room-custom{
+    display:none;
+    margin-top:8px;
+  }
+  .besetzungsbedarf-app .room-custom.active{
+    display:block;
+  }
+  .besetzungsbedarf-app .day-row{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:6px;
+  }
+  .besetzungsbedarf-app .day-btn{
+    padding:8px 0;
+    text-align:center;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#f8fafc;
+    cursor:pointer;
+    font-weight:500;
+  }
+  .besetzungsbedarf-app .day-btn.active{
+    background:var(--accent);
+    color:#fff;
+    border-color:var(--accent-strong);
+  }
+  .besetzungsbedarf-app .hours-row{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:6px;
+    margin-top:6px;
+  }
+  .besetzungsbedarf-app .hours-row input{
+    width:100%;
+    text-align:center;
+  }
+  .besetzungsbedarf-app .hours-row input.disabled{
+    background:#f1f5f9;
+    color:#94a3b8;
+  }
+</style>
+<section class="card page-frame" id="besetzungsbedarf-frame">
+  <div class="page-frame__body">
+<div class="besetzungsbedarf-app">
+  <div class="besetzungsbedarf-container">
+            <section class="card formula-block rose" id="einsatzBlock">
+              <div class="formula-header">
+                <div>
+                  <h2>Einsatzbedarf</h2>
+                  <p>(Menge &times; Zeit) &divide; Regelarbeitszeit</p>
+                </div>
+                <div class="formula-value" id="metricEinsatz">Berechne zun&auml;chst die Arbeitspl&auml;tze.</div>
+              </div>
+              <div class="formula-panel">
+                <h2>Abteilungs-Berechnung (Arbeitsplätze)</h2>
+                <div id="rooms-container">
+                  <div class="room-entry">
+                    <div class="room-header">
+                      <label>Arbeitsplatz</label>
+                      <button type="button" class="remove-room">Arbeitsplatz entfernen</button>
+                    </div>
+                    <select class="room">
+                      <option value="OP-Saal">OP-Saal</option>
+                      <option value="Endoskopie-Raum">Endoskopie-Raum</option>
+                      <option value="Kreißsaal">Krei&szlig;saal</option>
+                      <option value="Röntgen">R&ouml;ntgen</option>
+                      <option value="Herzkatheter-Labor">Herzkatheter-Labor</option>
+                      <option value="EEG / EKG / Funktionsdiagnostik">EEG / EKG / Funktionsdiagnostik</option>
+                      <option value="Aufwachraum">Aufwachraum</option>
+                      <option value="Sterilgutversorgung">Sterilgutversorgung</option>
+                      <option value="Zentralambulanz">Zentralambulanz</option>
+                      <option value="Notaufnahme">Notaufnahme</option>
+                      <option value="Pflegearbeitsplatz">Pflegearbeitsplatz</option>
+                      <option value="Sonstiges">Sonstiges</option>
+                    </select>
+                    <input type="text" class="room-custom" placeholder="Sonstiges beschreiben" aria-label="Sonstiges beschreiben">
+                    <label style="margin-top:8px">Benötigte Personen</label>
+                    <input type="number" class="staff" placeholder="z. B. 2" min="1">
+                    <div style="margin-top:10px">
+                      <label>Betriebstage & Stunden pro Tag</label>
+                      <div class="day-row">
+                        <div class="day-btn active" data-day="Mo">Mo</div>
+                        <div class="day-btn active" data-day="Di">Di</div>
+                        <div class="day-btn active" data-day="Mi">Mi</div>
+                        <div class="day-btn active" data-day="Do">Do</div>
+                        <div class="day-btn active" data-day="Fr">Fr</div>
+                        <div class="day-btn" data-day="Sa">Sa</div>
+                        <div class="day-btn" data-day="So">So</div>
+                      </div>
+                      <div class="hours-row">
+                        <input type="number" class="hours" data-day="Mo" value="8" min="0" max="24">
+                        <input type="number" class="hours" data-day="Di" value="8" min="0" max="24">
+                        <input type="number" class="hours" data-day="Mi" value="8" min="0" max="24">
+                        <input type="number" class="hours" data-day="Do" value="8" min="0" max="24">
+                        <input type="number" class="hours" data-day="Fr" value="8" min="0" max="24">
+                        <input type="number" class="hours disabled" data-day="Sa" value="0" min="0" max="24" disabled>
+                        <input type="number" class="hours disabled" data-day="So" value="0" min="0" max="24" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="badge" style="margin-top:8px;cursor:pointer" onclick="addRoom()">+ weiteren Arbeitsplatz hinzufügen</div>
+              </div>
+            </section>
+  
+            <section class="card formula-block indigo" id="verteilBlock">
+              <div class="formula-header">
+                <div>
+                  <h2>Verteilzeitfaktor</h2>
+                  <p>Fehlzeiten ÷ reale Arbeitszeiten</p>
+                  <span class="formula-meta" id="stateYearLabel"></span>
+                </div>
+                <div class="formula-value" id="metricVerteil">Nutzt Urlaub + Fortbildung + Krankheit.</div>
+              </div>
+              <div class="formula-panel">
+                <h2>Rahmenparameter</h2>
+                <div class="grid grid-2">
+                  <div>
+                    <label>Bundesland</label>
+                    <select id="state"></select>
+                  </div>
+                  <div>
+                    <label>Jahr</label>
+                    <select id="year"></select>
+                  </div>
+                </div>
+                <div style="margin-top:16px">
+                  <button class="btn" style="width:100%" onclick="calculateAll()">Gesamtberechnung durchführen</button>
+                </div>
+                <div class="grid grid-4" style="margin-top:10px">
+                  <div>
+                    <label>Urlaubstage</label>
+                    <input id="vacation" type="number" value="30" min="0" max="60" />
+                  </div>
+                  <div>
+                    <label>Zusatzurlaub</label>
+                    <input id="extraVacation" type="number" value="0" min="0" max="30" />
+                  </div>
+                  <div>
+                    <label>Fortbildung (Tage)</label>
+                    <input id="trainingDays" type="number" value="5" min="0" max="30" />
+                  </div>
+                  <div>
+                    <label>Krankheit (Tage)</label>
+                    <input id="sickDays" type="number" value="12" min="0" max="60" />
+                  </div>
+                </div>
+              </div>
+              <div class="formula-panel">
+                <h2>Arbeitszeitangebot je VK</h2>
+                <div class="kpi" id="kpi"></div>
+                <div class="grid grid-2" style="margin-top:10px">
+                  <div id="weekdayTable"></div>
+                  <div id="availabilityTable"></div>
+                </div>
+              </div>
+            </section>
+  
+            <section class="card formula-block amber" id="reserveBlock">
+              <div class="formula-header">
+                <div>
+                  <h2>Reservebedarf</h2>
+                  <p>Einsatzbedarf × Verteilzeitfaktor</p>
+                </div>
+                <div class="formula-value" id="metricReserve">Wird automatisch ermittelt.</div>
+              </div>
+              <div class="formula-panel" id="reserveSummary">
+                <p class="muted">Starte die Berechnung, um die Reserven zu sehen.</p>
+              </div>
+            </section>
+  
+            <section class="card formula-block mint" id="bruttoBlock">
+              <div class="formula-header">
+                <div>
+                  <h2>Brutto-Personalbedarf</h2>
+                  <p>Einsatzbedarf + Reservebedarf</p>
+                </div>
+                <div class="formula-value" id="metricBrutto">Summe in VK.</div>
+              </div>
+              <div class="formula-panel" id="result">
+                <p class="muted">Bitte zuerst Arbeitsplätze und Parameter ausfüllen und „Gesamtberechnung“ starten.</p>
+              </div>
+            </section>
+  
+            <section class="card formula-block slate" id="nettoBlock">
+              <div class="formula-header">
+                <div>
+                  <h2>Brutto-Personalbedarf inkl. Abwesenheit</h2>
+                  <p>Bruttobedarf × (1 + Abwesenheitsquote)</p>
+                </div>
+                <div class="formula-value" id="metricBruttoAbsence">Nutzt deine Abwesenheitsquote unten.</div>
+              </div>
+              <div class="formula-panel">
+                <div class="grid grid-2">
+                  <div>
+                    <label>Abwesenheitsquote (%)</label>
+                    <input type="number" id="absence" value="21" min="0" max="50">
+                  </div>
+                  <div>
+                    <label>Ergebnisbasis</label>
+                    <select id="basis"><option value="month">Monat</option><option value="year">Jahr</option></select>
+                  </div>
+                </div>
+                <p class="muted" style="margin-top:10px">Dieser Wert wirkt direkt auf den Netto-Bedarf.</p>
+              </div>
+              <div class="formula-panel" id="finalSummary">
+                <p class="muted">Ergebnis erscheint nach der Berechnung.</p>
+              </div>
+            </section>
+            <!-- Feiertage (15 Jahre) -->
+            <section class="card">
+              <h2>Feiertage &ndash; Vorschau der n&auml;chsten 15 Jahre</h2>
+              <div class="legend"><span class="pill">bundesweit</span><span class="pill">L&auml;nder-spezifisch</span><span class="pill">beweglich</span></div>
+              <details class="holidays">
+                <summary><span id="holidaySummary">Feiertage f&uuml;r &hellip;</span></summary>
+                <div id="holidayTables"></div>
+              </details>
+            </section>
+          </div>
+</div>
+  </div>
+</section>
+
+<script>
+(() => {
+      const STATES = {
+        BW: 'Baden-W\u00fcrttemberg',
+        BY: 'Bayern',
+        BE: 'Berlin',
+        BB: 'Brandenburg',
+        HB: 'Bremen',
+        HH: 'Hamburg',
+        HE: 'Hessen',
+        MV: 'Mecklenburg-Vorpommern',
+        NI: 'Niedersachsen',
+        NW: 'Nordrhein-Westfalen',
+        RP: 'Rheinland-Pfalz',
+        SL: 'Saarland',
+        SN: 'Sachsen',
+        ST: 'Sachsen-Anhalt',
+        SH: 'Schleswig-Holstein',
+        TH: 'Th\u00fcringen'
+      };
+
+      const HOURS_PER_DAY = 8;
+
+      const stateSel = document.getElementById('state');
+      const yearSel = document.getElementById('year');
+      const kpiBox = document.getElementById('kpi');
+      if (!stateSel || !yearSel || !kpiBox) {
+        return;
+      }
+
+      const dayButtonHandler = (event) => {
+        if (!event.target.classList.contains('day-btn')) return;
+        const btn = event.target;
+        const day = btn.dataset.day;
+        const parent = btn.closest('.room-entry');
+        if (!parent) return;
+        btn.classList.toggle('active');
+        const input = parent.querySelector(`.hours[data-day='${day}']`);
+        if (!input) return;
+        const isActive = btn.classList.contains('active');
+        input.disabled = !isActive;
+        input.classList.toggle('disabled', !isActive);
+        if (isActive && (!input.value || Number(input.value) === 0)) {
+          input.value = 8;
+        }
+        if (!isActive) {
+          input.value = 0;
+        }
+      };
+
+      if (window.__besetzungsbedarfDayHandler) {
+        document.removeEventListener('click', window.__besetzungsbedarfDayHandler);
+      }
+      document.addEventListener('click', dayButtonHandler);
+      window.__besetzungsbedarfDayHandler = dayButtonHandler;
+
+      const easterDate = (year) => {
+        const a = year % 19;
+        const b = Math.floor(year / 100);
+        const c = year % 100;
+        const d = Math.floor(b / 4);
+        const e = b % 4;
+        const f = Math.floor((b + 8) / 25);
+        const g = Math.floor((b - f + 1) / 3);
+        const h = (19 * a + b - d - g + 15) % 30;
+        const i = Math.floor(c / 4);
+        const k = c % 4;
+        const l = (32 + 2 * e + 2 * i - h - k) % 7;
+        const m = Math.floor((a + 11 * h + 22 * l) / 451);
+        const month = Math.floor((h + l - 7 * m + 114) / 31);
+        const day = ((h + l - 7 * m + 114) % 31) + 1;
+        return new Date(year, month - 1, day);
+      };
+
+      const addDays = (date, amount) => {
+        const copy = new Date(date);
+        copy.setDate(copy.getDate() + amount);
+        return copy;
+      };
+
+      const isWeekday = (date) => {
+        const value = date.getDay();
+        return value !== 0 && value !== 6;
+      };
+
+      const fmt = (date) => date.toLocaleDateString('de-DE', {
+        weekday: 'short',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+
+      const holidaysForYear = (year, state) => {
+        const easter = easterDate(year);
+        const list = [];
+        const push = (date, name, scope) => list.push({ date, name, scope });
+
+        push(new Date(year, 0, 1), 'Neujahr', 'bund');
+        push(new Date(year, 4, 1), 'Tag der Arbeit', 'bund');
+        push(new Date(year, 9, 3), 'Tag der Deutschen Einheit', 'bund');
+        push(new Date(year, 11, 25), '1. Weihnachtstag', 'bund');
+        push(new Date(year, 11, 26), '2. Weihnachtstag', 'bund');
+
+        push(addDays(easter, -2), 'Karfreitag', 'bund|mov');
+        push(addDays(easter, 1), 'Ostermontag', 'bund|mov');
+        push(addDays(easter, 39), 'Christi Himmelfahrt', 'bund|mov');
+        push(addDays(easter, 50), 'Pfingstmontag', 'bund|mov');
+
+        const includesState = (...states) => states.includes(state);
+        if (includesState('BW', 'BY', 'ST')) push(new Date(year, 0, 6), 'Heilige Drei K\u00f6nige', 'state');
+        if (includesState('BW', 'BY', 'HE', 'NW', 'RP', 'SL')) push(addDays(easter, 60), 'Fronleichnam', 'state|mov');
+        if (includesState('BE', 'MV')) push(new Date(year, 2, 8), 'Internationaler Frauentag', 'state');
+        if (includesState('TH')) push(new Date(year, 8, 20), 'Weltkindertag', 'state');
+        if (includesState('BB', 'HB', 'HH', 'MV', 'NI', 'SN', 'ST', 'SH', 'TH', 'BE')) push(new Date(year, 9, 31), 'Reformationstag', 'state');
+        if (includesState('BW', 'BY', 'NW', 'RP', 'SL')) push(new Date(year, 10, 1), 'Allerheiligen', 'state');
+        if (state === 'SN') {
+          const ref = new Date(year, 10, 23);
+          const dow = ref.getDay();
+          const diffToWed = (dow + 7 - 3) % 7;
+          const bussUndBettag = addDays(ref, -diffToWed - 7);
+          push(bussUndBettag, 'Bu\u00df- und Bettag', 'state');
+        }
+        if (state === 'SL') push(new Date(year, 7, 15), 'Mari\u00e4 Himmelfahrt', 'state');
+
+        list.sort((a, b) => a.date - b.date);
+        return list;
+      };
+
+      const countWeekdaysPerYear = (year) => {
+        const counts = [0, 0, 0, 0, 0, 0, 0];
+        const start = new Date(year, 0, 1);
+        const end = new Date(year, 11, 31);
+        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+          counts[d.getDay()]++;
+        }
+        return {
+          Mo: counts[1],
+          Di: counts[2],
+          Mi: counts[3],
+          Do: counts[4],
+          Fr: counts[5],
+          Sa: counts[6],
+          So: counts[0],
+          sum: counts.reduce((a, b) => a + b, 0)
+        };
+      };
+
+      const preHolidays = (year) => {
+        const dates = [new Date(year, 11, 24), new Date(year, 11, 31)];
+        return { dates, countWeekdays: dates.filter(isWeekday).length };
+      };
+
+      const initSelectors = () => {
+        stateSel.innerHTML = '';
+        yearSel.innerHTML = '';
+        Object.entries(STATES).forEach(([value, label]) => {
+          const option = document.createElement('option');
+          option.value = value;
+          option.textContent = label;
+          stateSel.appendChild(option);
+        });
+        const currentYear = new Date().getFullYear();
+        const startYear = Math.min(currentYear, 2026);
+        const endYear = Math.max(currentYear + 5, 2041);
+        for (let year = startYear; year <= endYear; year++) {
+          const option = document.createElement('option');
+          option.value = year;
+          option.textContent = year;
+          yearSel.appendChild(option);
+        }
+        stateSel.value = 'NW';
+        const defaultYear = Math.min(Math.max(currentYear, startYear), endYear);
+        yearSel.value = yearSel.value || String(defaultYear);
+      };
+
+      const buildHolidayPreview = (state) => {
+        const base = Number(yearSel.value);
+        const wrap = document.getElementById('holidayTables');
+        if (!wrap) return;
+        wrap.innerHTML = '';
+        const summary = document.getElementById('holidaySummary');
+        if (summary) summary.textContent = `Feiertage f\u00fcr ${STATES[state]} (${base}-${base + 14})`;
+        for (let year = base; year < base + 15; year++) {
+          const list = holidaysForYear(year, state);
+          const rows = list.map(item => `
+            <tr>
+              <td>${fmt(item.date)}</td>
+              <td>${item.name}</td>
+              <td class="art">${item.scope.includes('mov') ? 'beweglich' : 'fest'}</td>
+              <td class="weekday">${isWeekday(item.date) ? 'Mo-Fr' : 'Wochenende'}</td>
+            </tr>
+          `).join('');
+          const table = document.createElement('div');
+          table.style.marginTop = '12px';
+          table.innerHTML = `
+            <h4 style="margin:0 0 6px">${year}</h4>
+            <table class="table"><thead><tr><th>Datum</th><th>Name</th><th>Art</th><th>Tag</th></tr></thead><tbody>${rows}</tbody></table>
+          `;
+          wrap.appendChild(table);
+        }
+      };
+
+      const rebuildAvailability = () => {
+        const state = stateSel.value;
+        const year = Number(yearSel.value);
+        const stateMeta = document.getElementById('stateYearLabel');
+        if (stateMeta) stateMeta.textContent = `${STATES[state]} - ${year}`;
+
+        const weekdayData = countWeekdaysPerYear(year);
+        const pre = preHolidays(year);
+        const holidays = holidaysForYear(year, state);
+        const weekdayHolidayCounts = { Mo: 0, Di: 0, Mi: 0, Do: 0, Fr: 0, Sa: 0, So: 0 };
+        holidays.forEach(entry => {
+          const map = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+          weekdayHolidayCounts[map[entry.date.getDay()]]++;
+        });
+
+        const weekdayTable = document.getElementById('weekdayTable');
+        if (weekdayTable) {
+          const rows = ['Mo','Di','Mi','Do','Fr','Sa','So']
+            .map(key => `<tr><td>${key}</td><td>${weekdayData[key]}</td><td>${weekdayHolidayCounts[key] || 0}</td></tr>`)
+            .join('');
+          weekdayTable.innerHTML = `
+            <h3>Wochentage im Jahr ${year}</h3>
+            <table class="table">
+              <thead><tr><th>Tag</th><th>Anzahl</th><th>Feiertage an diesem Tag</th></tr></thead>
+              <tbody>${rows}<tr><td><b>Summe/Jahr</b></td><td><b>${weekdayData.sum}</b></td><td>${Object.values(weekdayHolidayCounts).reduce((a, b) => a + b, 0)}</td></tr></tbody>
+            </table>
+          `;
+        }
+
+        const vacation = Number(document.getElementById('vacation').value) || 0;
+        const extraVacation = Number(document.getElementById('extraVacation').value) || 0;
+        const trainingDays = Number(document.getElementById('trainingDays').value) || 0;
+        const sickDays = Number(document.getElementById('sickDays').value) || 0;
+
+        const monFri = weekdayData.Mo + weekdayData.Di + weekdayData.Mi + weekdayData.Do + weekdayData.Fr;
+        const holidaysOnWeekdays = weekdayHolidayCounts.Mo + weekdayHolidayCounts.Di + weekdayHolidayCounts.Mi + weekdayHolidayCounts.Do + weekdayHolidayCounts.Fr;
+        const availableDaysBeforeAbsence = monFri - holidaysOnWeekdays;
+        const availableDays = Math.max(0, availableDaysBeforeAbsence - vacation - extraVacation - trainingDays - sickDays);
+        const availableHoursYear = availableDays * HOURS_PER_DAY;
+        const availableHoursMonth = availableHoursYear / 12;
+
+        const availabilityTable = document.getElementById('availabilityTable');
+        if (availabilityTable) {
+          availabilityTable.innerHTML = `
+            <h3>Abz&uuml;ge & verf&uuml;gbare Tage</h3>
+            <table class="table">
+              <tbody>
+                <tr><td>Tage Montag-Freitag</td><td>${monFri}</td></tr>
+                <tr><td>abzgl. Feiertage (Mo-Fr)</td><td>${holidaysOnWeekdays}</td></tr>
+                <tr><td>abzgl. Urlaub</td><td>${vacation}</td></tr>
+                <tr><td>abzgl. Zusatzurlaub</td><td>${extraVacation}</td></tr>
+                <tr><td>abzgl. Fortbildung</td><td>${trainingDays}</td></tr>
+                <tr><td>abzgl. Krankheit</td><td>${sickDays}</td></tr>
+                <tr><th>verf&uuml;gbare Tage</th><th>${availableDays}</th></tr>
+                <tr><th>verf&uuml;gbare Stunden/Jahr</th><th>${availableHoursYear.toFixed(0)}</th></tr>
+                <tr><th>verf&uuml;gbare Stunden/Monat (Durchschnitt)</th><th>${availableHoursMonth.toFixed(1)}</th></tr>
+              </tbody>
+            </table>
+          `;
+        }
+
+        kpiBox.innerHTML = `
+          <div class="item"><span class="muted">Feiertage gesamt</span><b>${holidays.length}</b></div>
+          <div class="item"><span class="muted">Vorfesttage (24./31.12.)</span><b>${pre.countWeekdays}</b></div>
+          <div class="item"><span class="muted">Mo-Fr Tage</span><b>${monFri}</b></div>
+          <div class="item"><span class="muted">Feiertage Mo-Fr</span><b>${holidaysOnWeekdays}</b></div>
+        `;
+
+        window.__weekdayCounts__ = {
+          Mo: weekdayData.Mo - (weekdayHolidayCounts.Mo || 0),
+          Di: weekdayData.Di - (weekdayHolidayCounts.Di || 0),
+          Mi: weekdayData.Mi - (weekdayHolidayCounts.Mi || 0),
+          Do: weekdayData.Do - (weekdayHolidayCounts.Do || 0),
+          Fr: weekdayData.Fr - (weekdayHolidayCounts.Fr || 0),
+          Sa: weekdayData.Sa,
+          So: weekdayData.So
+        };
+
+        buildHolidayPreview(state);
+        updateFormulaCards(null);
+      };
+
+      const updateRemoveButtonsState = () => {
+        const container = document.getElementById('rooms-container');
+        if (!container) return;
+        const entries = container.querySelectorAll('.room-entry');
+        const disable = entries.length <= 1;
+        entries.forEach(entry => {
+          const btn = entry.querySelector('.remove-room');
+          if (btn) btn.disabled = disable;
+        });
+      };
+
+      const removeRoom = (entry) => {
+        const container = document.getElementById('rooms-container');
+        if (!container || !entry) return;
+        const entries = container.querySelectorAll('.room-entry');
+        if (entries.length <= 1) {
+          const focusTarget = entry.querySelector('.staff') || entry.querySelector('.room');
+          if (focusTarget) focusTarget.focus();
+          return;
+        }
+        entry.remove();
+        updateRemoveButtonsState();
+        calculateAll();
+      };
+
+      const setupRoomEntry = (entry) => {
+        if (!entry) return;
+        const select = entry.querySelector('.room');
+        const customField = entry.querySelector('.room-custom');
+        const removeBtn = entry.querySelector('.remove-room');
+
+        const toggleCustom = () => {
+          const isCustom = select && select.value === 'Sonstiges';
+          if (customField) {
+            customField.classList.toggle('active', Boolean(isCustom));
+            if (isCustom) {
+              customField.focus();
+            } else {
+              customField.value = '';
+            }
+          }
+        };
+
+        if (select) {
+          select.onchange = () => {
+            toggleCustom();
+            calculateAll();
+          };
+          toggleCustom();
+        }
+
+        if (removeBtn) {
+          removeBtn.onclick = () => removeRoom(entry);
+        }
+      };
+
+      const addRoom = () => {
+        const container = document.getElementById('rooms-container');
+        if (!container) return;
+        const template = container.querySelector('.room-entry');
+        if (!template) return;
+        const clone = template.cloneNode(true);
+        const staffField = clone.querySelector('.staff');
+        if (staffField) staffField.value = '';
+        clone.querySelectorAll('.day-btn').forEach((btn, index) => {
+          const active = index < 5;
+          btn.classList.toggle('active', active);
+        });
+        clone.querySelectorAll('.hours').forEach((input, index) => {
+          const active = index < 5;
+          input.value = active ? 8 : 0;
+          input.disabled = !active;
+          input.classList.toggle('disabled', !active);
+        });
+        const select = clone.querySelector('.room');
+        if (select && select.options.length > 0) {
+          select.value = select.options[0].value;
+        }
+        const custom = clone.querySelector('.room-custom');
+        if (custom) {
+          custom.value = '';
+          custom.classList.remove('active');
+        }
+        setupRoomEntry(clone);
+        container.appendChild(clone);
+        updateRemoveButtonsState();
+      };
+
+      const updateFormulaCards = (values) => {
+        const einsatzEl = document.getElementById('metricEinsatz');
+        const verteilEl = document.getElementById('metricVerteil');
+        const reserveEl = document.getElementById('metricReserve');
+        const bruttoEl = document.getElementById('metricBrutto');
+        const bruttoAbsEl = document.getElementById('metricBruttoAbsence');
+        const reserveSummary = document.getElementById('reserveSummary');
+        const finalSummary = document.getElementById('finalSummary');
+        const stateYearMeta = document.getElementById('stateYearLabel');
+
+        if (!values) {
+          if (einsatzEl) einsatzEl.textContent = 'Berechne zun\u00e4chst die Arbeitspl\u00e4tze.';
+          if (verteilEl) verteilEl.innerHTML = '<span class="meta">Bundesland & Jahr folgen aus den Rahmenparametern.</span>Nutzt Urlaub + Fortbildung + Krankheit.';
+          if (reserveEl) reserveEl.textContent = 'Wird automatisch ermittelt.';
+          if (bruttoEl) bruttoEl.textContent = 'Summe in VK.';
+          if (bruttoAbsEl) bruttoAbsEl.textContent = 'Nutzt deine Abwesenheitsquote unten.';
+          if (reserveSummary) reserveSummary.innerHTML = '<p class="muted">Starte die Berechnung, um die Reserven zu sehen.</p>';
+          if (finalSummary) finalSummary.innerHTML = '<p class="muted">Ergebnis erscheint nach der Berechnung.</p>';
+          return;
+        }
+
+        if (stateYearMeta) stateYearMeta.textContent = `${values.stateName} - ${values.year}`;
+
+        const hoursFmt = (value) => `${value.toFixed(1)} h`;
+        const percentFmt = (value) => `${(value * 100).toFixed(1)}%`;
+
+        if (einsatzEl) {
+          einsatzEl.innerHTML = values.offer <= 0
+            ? 'Bitte valide Regelarbeitszeit ausw\u00e4hlen.'
+            : `${hoursFmt(values.need)} &divide; ${hoursFmt(values.offer)} = <span>${values.vkBasis.toFixed(2)} VK</span>`;
+        }
+
+        if (verteilEl) {
+          verteilEl.innerHTML = values.realHours <= 0
+            ? `<span class="meta">${values.stateName} - ${values.year}</span>Keine realen Arbeitszeiten vorhanden.`
+            : `<span class="meta">${values.stateName} - ${values.year}</span>${hoursFmt(values.fehlzeitenHours)} &divide; ${hoursFmt(values.realHours)} = <span>${percentFmt(values.verteilFactor)}</span>`;
+        }
+
+        if (reserveEl) reserveEl.innerHTML = `${values.vkBasis.toFixed(2)} VK &times; ${percentFmt(values.verteilFactor)} = <span>${values.reserveVK.toFixed(2)} VK</span>`;
+        if (bruttoEl) bruttoEl.innerHTML = `${values.vkBasis.toFixed(2)} VK + ${values.reserveVK.toFixed(2)} VK = <span>${values.bruttoVK.toFixed(2)} VK</span>`;
+        if (bruttoAbsEl) bruttoAbsEl.innerHTML = `${values.bruttoVK.toFixed(2)} VK &times; (1 + ${percentFmt(values.absence)}) = <span>${values.bruttoVKAbsence.toFixed(2)} VK</span>`;
+
+        if (reserveSummary) {
+          reserveSummary.innerHTML = `
+            <p><strong>Reservebedarf:</strong> ${values.reserveVK.toFixed(2)} VK</p>
+            <p class="muted">${hoursFmt(values.fehlzeitenHours)} Fehlzeiten &divide; ${hoursFmt(values.realHours)} reale Arbeitszeit = ${percentFmt(values.verteilFactor)}</p>
+          `;
+        }
+
+        if (finalSummary) {
+          const basisLabel = values.basis === 'month' ? 'Monat' : 'Jahr';
+          finalSummary.innerHTML = `
+            <p><strong>${values.bruttoVKAbsence.toFixed(2)} VK</strong> ben\u00f6tigt (${basisLabel}-Basis).</p>
+            <p class="muted">Grundlage: ${values.need.toFixed(1)} Std Bedarf und ${percentFmt(values.absence)} Abwesenheit.</p>
+          `;
+        }
+      };
+
+      const resolveRoomName = (room) => {
+        const select = room.querySelector('.room');
+        if (!select) return 'Arbeitsplatz';
+        if (select.value === 'Sonstiges') {
+          const custom = room.querySelector('.room-custom');
+          const customValue = (custom?.value || '').trim();
+          return customValue || 'Sonstiges';
+        }
+        const option = select.options[select.selectedIndex];
+        return option ? option.textContent : select.value;
+      };
+
+      const calculateAll = () => {
+        const rooms = document.querySelectorAll('.room-entry');
+        const absence = Math.max(0, Math.min(1, (Number(document.getElementById('absence').value) || 0) / 100));
+        const basis = document.getElementById('basis').value;
+        const weekdayCounts = window.__weekdayCounts__ || { Mo: 261, Di: 261, Mi: 261, Do: 261, Fr: 261, Sa: 52, So: 52 };
+
+        let totalWeekly = 0;
+        let totalYearly = 0;
+        const details = [];
+
+        rooms.forEach(room => {
+          const staff = Number(room.querySelector('.staff').value);
+          if (!staff || staff <= 0) return;
+          let weekly = 0;
+          let yearly = 0;
+          const perDay = [];
+          const map = { Mo: 'Mo', Di: 'Di', Mi: 'Mi', Do: 'Do', Fr: 'Fr', Sa: 'Sa', So: 'So' };
+          room.querySelectorAll('.day-btn').forEach(btn => {
+            const active = btn.classList.contains('active');
+            const day = btn.dataset.day;
+            const input = room.querySelector(`.hours[data-day='${day}']`);
+            if (!active || !input) return;
+            const hours = Number(input.value) || 0;
+            if (hours <= 0) return;
+            const count = weekdayCounts[map[day]] || 0;
+            weekly += hours * staff;
+            yearly += hours * staff * count;
+            perDay.push({ day, hours, staff, total: hours * staff, count });
+          });
+          if (yearly > 0) {
+            details.push({
+              name: resolveRoomName(room),
+              staff,
+              weekly,
+              monthly: yearly / 12,
+              yearly,
+              perDay
+            });
+            totalWeekly += weekly;
+            totalYearly += yearly;
+          }
+        });
+
+        const result = document.getElementById('result');
+        if (!result) return;
+        if (details.length === 0) {
+          result.innerHTML = '<b>Bitte mindestens einen Arbeitsplatz auszuf\u00fcllen.</b>';
+          updateFormulaCards(null);
+          return;
+        }
+
+        const totalMonthlyNeed = totalYearly / 12;
+        const adjMonthly = totalMonthlyNeed;
+        const adjYearly = totalYearly;
+
+        const state = stateSel.value;
+        const year = Number(yearSel.value);
+        const vacation = Number(document.getElementById('vacation').value) || 0;
+        const extraVacation = Number(document.getElementById('extraVacation').value) || 0;
+        const trainingDays = Number(document.getElementById('trainingDays').value) || 0;
+        const sickDays = Number(document.getElementById('sickDays').value) || 0;
+        const weekdayData = countWeekdaysPerYear(year);
+        const holidaysOnWeekdays = holidaysForYear(year, state).reduce((acc, entry) => {
+          const day = entry.date.getDay();
+          return acc + (day >= 1 && day <= 5 ? 1 : 0);
+        }, 0);
+        const monFri = weekdayData.Mo + weekdayData.Di + weekdayData.Mi + weekdayData.Do + weekdayData.Fr;
+        const availableDaysBeforeAbsence = Math.max(0, monFri - holidaysOnWeekdays);
+        const absenceDays = vacation + extraVacation + trainingDays + sickDays;
+        const availableDays = Math.max(0, availableDaysBeforeAbsence - absenceDays);
+        const offerYear = availableDays * HOURS_PER_DAY;
+        const offerMonth = offerYear / 12;
+        const need = basis === 'month' ? adjMonthly : adjYearly;
+        const offer = basis === 'month' ? offerMonth : offerYear;
+        const vkBasis = offer > 0 ? need / offer : 0;
+        const fehlzeitenHours = absenceDays * HOURS_PER_DAY;
+        const realHours = availableDaysBeforeAbsence * HOURS_PER_DAY;
+        const verteilFactor = realHours > 0 ? fehlzeitenHours / realHours : 0;
+        const reserveVK = vkBasis * verteilFactor;
+        const bruttoVK = vkBasis + reserveVK;
+        const vkTotal = vkBasis * (1 + absence);
+
+        let html = '<div class="kpi">' +
+          `<div class="item"><span class="muted">Gesamtbedarf (${basis === 'month' ? 'Monat' : 'Jahr'})</span><b>${need.toFixed(1)} Std</b></div>` +
+          `<div class="item"><span class="muted">Angebot je VK (${basis === 'month' ? 'Monat' : 'Jahr'})</span><b>${offer.toFixed(1)} Std</b></div>` +
+          `<div class="item"><span class="muted">VK (Basis)</span><b>${vkBasis.toFixed(2)} VK</b></div>` +
+          `<div class="item"><span class="muted">VK inkl. Abwesenheit (${(absence * 100).toFixed(0)}%)</span><b>${vkTotal.toFixed(2)} VK</b></div>` +
+        '</div>';
+
+        html += '<table class="table" style="margin-top:10px"><thead><tr><th>Arbeitsplatz</th><th>Personen</th><th>Wochenstunden (typ.)</th><th>Monatsstunden (netto)</th><th>Jahresstunden (netto)</th></tr></thead><tbody>';
+        details.forEach(item => {
+          html += `<tr><td>${item.name}</td><td>${item.staff}</td><td>${item.weekly.toFixed(1)}</td><td>${item.monthly.toFixed(1)}</td><td>${item.yearly.toFixed(1)}</td></tr>`;
+        });
+        html += '</tbody></table>';
+
+        html += '<details style="margin-top:8px"><summary>Tagesdetails pro Arbeitsplatz</summary>';
+        details.forEach(item => {
+          const detailRows = item.perDay
+            .map(x => `<span class="muted">${x.day}</span>: ${x.hours} h &times; ${x.staff} Pers. = <b>${x.total.toFixed(1)} h/Woche</b> &times; ${x.count} Betriebstage/Jahr`)
+            .join('<br>');
+          html += `<div style="margin:6px 0"><b>${item.name}</b><br>${detailRows}</div>`;
+        });
+        html += '</details>';
+
+        result.innerHTML = html;
+        updateFormulaCards({
+          need,
+          offer,
+          vkBasis,
+          fehlzeitenHours,
+          realHours,
+          verteilFactor,
+          reserveVK,
+          bruttoVK,
+          bruttoVKAbsence: vkTotal,
+          absence,
+          basis,
+          stateName: STATES[state],
+          year
+        });
+      };
+
+      const attachFieldListeners = () => {
+        const fields = ['vacation', 'extraVacation', 'trainingDays', 'sickDays'];
+        fields.forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.onchange = rebuildAvailability;
+          el.oninput = rebuildAvailability;
+        });
+        stateSel.onchange = rebuildAvailability;
+        yearSel.onchange = rebuildAvailability;
+      };
+
+      const runSelfTests = () => {
+        if (window.__BES_TESTS_RAN__) return;
+        window.__BES_TESTS_RAN__ = true;
+        const yr = 2025;
+        const easter = easterDate(yr);
+        console.assert(easter.getFullYear() === 2025 && easter.getMonth() === 3 && easter.getDate() === 20, 'Easter 2025 sollte 20.04.2025 sein');
+        const wd = countWeekdaysPerYear(2024);
+        console.assert(wd.sum === 366 || wd.sum === 365, 'Jahrestage sollten 365/366 sein');
+        const hNW = holidaysForYear(2025, 'NW').map(h => h.name);
+        console.assert(hNW.includes('Tag der Arbeit'), 'Tag der Arbeit muss enthalten sein');
+        const lbl = document.getElementById('holidaySummary')?.textContent || '';
+        console.assert(/Feiertage f\u00fcr/.test(lbl), 'Holiday summary sollte gesetzt sein');
+      };
+
+      document.querySelectorAll('.room-entry').forEach(setupRoomEntry);
+      updateRemoveButtonsState();
+      window.addRoom = addRoom;
+      window.calculateAll = calculateAll;
+
+      initSelectors();
+      attachFieldListeners();
+      rebuildAvailability();
+      runSelfTests();
+    })();
+</script>
+

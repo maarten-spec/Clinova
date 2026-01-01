@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Clinicon Insights - Demo-Darstellungen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="assets/typography.css" />
+  <style>
+    :root {
+      --bg-page: #020617;
+      --bg-section: #020617;
+      --bg-card: #020617;
+      --bg-card-soft: rgba(15, 23, 42, 0.9);
+      --glass-bg: rgba(15, 23, 42, 0.6);
+      --border-soft: #1f2937;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --pfk: #22c55e;
+      --pfa: #3b82f6;
+      --vk: #a855f7;
+      --accent: #22d3ee;
+      --danger: #ef4444;
+      --warn: #eab308;
+      --ok: #22c55e;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.95);
+      --radius-lg: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-base);
+      font-size: var(--font-size-base);
+      line-height: var(--line-height-base);
+      background: radial-gradient(circle at top, #0f172a 0, #020617 55%);
+      color: var(--text-main);
+      padding: 1.5rem;
+    }
+
+    .page {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+    }
+
+    .page-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .page-title {
+      font-size: var(--font-size-h1);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .logo-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: conic-gradient(from 180deg,
+        var(--pfk),
+        var(--pfa),
+        var(--vk),
+        var(--pfk)
+      );
+      box-shadow: 0 0 12px rgba(45, 212, 191, 0.9);
+    }
+
+    .page-subtitle {
+      margin-top: 0.3rem;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    section {
+      background: var(--bg-section);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      padding: 1rem 1.1rem 1.1rem;
+      margin-bottom: 1.1rem;
+      box-shadow: var(--shadow-soft);
+    }
+
+    section + section {
+      margin-top: 1.1rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title {
+      font-size: var(--font-size-h3);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .section-title-tag {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(45, 212, 191, 0.7);
+      background: rgba(8, 47, 73, 0.4);
+    }
+
+    .section-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .section-body {
+      font-size: 0.85rem;
+    }
+
+    /* =========================
+       1. Verhältnis PFK / PFA / VK
+       ========================= */
+    .ratio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .ratio-card {
+      background: radial-gradient(circle at top left, rgba(34, 197, 94, 0.12), transparent 60%);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      padding: 0.85rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ratio-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.4rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .ratio-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .ratio-meta {
+      text-align: right;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .ratio-meta strong {
+      color: var(--accent);
+    }
+
+    .ratio-bar-wrapper {
+      background: #020617;
+      border-radius: 999px;
+      padding: 0.18rem;
+      margin-bottom: 0.45rem;
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.9);
+    }
+
+    .ratio-bar {
+      display: flex;
+      height: 18px;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .ratio-segment {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 500;
+      white-space: nowrap;
+      padding-inline: 0.3rem;
+      height: 100%;
+    }
+
+    .ratio-segment.pfk {
+      background: linear-gradient(135deg, var(--pfk), #16a34a);
+    }
+
+    .ratio-segment.pfa {
+      background: linear-gradient(135deg, var(--pfa), #2563eb);
+    }
+
+    .ratio-numbers-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .ratio-numbers-row strong {
+      color: var(--text-main);
+    }
+
+    .ratio-footnote {
+      margin-top: 0.25rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* =========================
+       2. Glow KPI-Pills
+       ========================= */
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .pill {
+      border-radius: 999px;
+      padding: 0.35rem 0.8rem;
+      font-size: 0.78rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.8));
+      box-shadow: 0 0 18px rgba(15, 23, 42, 1);
+    }
+
+    .pill::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0.9;
+      mix-blend-mode: screen;
+      background: radial-gradient(circle at top left, rgba(34, 211, 238, 0.35), transparent 60%);
+      pointer-events: none;
+    }
+
+    .pill-label {
+      color: var(--text-muted);
+    }
+
+    .pill-value {
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+
+    .pill-badge {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      position: relative;
+      z-index: 1;
+    }
+
+    .pill-badge.ok {
+      border-color: rgba(34, 197, 94, 0.8);
+      color: var(--ok);
+    }
+
+    .pill-badge.warn {
+      border-color: rgba(234, 179, 8, 0.8);
+      color: var(--warn);
+    }
+
+    .pill-badge.danger {
+      border-color: rgba(239, 68, 68, 0.9);
+      color: var(--danger);
+    }
+
+    /* =========================
+       3. Radial / Donut-Verteilung
+       ========================= */
+    .radials-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .donut-card {
+      background: var(--bg-card-soft);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      padding: 0.75rem;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      min-width: 260px;
+    }
+
+    .donut {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, #020617 48%, transparent 50%),
+        conic-gradient(
+          var(--pfk) var(--pfk-angle),
+          var(--pfa) var(--pfk-angle) 360deg
+        );
+      box-shadow: 0 0 25px rgba(15, 23, 42, 1);
+      position: relative;
+    }
+
+    .donut-center-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .donut-legend {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+    }
+
+    .legend-dot.pfk { background: var(--pfk); }
+    .legend-dot.pfa { background: var(--pfa); }
+
+    /* =========================
+       4. Station-Cards mit Sparkline
+       ========================= */
+    .station-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .station-card {
+      background: var(--bg-card-soft);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .station-card-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+
+    .station-card-header span:nth-child(1) {
+      font-weight: 600;
+    }
+
+    .sparkline {
+      width: 100%;
+      height: 36px;
+    }
+
+    .station-card-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    /* =========================
+       5. Capacity Thermometer
+       ========================= */
+    .capacity-row {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+
+    .capacity-card {
+      background: var(--bg-card-soft);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-lg);
+      padding: 0.7rem 0.9rem;
+      font-size: 0.8rem;
+      min-width: 180px;
+    }
+
+    .capacity-label {
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+    }
+
+    .thermo-wrapper {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-end;
+    }
+
+    .thermo {
+      width: 22px;
+      height: 90px;
+      border-radius: 999px;
+      background: linear-gradient(to top, #1f2937, #020617);
+      border: 1px solid var(--border-soft);
+      padding: 3px;
+      display: flex;
+      flex-direction: column-reverse;
+      overflow: hidden;
+    }
+
+    .thermo-fill {
+      width: 100%;
+      border-radius: 999px;
+      background: linear-gradient(to top, var(--danger), var(--warn), var(--ok));
+    }
+
+    .capacity-text {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    /* =========================
+       6. Timeline Slider & Trend Badges
+       ========================= */
+    .timeline-row {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 900px) {
+      .timeline-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .timeline-card {
+      background: var(--bg-card-soft);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      padding: 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    .timeline-slider-wrapper {
+      margin-top: 0.5rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .trend-badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+    }
+
+    .trend-badge {
+      font-size: 0.76rem;
+      border-radius: 999px;
+      padding: 0.2rem 0.6rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      border: 1px solid var(--border-soft);
+      background: #020617;
+    }
+
+    .trend-badge span.icon {
+      font-size: 0.8rem;
+    }
+
+    .trend-badge.ok { color: var(--ok); border-color: rgba(34, 197, 94, 0.6); }
+    .trend-badge.warn { color: var(--warn); border-color: rgba(234, 179, 8, 0.6); }
+    .trend-badge.danger { color: var(--danger); border-color: rgba(239, 68, 68, 0.8); }
+
+    /* =========================
+       7. Cluster Bubbles
+       ========================= */
+    .bubble-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .bubble {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, rgba(248, 250, 252, 0.1), rgba(15, 23, 42, 0.8));
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 0 18px rgba(15, 23, 42, 1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      text-align: center;
+      padding: 0.3rem;
+    }
+
+    .bubble-label {
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      margin-top: 0.15rem;
+    }
+
+    /* =========================
+       8. Glow Line Chart
+       ========================= */
+    .line-chart-card {
+      background: var(--bg-card-soft);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      padding: 0.75rem;
+    }
+
+    .line-chart-title {
+      font-size: 0.85rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .line-chart-svg {
+      width: 100%;
+      height: 80px;
+      filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.9));
+    }
+
+    /* =========================
+       9. Pyramide
+       ========================= */
+    .pyramid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      font-size: 0.8rem;
+    }
+
+    .pyramid-level {
+      display: flex;
+      justify-content: center;
+    }
+
+    .pyramid-box {
+      border-radius: 999px;
+      padding: 0.25rem 0.8rem;
+      border: 1px solid var(--border-soft);
+      background: var(--bg-card-soft);
+      min-width: 160px;
+      text-align: center;
+    }
+
+    /* =========================
+       10. Glass Panels
+       ========================= */
+    .glass-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .glass-card {
+      background: var(--glass-bg);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 0.7rem;
+      font-size: 0.8rem;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .glass-card-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      font-size: 0.84rem;
+    }
+
+    .glass-card-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 0.15rem;
+    }
+
+    .glass-card-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <h1 class="page-title">
+        <span class="logo-dot"></span>
+        Clinicon Insights – UI-Demo
+      </h1>
+      <p class="page-subtitle">
+        Beispiele für PFK/PFA-Verteilung, Glow-KPIs und weitere Darstellungen – ohne Heatmap/Verlegung, nur Fokus auf Qualifikation & Stellenplan.
+      </p>
+    </header>
+
+    <!-- 1. Verhältnis Pflegefachkraft / Pflegeassistenz / VK -->
+    <section>
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            Verhältnis Pflegefachkraft / Assistenz
+            <span class="section-title-tag">PFK / PFA / VK</span>
+          </div>
+          <div class="section-subtitle">
+            Pro Station: VK-Werte, prozentuale PFK/PFA-Verteilung und Gesamt-VK.
+          </div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="ratio-grid" id="ratioGrid">
+          <!-- wird per JavaScript gefüllt -->
+        </div>
+        <div class="ratio-footnote">
+          Beispiel-Daten – später über deinen Stellenplan (PFK-VK, PFA-VK) befüllen.
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Glow KPI-Pills -->
+    <section>
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            Glow KPI-Pills
+            <span class="section-title-tag">KPI-Übersicht</span>
+          </div>
+          <div class="section-subtitle">
+            Typische Pflege-Kennzahlen: VK, Deckungsgrad, PFK-Quote, Krankenstand, PPUG-Risiko.
+          </div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="pill-row" id="pillRow">
+          <!-- wird per JS gefüllt -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Radial / Donut-Verteilung -->
+    <section>
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            Donut-Verteilung PFK / PFA
+            <span class="section-title-tag">Qualifikationsmix</span>
+          </div>
+          <div class="section-subtitle">
+            Verteilung PFK/PFA in % – je Station oder Standort.
+          </div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="radials-row" id="donutRow">
+          <!-- per JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Station Cards mit Sparkline -->
+    <section>
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            Station-Cards mit Trendlinie
+            <span class="section-title-tag">Trend</span>
+          </div>
+          <div class="section-subtitle">
+            Mini-Sparkline z. B. für Belegung oder Krankenstand der letzten 12 Wochen.
+          </div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="station-cards-grid">
+          <div class="station-card">
+            <div class="station-card-header">
+              <span>ITS 1</span>
+              <span>Belegung Ø 92 %</span>
+            </div>
+            <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline
+                fill="none"
+                stroke="#22c55e"
+                stroke-width="1.6"
+                points="0,20 10,22 20,18 30,15 40,14 50,16 60,13 70,10 80,12 90,9 100,8" />
+            </svg>
+            <div class="station-card-meta">
+              <span>VK: 22,5</span>
+              <span>PFK-Anteil: 82 %</span>
+            </div>
+          </div>
+          <div class="station-card">
+            <div class="station-card-header">
+              <span>Allgemeinstation Innere</span>
+              <span>Belegung Ø 88 %</span>
+            </div>
+            <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline
+                fill="none"
+                stroke="#3b82f6"
+                stroke-width="1.6"
+                points="0,18 10,16 20,17 30,15 40,13 50,14 60,16 70,17 80,15 90,14 100,12" />
+            </svg>
+            <div class="station-card-meta">
+              <span>VK: 19,0</span>
+              <span>PFK-Anteil: 65 %</span>
+            </div>
+          </div>
+          <div class="station-card">
+            <div class="station-card-header">
+              <span>Geriatrie</span>
+              <span>Belegung Ø 95 %</span>
+            </div>
+            <svg class="sparkline" viewBox="0 0 100 30" preserveAspectRatio="none">
+              <polyline
+                fill="none"
+                stroke="#eab308"
+                stroke-width="1.6"
+                points="0,22 10,21 20,20 30,18 40,16 50,14 60,13 70,12 80,11 90,10 100,9" />
+            </svg>
+            <div class="station-card-meta">
+              <span>VK: 17,4</span>
+              <span>PFK-Anteil: 55 %</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Capacity Thermometer -->
+    <section>
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            Capacity Thermometer
+            <span class="section-title-tag">PPUG / Deckungsgrad</span>
+          </div>
+          <div class="section-subtitle">
+            Visuelle Darstellung der Abdeckung (Soll/Ist VK) und PPUG-Risiko.
+          </div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="capacity-row">
+          <div class="capacity-card">
+            <div class="capacity-label">ITS 1</div>
+            <div class="thermo-wrapper">
+              <div class="thermo">
+                <div class="thermo-fill" style="height: 92%;"></div>
+              </div>
+              <div class="capacity-text">
+                Deckungsgrad: <strong>92 %</strong><br />
+                PPUG-Tage (Monat): <strong>0</strong><br />
+                Bewertung: <span style="color: var(--ok);">stabil</span>
+              </div>
+            </div>
+          </div>
+          <div class="capacity-card">
+            <div class="capacity-label">Allgemeinstation Innere</div>
+            <div class="thermo-wrapper">
+              <div class="thermo">
+                <div class="thermo-fill" style="height: 78%;"></div>
+              </div>
+              <div class="capacity-text">
+                Deckungsgrad: <strong>78 %</strong><br />
+                PPUG-Tage (Monat): <strong>5</strong><br />
+                Bewertung: <span style="color: var(--warn);">kritisch</span>
+              </div>
+            </div>
+          </div>
+          <div class="capacity-card">
+            <div class="capacity-label">Geriatrie</div>
+            <div class="thermo-wrapper">
+              <div class="thermo">
+                <div class="thermo-fill" style="height: 68%;"></div>
+              </div>
+              <div class="capacity-text">
+                Deckungsgrad: <strong>68 %</strong><br />
+                PPUG-Tage (Monat): <strong>9</strong><br />
+                Bewertung: <span style="color: var(--danger);">Handlungsbedarf</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Timeline Slider & Trend Badges -->
+    <section>
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            Timeline & Trends
+            <span class="section-title-tag">12-Monats-Ansicht</span>
+          </div>
+          <div class="section-subtitle">
+            Auswahl eines Monats + schnelle Trendbewertung für zentrale Kennzahlen.
+          </div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="timeline-row">
+          <div class="timeline-card">
+            <strong>Monatsauswahl</strong>
+            <div class="timeline-slider-wrapper">
+              <input type="range" id="monthRange" min="1" max="12" value="12" />
+              <div id="monthLabel" style="margin-top:0.3rem;color:var(--text-muted);font-size:0.78rem;">
+                Monat: 12 / 12
+              </div>
+            </div>
+            <div style="margin-top:0.5rem;font-size:0.78rem;color:var(--text-muted);">
+              Idee: Hier z. B. Linienverlauf für VK, Krankenstand oder PPUG-Risiko pro Monat darstellen.
+            </div>
+          </div>
+          <div class="timeline-card">
+            <strong>Trend-Badges</strong>
+            <div class="trend-badges-row">
+              <div class="trend-badge ok">
+                <span class="icon">▲</span> Deckungsgrad
+              </div>
+              <div class="trend-badge warn">
+                <span class="icon">▲</span> Krankenstand
+              </div>
+              <div class="trend-badge danger">
+                <span class="icon">▼</span> PFK-Anteil
+              </div>
+              <div class="trend-badge ok">
+                <span class="icon">≈</span> Belegungsquote
+              </div>
+            </div>
+            <div style="margin-top:0.5rem;font-size:0.78rem;color:var(--text-muted);">
+              Symbole können direkt aus echten Trendberechnungen (Vorperiode vs. aktueller Monat) gespeist werden.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Cluster Bubbles -->
+    <section>
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            Cluster-Bubbles
+            <span class="section-title-tag">Stationsvolumen</span>
+          </div>
+          <div class="section-subtitle">
+            Beispielhafte Darstellung von Stationsclustern nach VK-Volumen (Größe) und Bereich.
+          </div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="bubble-row">
+          <div class="bubble" style="width:82px;height:82px;border-color:#22c55e;">
+            <div>ITS</div>
+            <div style="font-size:0.9rem;font-weight:600;">22,5</div>
+            <div class="bubble-label">VK gesamt</div>
+          </div>
+          <div class="bubble" style="width:70px;height:70px;border-color:#3b82f6;">
+            <div>Innere</div>
+            <div style="font-size:0.9rem;font-weight:600;">19,0</div>
+            <div class="bubble-label">VK</div>
+          </div>
+          <div class="bubble" style="width:64px;height:64px;border-color:#eab308;">
+            <div>Chirurgie</div>
+            <div style="font-size:0.9rem;font-weight:600;">17,0</div>
+            <div class="bubble-label">VK</div>
+          </div>
+          <div class="bubble" style="width:60px;height:60px;border-color:#a855f7;">
+            <div>Geriatrie</div>
+            <div style="font-size:0.9rem;font-weight:600;">15,5</div>
+            <div class="bubble-label">VK</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Glow Line Chart -->
+    <section>
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            Glow Line Chart
+            <span class="section-title-tag">VK-Forecast</span>
+          </div>
+          <div class="section-subtitle">
+            Beispielhafte Verlaufskurve (z. B. VK-Ist vs. Forecast).
+          </div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="line-chart-card">
+          <div class="line-chart-title">
+            VK-Entwicklung & Forecast (Indexiert)
+          </div>
+          <svg class="line-chart-svg" viewBox="0 0 100 40" preserveAspectRatio="none">
+            <!-- Ist -->
+            <polyline
+              fill="none"
+              stroke="#22c55e"
+              stroke-width="1.6"
+              points="0,30 10,28 20,27 30,25 40,23 50,22 60,21 70,20 80,19 90,18 100,17" />
+            <!-- Forecast -->
+            <polyline
+              fill="none"
+              stroke="#38bdf8"
+              stroke-dasharray="2 2"
+              stroke-width="1.4"
+              points="50,22 60,21 70,20 80,19 90,17 100,15" />
+          </svg>
+          <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.3rem;">
+            Grün = Ist-Verlauf, Blau gestrichelt = Forecast auf Basis deiner Plan-/Belegungsdaten.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Pyramide -->
+    <section>
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            Pyramidenübersicht Versorgung
+            <span class="section-title-tag">Struktur</span>
+          </div>
+          <div class="section-subtitle">
+            Hierarchische Darstellung der Bereiche – z. B. ITS &gt; IMC &gt; Normalstation.
+          </div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="pyramid">
+          <div class="pyramid-level">
+            <div class="pyramid-box">Intensivstationen</div>
+          </div>
+          <div class="pyramid-level">
+            <div class="pyramid-box">IMC / Überwachungsstationen</div>
+          </div>
+          <div class="pyramid-level">
+            <div class="pyramid-box">Normalstationen (Innere, Chirurgie, etc.)</div>
+          </div>
+          <div class="pyramid-level">
+            <div class="pyramid-box">Funktionsbereiche / OP / Endoskopie</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Glass Panels -->
+    <section>
+      <div class="section-header">
+        <div>
+          <div class="section-title">
+            Glass Panels
+            <span class="section-title-tag">Dashboard</span>
+          </div>
+          <div class="section-subtitle">
+            Kennzahlen-Karten im Glas-/Neon-Stil für dein Clinicon-Hauptdashboard.
+          </div>
+        </div>
+      </div>
+      <div class="section-body">
+        <div class="glass-grid">
+          <div class="glass-card">
+            <div class="glass-card-title">VK gesamt Pflege (Standort A)</div>
+            <div class="glass-card-value">182,4 VK</div>
+            <div class="glass-card-label">Inklusive PFK, PFA, Schüler – ohne Funktionsdienste.</div>
+          </div>
+          <div class="glass-card">
+            <div class="glass-card-title">PFK-Quote</div>
+            <div class="glass-card-value">71 %</div>
+            <div class="glass-card-label">Zielkorridor: 70–80 % PFK.</div>
+          </div>
+          <div class="glass-card">
+            <div class="glass-card-title">Krankenstand (laufender Monat)</div>
+            <div class="glass-card-value" style="color:var(--warn);">7,8 %</div>
+            <div class="glass-card-label">Vorperiode: 6,2 % – Trend steigend.</div>
+          </div>
+          <div class="glass-card">
+            <div class="glass-card-title">PPUG-Tage (Monat)</div>
+            <div class="glass-card-value" style="color:var(--danger);">11 Tage</div>
+            <div class="glass-card-label">Fokusbereiche: Innere, Geriatrie, Nachtbesetzung.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Beispiel-Daten für PFK/PFA-Verhältnis & KPI-Pills
+    const stations = [
+      { name: "ITS 1", pfk: 18.5, pfa: 4.0 },
+      { name: "Allgemeinstation Innere", pfk: 12.0, pfa: 7.0 },
+      { name: "Geriatrie", pfk: 9.0, pfa: 8.4 },
+      { name: "Chirurgie West", pfk: 11.2, pfa: 5.0 }
+    ];
+
+    const ratioGrid = document.getElementById("ratioGrid");
+    const donutRow = document.getElementById("donutRow");
+    const pillRow = document.getElementById("pillRow");
+
+    function renderRatios() {
+      ratioGrid.innerHTML = "";
+      stations.forEach(station => {
+        const total = station.pfk + station.pfa;
+        const pfkPct = total > 0 ? (station.pfk / total) * 100 : 0;
+        const pfaPct = total > 0 ? (station.pfa / total) * 100 : 0;
+
+        const div = document.createElement("div");
+        div.className = "ratio-card";
+        div.innerHTML = `
+          <div class="ratio-header">
+            <div class="ratio-name">${station.name}</div>
+            <div class="ratio-meta">
+              <span><strong>${total.toFixed(1)}</strong> VK gesamt</span><br />
+              <span>${pfkPct.toFixed(0)} % PFK · ${pfaPct.toFixed(0)} % PFA</span>
+            </div>
+          </div>
+          <div class="ratio-bar-wrapper">
+            <div class="ratio-bar">
+              <div class="ratio-segment pfk" style="width:${pfkPct}%;">
+                ${pfkPct > 12 ? pfkPct.toFixed(0) + " % PFK" : ""}
+              </div>
+              <div class="ratio-segment pfa" style="width:${pfaPct}%;">
+                ${pfaPct > 12 ? pfaPct.toFixed(0) + " % PFA" : ""}
+              </div>
+            </div>
+          </div>
+          <div class="ratio-numbers-row">
+            <span><strong>${station.pfk.toFixed(1)}</strong> VK PFK</span>
+            <span><strong>${station.pfa.toFixed(1)}</strong> VK PFA</span>
+          </div>
+        `;
+        ratioGrid.appendChild(div);
+      });
+    }
+
+    function renderDonuts() {
+      donutRow.innerHTML = "";
+      stations.slice(0, 3).forEach(station => {
+        const total = station.pfk + station.pfa;
+        const pfkPct = total > 0 ? (station.pfk / total) * 100 : 0;
+        const pfaPct = 100 - pfkPct;
+        const card = document.createElement("div");
+        card.className = "donut-card";
+        card.innerHTML = `
+          <div class="donut" style="--pfk-angle:${pfkPct * 3.6}deg;">
+            <div class="donut-center-text">${pfkPct.toFixed(0)}%</div>
+          </div>
+          <div class="donut-legend">
+            <div><strong>${station.name}</strong></div>
+            <div class="legend-row">
+              <span class="legend-dot pfk"></span>
+              <span>PFK: ${station.pfk.toFixed(1)} VK (${pfkPct.toFixed(0)} %)</span>
+            </div>
+            <div class="legend-row">
+              <span class="legend-dot pfa"></span>
+              <span>PFA: ${station.pfa.toFixed(1)} VK (${pfaPct.toFixed(0)} %)</span>
+            </div>
+            <div style="margin-top:0.2rem;">Gesamt: ${total.toFixed(1)} VK</div>
+          </div>
+        `;
+        donutRow.appendChild(card);
+      });
+    }
+
+    function renderPills() {
+      pillRow.innerHTML = "";
+      // Beispiel-Gesamtwerte für einen Standort / Verbund
+      const kpis = [
+        { label: "VK gesamt Pflege", value: "182,4 VK", state: "ok" },
+        { label: "PFK-Quote", value: "71 %", state: "ok" },
+        { label: "Deckungsgrad Soll/Ist VK", value: "88 %", state: "warn" },
+        { label: "Krankenstand", value: "7,8 %", state: "warn" },
+        { label: "PPUG-Tage (Monat)", value: "11", state: "danger" },
+        { label: "Leasinganteil", value: "6 %", state: "warn" }
+      ];
+
+      kpis.forEach(kpi => {
+        const pill = document.createElement("div");
+        pill.className = "pill";
+        pill.innerHTML = `
+          <span class="pill-label">${kpi.label}</span>
+          <span class="pill-value">${kpi.value}</span>
+          <span class="pill-badge ${kpi.state}">
+            ${
+              kpi.state === "ok" ? "OK" :
+              kpi.state === "warn" ? "Achtung" : "Alarm"
+            }
+          </span>
+        `;
+        pillRow.appendChild(pill);
+      });
+    }
+
+    renderRatios();
+    renderDonuts();
+    renderPills();
+
+    // Timeline-Label aktualisieren
+    const monthRange = document.getElementById("monthRange");
+    const monthLabel = document.getElementById("monthLabel");
+    if (monthRange && monthLabel) {
+      monthRange.addEventListener("input", () => {
+        monthLabel.textContent = `Monat: ${monthRange.value} / 12`;
+      });
+    }
+  </script>
+</body>
+</html>
+
+

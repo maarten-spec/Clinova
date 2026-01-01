@@ -1,0 +1,1418 @@
+<section class="card page-frame" id="schicht-tool">
+  <div class="schicht-grid">
+    <section class="card section-header schicht-hero">
+      <h2>Schichtbesetzung</h2>
+      <p class="section-lead">Planen Sie Dienste konsistent und sehen Sie Bedarf sowie VK-Bedarf direkt in der Tabelle darunter.</p>
+    </section>
+
+    <section class="card totals-card">
+      <div class="totals-head">
+        <h3>Wochenbedarf &amp; Vollkr&auml;fte</h3>
+        <p>Summiert alle geplanten Dienste je Woche und berechnet den VK-Bedarf (38,5 Std.).</p>
+      </div>
+      <div class="totals-grid">
+        <div class="totals-item">
+          <span class="totals-label">Gesamtminuten/Woche</span>
+          <strong data-total-minutes>0</strong>
+        </div>
+        <div class="totals-item">
+          <span class="totals-label">Gesamtstunden/Woche</span>
+          <strong data-total-hours>0</strong>
+        </div>
+        <div class="totals-item">
+          <span class="totals-label">VK-Bedarf (38,5 Std.)</span>
+          <strong data-total-fte>0</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="card schedule-card">
+      <div class="schedule-header">
+        <div>
+          <h3>Regeldienst-&Uuml;bersicht</h3>
+          <p>Die Timeline bildet 24 Stunden von 06:00 Uhr bis 06:00 Uhr am Folgetag ab. Verschieben oder skalieren Sie die Balken in 15-Minuten-Schritten.</p>
+        </div>
+        <div class="schedule-legend">
+          <button type="button" class="legend-item" draggable="true" data-type="frueh" aria-label="Fr&uuml;hdienst hinzuf&uuml;gen">
+            <span class="legend-swatch frueh"></span>
+            <span class="legend-label">Fr&uuml;hdienst</span>
+          </button>
+          <button type="button" class="legend-item" draggable="true" data-type="spaet" aria-label="Sp&auml;tdienst hinzuf&uuml;gen">
+            <span class="legend-swatch spaet"></span>
+            <span class="legend-label">Sp&auml;tdienst</span>
+          </button>
+          <button type="button" class="legend-item" draggable="true" data-type="nacht" aria-label="Nachtdienst hinzuf&uuml;gen">
+            <span class="legend-swatch nacht"></span>
+            <span class="legend-label">Nachtdienst</span>
+          </button>
+          <button type="button" class="legend-item" draggable="true" data-type="flex" aria-label="Flexdienst hinzuf&uuml;gen">
+            <span class="legend-swatch flex"></span>
+            <span class="legend-label">Flexdienst</span>
+          </button>
+          <span class="legend-hint">Legenden-Button klicken oder Enter/Space f&uuml;r neuen Dienst. Entfernen mit Entf/R&uuml;ck.</span>
+      </div>
+      </div>
+
+      <div class="timeline-wrap">
+        <div class="time-scale">
+          <div class="time-label">Zeit</div>
+          <div class="time-hour" style="--start:2;">06:00</div>
+          <div class="time-hour" style="--start:6;">07:00</div>
+          <div class="time-hour" style="--start:10;">08:00</div>
+          <div class="time-hour" style="--start:14;">09:00</div>
+          <div class="time-hour" style="--start:18;">10:00</div>
+          <div class="time-hour" style="--start:22;">11:00</div>
+          <div class="time-hour" style="--start:26;">12:00</div>
+          <div class="time-hour" style="--start:30;">13:00</div>
+          <div class="time-hour" style="--start:34;">14:00</div>
+          <div class="time-hour" style="--start:38;">15:00</div>
+          <div class="time-hour" style="--start:42;">16:00</div>
+          <div class="time-hour" style="--start:46;">17:00</div>
+          <div class="time-hour" style="--start:50;">18:00</div>
+          <div class="time-hour" style="--start:54;">19:00</div>
+          <div class="time-hour" style="--start:58;">20:00</div>
+          <div class="time-hour" style="--start:62;">21:00</div>
+          <div class="time-hour" style="--start:66;">22:00</div>
+          <div class="time-hour" style="--start:70;">23:00</div>
+          <div class="time-hour" style="--start:74;">00:00</div>
+          <div class="time-hour" style="--start:78;">01:00</div>
+          <div class="time-hour" style="--start:82;">02:00</div>
+          <div class="time-hour" style="--start:86;">03:00</div>
+          <div class="time-hour" style="--start:90;">04:00</div>
+          <div class="time-hour" style="--start:94;">05:00</div>
+        </div>
+
+        <div class="schedule-grid">
+          <div class="day-row" data-day="Montag">
+            <div class="day-label">Montag</div>
+            <div class="day-track" data-day="Montag">
+              <div class="shift" data-type="frueh" data-start="1" data-duration="32">
+                <span class="shift-label">Fr&uuml;hdienst</span>
+                <span class="shift-time">06:00 &ndash; 14:00</span>
+              </div>
+              <div class="shift" data-type="frueh" data-start="5" data-duration="32">
+                <span class="shift-label">Fr&uuml;hdienst</span>
+                <span class="shift-time">07:00 &ndash; 15:00</span>
+              </div>
+              <div class="shift" data-type="frueh" data-start="9" data-duration="32">
+                <span class="shift-label">Fr&uuml;hdienst</span>
+                <span class="shift-time">08:00 &ndash; 16:00</span>
+              </div>
+              <div class="shift" data-type="spaet" data-start="33" data-duration="28">
+                <span class="shift-label">Sp&auml;tdienst</span>
+                <span class="shift-time">14:00 &ndash; 21:00</span>
+              </div>
+              <div class="shift" data-type="spaet" data-start="37" data-duration="28">
+                <span class="shift-label">Sp&auml;tdienst</span>
+                <span class="shift-time">15:00 &ndash; 22:00</span>
+              </div>
+              <div class="shift" data-type="nacht" data-start="65" data-duration="32">
+                <span class="shift-label">Nachtdienst</span>
+                <span class="shift-time">22:00 &ndash; 06:00</span>
+              </div>
+            </div>
+          </div>
+          <div class="day-row" data-day="Dienstag">
+            <div class="day-label">Dienstag</div>
+            <div class="day-track" data-day="Dienstag">
+              <div class="shift" data-type="frueh" data-start="2" data-duration="32">
+                <span class="shift-label">Fr&uuml;hdienst</span>
+                <span class="shift-time">06:30 &ndash; 14:30</span>
+              </div>
+              <div class="shift" data-type="frueh" data-start="6" data-duration="32">
+                <span class="shift-label">Fr&uuml;hdienst</span>
+                <span class="shift-time">07:30 &ndash; 15:30</span>
+              </div>
+              <div class="shift" data-type="frueh" data-start="10" data-duration="32">
+                <span class="shift-label">Fr&uuml;hdienst</span>
+                <span class="shift-time">08:30 &ndash; 16:30</span>
+              </div>
+              <div class="shift" data-type="spaet" data-start="34" data-duration="28">
+                <span class="shift-label">Sp&auml;tdienst</span>
+                <span class="shift-time">14:30 &ndash; 21:30</span>
+              </div>
+              <div class="shift" data-type="spaet" data-start="38" data-duration="28">
+                <span class="shift-label">Sp&auml;tdienst</span>
+                <span class="shift-time">15:30 &ndash; 22:30</span>
+              </div>
+              <div class="shift" data-type="nacht" data-start="66" data-duration="32">
+                <span class="shift-label">Nachtdienst</span>
+                <span class="shift-time">22:30 &ndash; 06:30</span>
+              </div>
+            </div>
+          </div>
+          <div class="day-row" data-day="Mittwoch">
+            <div class="day-label">Mittwoch</div>
+            <div class="day-track" data-day="Mittwoch">
+              <div class="shift" data-type="frueh" data-start="1" data-duration="32">
+                <span class="shift-label">Fr&uuml;hdienst</span>
+                <span class="shift-time">06:00 &ndash; 14:00</span>
+              </div>
+              <div class="shift" data-type="frueh" data-start="5" data-duration="32">
+                <span class="shift-label">Fr&uuml;hdienst</span>
+                <span class="shift-time">07:00 &ndash; 15:00</span>
+              </div>
+              <div class="shift" data-type="spaet" data-start="37" data-duration="28">
+                <span class="shift-label">Sp&auml;tdienst</span>
+                <span class="shift-time">15:00 &ndash; 22:00</span>
+              </div>
+              <div class="shift" data-type="nacht" data-start="65" data-duration="32">
+                <span class="shift-label">Nachtdienst</span>
+                <span class="shift-time">22:00 &ndash; 06:00</span>
+              </div>
+            </div>
+          </div>
+          <div class="day-row" data-day="Donnerstag">
+            <div class="day-label">Donnerstag</div>
+            <div class="day-track" data-day="Donnerstag">
+              <div class="shift" data-type="frueh" data-start="1" data-duration="32">
+                <span class="shift-label">Fr&uuml;hdienst</span>
+                <span class="shift-time">06:00 &ndash; 14:00</span>
+              </div>
+              <div class="shift" data-type="spaet" data-start="33" data-duration="28">
+                <span class="shift-label">Sp&auml;tdienst</span>
+                <span class="shift-time">14:00 &ndash; 21:00</span>
+              </div>
+              <div class="shift" data-type="nacht" data-start="65" data-duration="32">
+                <span class="shift-label">Nachtdienst</span>
+                <span class="shift-time">22:00 &ndash; 06:00</span>
+              </div>
+            </div>
+          </div>
+          <div class="day-row" data-day="Freitag">
+            <div class="day-label">Freitag</div>
+            <div class="day-track" data-day="Freitag">
+              <div class="shift" data-type="frueh" data-start="1" data-duration="32">
+                <span class="shift-label">Fr&uuml;hdienst</span>
+                <span class="shift-time">06:00 &ndash; 14:00</span>
+              </div>
+              <div class="shift" data-type="frueh" data-start="5" data-duration="32">
+                <span class="shift-label">Fr&uuml;hdienst</span>
+                <span class="shift-time">07:00 &ndash; 15:00</span>
+              </div>
+              <div class="shift" data-type="flex" data-start="25" data-duration="16">
+                <span class="shift-label">Flexdienst</span>
+                <span class="shift-time">12:30 &ndash; 16:30</span>
+              </div>
+              <div class="shift" data-type="spaet" data-start="37" data-duration="28">
+                <span class="shift-label">Sp&auml;tdienst</span>
+                <span class="shift-time">15:00 &ndash; 22:00</span>
+              </div>
+            </div>
+          </div>
+          <div class="day-row" data-day="Samstag">
+            <div class="day-label">Samstag</div>
+            <div class="day-track" data-day="Samstag">
+              <div class="shift" data-type="frueh" data-start="1" data-duration="32">
+                <span class="shift-label">Fr&uuml;hdienst</span>
+                <span class="shift-time">06:00 &ndash; 14:00</span>
+              </div>
+              <div class="shift" data-type="spaet" data-start="33" data-duration="28">
+                <span class="shift-label">Sp&auml;tdienst</span>
+                <span class="shift-time">14:00 &ndash; 21:00</span>
+              </div>
+              <div class="shift" data-type="nacht" data-start="65" data-duration="32">
+                <span class="shift-label">Nachtdienst</span>
+                <span class="shift-time">22:00 &ndash; 06:00</span>
+              </div>
+            </div>
+          </div>
+          <div class="day-row" data-day="Sonntag">
+            <div class="day-label">Sonntag</div>
+            <div class="day-track" data-day="Sonntag">
+              <div class="shift" data-type="frueh" data-start="1" data-duration="32">
+                <span class="shift-label">Fr&uuml;hdienst</span>
+                <span class="shift-time">06:00 &ndash; 14:00</span>
+              </div>
+              <div class="shift" data-type="spaet" data-start="33" data-duration="28">
+                <span class="shift-label">Sp&auml;tdienst</span>
+                <span class="shift-time">14:00 &ndash; 21:00</span>
+              </div>
+              <div class="shift" data-type="nacht" data-start="65" data-duration="32">
+                <span class="shift-label">Nachtdienst</span>
+                <span class="shift-time">22:00 &ndash; 06:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card summary-card">
+      <div class="summary-header">
+        <h3>Besetzungsdichte je Viertelstunde</h3>
+        <p>Zeigt, wie viele Teammitglieder pro Diensttyp parallel im Einsatz sind.</p>
+      </div>
+      <div class="time-scale summary-scale">
+        <div class="time-label">Zeit</div>
+        <div class="time-hour" style="--start:2;">06:00</div>
+        <div class="time-hour" style="--start:6;">07:00</div>
+        <div class="time-hour" style="--start:10;">08:00</div>
+        <div class="time-hour" style="--start:14;">09:00</div>
+        <div class="time-hour" style="--start:18;">10:00</div>
+        <div class="time-hour" style="--start:22;">11:00</div>
+        <div class="time-hour" style="--start:26;">12:00</div>
+        <div class="time-hour" style="--start:30;">13:00</div>
+        <div class="time-hour" style="--start:34;">14:00</div>
+        <div class="time-hour" style="--start:38;">15:00</div>
+        <div class="time-hour" style="--start:42;">16:00</div>
+        <div class="time-hour" style="--start:46;">17:00</div>
+        <div class="time-hour" style="--start:50;">18:00</div>
+        <div class="time-hour" style="--start:54;">19:00</div>
+        <div class="time-hour" style="--start:58;">20:00</div>
+        <div class="time-hour" style="--start:62;">21:00</div>
+        <div class="time-hour" style="--start:66;">22:00</div>
+        <div class="time-hour" style="--start:70;">23:00</div>
+        <div class="time-hour" style="--start:74;">00:00</div>
+        <div class="time-hour" style="--start:78;">01:00</div>
+        <div class="time-hour" style="--start:82;">02:00</div>
+        <div class="time-hour" style="--start:86;">03:00</div>
+        <div class="time-hour" style="--start:90;">04:00</div>
+        <div class="time-hour" style="--start:94;">05:00</div>
+      </div>
+      <div class="summary-track">
+        <span class="summary-label">Fr&uuml;hdienst</span>
+        <div class="summary-grid" data-type="frueh"></div>
+      </div>
+      <div class="summary-track">
+        <span class="summary-label">Sp&auml;tdienst</span>
+        <div class="summary-grid" data-type="spaet"></div>
+      </div>
+      <div class="summary-track">
+        <span class="summary-label">Nachtdienst</span>
+        <div class="summary-grid" data-type="nacht"></div>
+      </div>
+      <div class="summary-track">
+        <span class="summary-label">Flexdienst</span>
+        <div class="summary-grid" data-type="flex"></div>
+      </div>
+    </section>
+
+    <section class="card model-card">
+      <div>
+        <h3>Dienstmodelle vergleichen</h3>
+        <p>Umschalten zwischen einer gesamthaften Planung, Wochentagen und individuellen Einstellungen.</p>
+      </div>
+      <div class="model-options">
+        <label class="model-option">
+          <input type="radio" name="dienstmodell" value="standard" checked />
+          <div>
+            <strong>Standard Mo&ndash;So</strong>
+            <span>Ein einheitliches Tagesbild f&uuml;r die ganze Woche.</span>
+          </div>
+        </label>
+        <label class="model-option">
+          <input type="radio" name="dienstmodell" value="monfr" />
+          <div>
+            <strong>Mo&ndash;Fr &amp; Wochenende</strong>
+            <span>Arbeitswoche separat vom Wochenende betrachten.</span>
+          </div>
+        </label>
+        <label class="model-option">
+          <input type="radio" name="dienstmodell" value="individuell" />
+          <div>
+            <strong>Individuelle Planung</strong>
+            <span>Alle Wochentage einzeln bearbeiten und vergleichen.</span>
+          </div>
+        </label>
+      </div>
+    </section>
+
+  </div>
+</section>
+
+<style>
+  #schicht-tool{
+    width:100%;
+    display:block;
+    padding:0;
+    max-width:none;
+    margin:0 auto;
+    overflow:hidden;
+    --slot-width:12px;
+    --slot-width-md:11px;
+    --slot-width-sm:10px;
+  }
+  #schicht-tool .schicht-grid{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    column-gap:18px;
+    row-gap:12px;
+    padding:12px;
+    box-sizing:border-box;
+  }
+  #schicht-tool .card{
+    background:var(--panel,#fff);
+    border:1px solid var(--line,#e2e8f0);
+    border-radius:16px;
+    padding:24px;
+    box-shadow:var(--shadow,0 18px 36px rgba(15,23,42,.08));
+  }
+  #schicht-tool .schicht-hero{
+    grid-column:1/-1;
+    text-align:left;
+    background:var(--panel,#fff);
+    border:1px solid var(--line,#e2e8f0);
+    box-shadow:var(--shadow,0 18px 36px rgba(15,23,42,.08));
+    padding:20px;
+  }
+  #schicht-tool .schicht-hero h2{
+    margin:0;
+    font-size:var(--font-size-h2,1.5rem);
+  }
+  #schicht-tool .schedule-card,
+  #schicht-tool .summary-card,
+  #schicht-tool .model-card{
+    grid-column:1/-1;
+    display:grid;
+    gap:18px;
+  }
+  #schicht-tool .schedule-header{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+  }
+  #schicht-tool .schedule-header h3{
+    margin:0;
+    font-size:1.35rem;
+  }
+  #schicht-tool .schedule-header p{
+    margin:6px 0 0;
+    color:var(--muted,#64748b);
+    max-width:520px;
+  }
+  #schicht-tool .schedule-legend{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  #schicht-tool .legend-hint{
+    font-size:.85rem;
+    color:var(--muted,#64748b);
+    margin-left:6px;
+  }
+  #schicht-tool .totals-card{grid-column:1/-1;display:grid;gap:14px;}
+  #schicht-tool .totals-head h3{margin:0;font-size:var(--font-size-h3,1.2rem);}
+  #schicht-tool .totals-head p{margin:4px 0 0;color:var(--muted,#64748b);}
+  #schicht-tool .totals-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+  #schicht-tool .totals-item{padding:14px 16px;border:1px solid var(--line,#e2e8f0);border-radius:12px;background:#f8fafc;display:grid;gap:6px;}
+  #schicht-tool .totals-label{color:var(--muted,#64748b);font-size:.9rem;}
+  #schicht-tool .totals-item strong{font-size:1.35rem;}
+  #schicht-tool .legend-item{
+    appearance:none;
+    border:1px dashed rgba(37,99,235,0.38);
+    background:linear-gradient(180deg,#fff,#f8fafc);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:.9rem;
+    color:#0f172a;
+    border-radius:12px;
+    padding:8px 14px;
+    cursor:grab;
+    user-select:none;
+    font-family:inherit;
+    font-weight:600;
+    margin:0;
+    box-shadow:0 8px 16px rgba(15,23,42,0.08);
+    transition:.15s ease transform,.15s ease box-shadow,.15s ease border-color;
+  }
+  #schicht-tool .legend-item:focus-visible{
+    outline:2px solid var(--accent,#2563eb);
+    outline-offset:3px;
+  }
+  #schicht-tool .legend-item:active{
+    cursor:grabbing;
+    transform:translateY(1px);
+    box-shadow:0 4px 10px rgba(15,23,42,0.12);
+  }
+  body.is-shift-dragging #schicht-tool .legend-item{cursor:grabbing;}
+  body.is-shift-dragging #schicht-tool .day-track{cursor:copy;}
+  #schicht-tool .legend-swatch{
+    width:32px;
+    height:14px;
+    border-radius:8px;
+    border:1px solid rgba(15,23,42,0.2);
+    background:#334155;
+  }
+  #schicht-tool .legend-swatch.frueh{background:#b9d0ff;}
+  #schicht-tool .legend-swatch.spaet{background:#a9e2cb;}
+  #schicht-tool .legend-swatch.nacht{background:#f7b8b2;}
+  #schicht-tool .legend-swatch.flex{background:#cebaf6;}
+  #schicht-tool .timeline-wrap{
+    overflow-x:auto;
+    padding-bottom:10px;
+  }
+  #schicht-tool .time-scale{
+    position:relative;
+    display:grid;
+    grid-template-columns:140px repeat(96,minmax(var(--slot-width),1fr));
+    align-items:end;
+    gap:0;
+    min-height:54px;
+    color:#1f2937;
+    font-size:.78rem;
+    letter-spacing:.02em;
+    padding:0 0 12px;
+    min-width:calc(140px + 96 * var(--slot-width));
+  }
+  #schicht-tool .time-scale::after{
+    content:"";
+    position:absolute;
+    left:140px;
+    right:0;
+    top:20px;
+    bottom:0;
+    background:repeating-linear-gradient(90deg,rgba(148,163,184,0.28) 0 1px,transparent 1px calc(100%/96));
+    pointer-events:none;
+    opacity:.55;
+  }
+  #schicht-tool .time-label{
+    grid-column:1;
+    grid-row:1;
+    align-self:end;
+    font-weight:700;
+    text-transform:uppercase;
+    color:var(--muted,#64748b);
+    padding:0 0 8px 18px;
+    position:relative;
+    z-index:1;
+  }
+  #schicht-tool .time-hour{
+    position:relative;
+    display:flex;
+    align-items:flex-end;
+    justify-content:flex-start;
+    font-weight:600;
+    font-size:.82rem;
+    padding-left:8px;
+    padding-bottom:4px;
+    grid-row:1;
+    grid-column:var(--start,2)/span var(--span,4);
+    z-index:1;
+  }
+  #schicht-tool .time-hour::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-8px;
+    width:1px;
+    height:20px;
+    background:#475569;
+  }
+  #schicht-tool .time-hour.end{
+    position:absolute;
+    right:0;
+    bottom:4px;
+    padding-left:0;
+    padding-right:6px;
+    justify-content:flex-end;
+    font-weight:600;
+    z-index:1;
+  }
+  #schicht-tool .time-hour.end::after{
+    content:"";
+    position:absolute;
+    right:0;
+    bottom:-8px;
+    width:1px;
+    height:22px;
+    background:#1f2937;
+  }
+  #schicht-tool .schedule-grid{
+    display:grid;
+    gap:0;
+    border-radius:18px;
+    overflow:hidden;
+    border:1px solid var(--line,#e2e8f0);
+    background:#fff;
+    box-shadow:inset 0 1px 0 rgba(148,163,184,0.25);
+    min-width:calc(140px + 96 * var(--slot-width));
+    width:100%;
+  }
+  #schicht-tool .day-row{
+    display:grid;
+    grid-template-columns:140px repeat(96,minmax(var(--slot-width),1fr));
+    align-items:center;
+    border-bottom:1px solid rgba(148,163,184,0.25);
+    min-height:64px;
+    background-image:linear-gradient(90deg,rgba(148,163,184,0.18) 1px,transparent 1px);
+    background-size:calc((100% - 140px)/96) 100%;
+  }
+  #schicht-tool .day-row:last-child{
+    border-bottom:none;
+  }
+  #schicht-tool .day-label{
+    grid-column:1;
+    display:flex;
+    align-items:center;
+    padding:0 18px;
+    font-weight:700;
+    font-size:1rem;
+    color:#0f172a;
+    background:linear-gradient(90deg,rgba(226,232,240,0.85),rgba(248,250,252,0.45));
+    border-right:1px solid rgba(148,163,184,0.45);
+    position:relative;
+    min-height:100%;
+  }
+  #schicht-tool .day-label::after{
+    content:"";
+    position:absolute;
+    right:0;
+    top:12px;
+    bottom:12px;
+    width:1px;
+    background:rgba(148,163,184,0.35);
+  }
+  #schicht-tool .day-track{
+    grid-column:2/-1;
+    display:grid;
+    grid-template-columns:repeat(96,minmax(var(--slot-width),1fr));
+    grid-auto-rows:48px;
+    grid-auto-flow:row dense;
+    row-gap:12px;
+    position:relative;
+    padding:14px 10px;
+  }
+  #schicht-tool .day-track.drop-target::before{
+    content:"";
+    position:absolute;
+    inset:8px;
+    border:2px dashed rgba(37,99,235,0.35);
+    border-radius:14px;
+    pointer-events:none;
+  }
+  #schicht-tool .shift{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    color:#0f172a;
+    border-radius:12px;
+    padding:12px 28px;
+    box-shadow:0 12px 22px rgba(15,23,42,0.14);
+    border:1px solid rgba(15,23,42,0.12);
+    cursor:grab;
+    grid-column:var(--start)/span var(--duration);
+    user-select:none;
+    touch-action:none;
+    transition:box-shadow .15s ease,transform .15s ease,filter .15s ease,background .2s ease;
+  }
+  #schicht-tool .shift:focus-visible{outline:3px solid rgba(37,99,235,0.45);outline-offset:2px;}
+  #schicht-tool .shift.dragging{
+    box-shadow:0 24px 48px rgba(37,99,235,0.22);
+    transform:translateY(-2px);
+    filter:brightness(1.06);
+    cursor:grabbing;
+  }
+  #schicht-tool .shift .shift-label{font-weight:600;letter-spacing:.01em;white-space:nowrap;}
+  #schicht-tool .shift .shift-time{font-size:.8rem;color:rgba(15,23,42,.7);letter-spacing:.02em;}
+  #schicht-tool .shift-handle{
+    position:absolute;
+    top:50%;
+    width:16px;
+    height:32px;
+    margin-top:-16px;
+    background:transparent;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:auto;
+    cursor:col-resize;
+  }
+  #schicht-tool .shift-handle::after{
+    content:"";
+    width:6px;
+    height:26px;
+    border-radius:3px;
+    background:rgba(15,23,42,0.28);
+    box-shadow:0 2px 6px rgba(15,23,42,0.12);
+  }
+  #schicht-tool .shift-handle.start{left:0;transform:translateX(-120%);}
+  #schicht-tool .shift-handle.end{right:0;transform:translateX(120%);}
+  #schicht-tool .shift[data-type="frueh"]{background:linear-gradient(180deg,#d6e4ff 0%,#b9d0ff 100%);}
+  #schicht-tool .shift[data-type="spaet"]{background:linear-gradient(180deg,#d7f4ea 0%,#a9e2cb 100%);}
+  #schicht-tool .shift[data-type="nacht"]{background:linear-gradient(180deg,#fde2e0 0%,#f7b8b2 100%);}
+  #schicht-tool .shift[data-type="flex"]{background:linear-gradient(180deg,#e9dcff 0%,#cebaf6 100%);}
+  #schicht-tool .summary-header h3{margin:0;font-size:var(--font-size-h3,1.2rem);}
+  #schicht-tool .summary-header p{margin:4px 0 0;color:var(--muted,#64748b);max-width:520px;}
+  #schicht-tool .summary-scale{
+    display:grid;
+    grid-template-columns:140px repeat(96,minmax(var(--slot-width),1fr));
+    align-items:end;
+    gap:0;
+    padding:0 0 8px;
+    position:relative;
+    color:#475569;
+  }
+  #schicht-tool .summary-scale .time-label{
+    font-weight:700;
+    color:var(--muted,#64748b);
+    padding-left:0;
+  }
+  #schicht-tool .summary-scale .time-hour{
+    font-size:.78rem;
+    font-weight:600;
+    text-align:left;
+    padding-left:6px;
+    position:relative;
+  }
+  #schicht-tool .summary-scale .time-hour::after{
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-6px;
+    width:1px;
+    height:12px;
+    background:rgba(148,163,184,0.6);
+  }
+  #schicht-tool .summary-scale .time-hour.end{
+    justify-self:end;
+    padding-right:6px;
+    position:relative;
+    right:auto;
+    bottom:auto;
+  }
+  #schicht-tool .summary-track{display:grid;grid-template-columns:140px 1fr;align-items:center;gap:18px;}
+  #schicht-tool .summary-label{font-weight:600;color:#1f2937;}
+  #schicht-tool .summary-grid{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(96,minmax(var(--slot-width),1fr));
+    height:34px;
+    border-radius:12px;
+    border:1px solid var(--line,#e2e8f0);
+    overflow:hidden;
+    background:linear-gradient(90deg,rgba(148,163,184,0.14) 1px,transparent 1px);
+    background-size:calc(100%/96) 100%;
+  }
+  #schicht-tool .summary-bar{
+    grid-column:var(--start)/span var(--duration);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:.75rem;
+    font-weight:600;
+    border-radius:10px;
+    border:1px solid rgba(15,23,42,0.12);
+    box-shadow:0 8px 16px rgba(15,23,42,0.1);
+    color:#0f172a;
+    background:rgba(37,99,235,0.12);
+  }
+  #schicht-tool .summary-grid[data-type="spaet"] .summary-bar{background:rgba(12,148,136,0.18);}
+  #schicht-tool .summary-grid[data-type="nacht"] .summary-bar{background:rgba(220,38,38,0.18);}
+  #schicht-tool .summary-grid[data-type="flex"] .summary-bar{background:rgba(124,58,237,0.18);}
+  #schicht-tool .model-card h3{margin:0;font-size:var(--font-size-h3,1.2rem);}
+  #schicht-tool .model-card p{margin:0;color:var(--muted,#64748b);}
+  #schicht-tool .model-options{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));}
+  #schicht-tool .model-option{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    padding:14px 16px;
+    border-radius:12px;
+    border:1px solid var(--line,#e2e8f0);
+    background:#f8fafc;
+    transition:.15s ease border-color,.15s ease box-shadow;
+  }
+  #schicht-tool .model-option:hover{border-color:var(--accent,#2563eb);box-shadow:0 14px 28px rgba(37,99,235,0.12);}
+  #schicht-tool .model-option input{margin-top:4px;}
+  #schicht-tool .model-option strong{display:block;font-size:1rem;}
+  #schicht-tool .model-option span{color:var(--muted,#64748b);font-size:.9rem;}
+  @media (max-width:1024px){
+    #schicht-tool .schicht-grid{grid-template-columns:repeat(6,1fr);}
+    #schicht-tool .summary-track{grid-template-columns:120px 1fr;}
+    #schicht-tool{--slot-width:var(--slot-width-md);}
+  }
+  @media (max-width:720px){
+    #schicht-tool{padding:12px;}
+    #schicht-tool .card{padding:22px;}
+    #schicht-tool .time-label{padding-left:0;}
+    #schicht-tool .schedule-legend{flex-direction:column;align-items:stretch;}
+    #schicht-tool .legend-item{width:100%;}
+    #schicht-tool .schicht-hero h2{font-size:var(--font-size-h2,1.5rem);}
+    #schicht-tool{--slot-width:var(--slot-width-sm);}
+    #schicht-tool .schedule-grid,
+    #schicht-tool .time-scale,
+    #schicht-tool .summary-scale,
+    #schicht-tool .summary-grid,
+    #schicht-tool .day-track{
+      overflow-x:auto;
+      width:100%;
+    }
+    #schicht-tool .schedule-grid,
+    #schicht-tool .summary-grid,
+    #schicht-tool .day-track{
+      min-width:720px;
+    }
+  }
+</style>
+
+<script>
+(function(){
+  const root = document.getElementById('schicht-tool');
+  const scheduleGrid = root?.querySelector('.schedule-grid');
+  if(!root || !scheduleGrid) return;
+
+  const SHIFT_COLUMNS = 96;
+  const TIMELINE_START_MINUTES = 6 * 60;
+  const MINUTES_PER_COLUMN = 15;
+  const MIN_DURATION = 1;
+
+  const legendDefaults = {
+    frueh:{ label:'Fr\u00fchdienst', duration:32 },
+    spaet:{ label:'Sp\u00e4tdienst', duration:28 },
+    nacht:{ label:'Nachtdienst', duration:32 },
+    flex:{ label:'Flexdienst', duration:24 }
+  };
+
+  const legendItems = root.querySelectorAll('.legend-item[data-type]');
+  const modelInputs = root.querySelectorAll('.model-option input[name="dienstmodell"]');
+  const summaryGrids = {
+    frueh: root.querySelector('.summary-grid[data-type="frueh"]'),
+    spaet: root.querySelector('.summary-grid[data-type="spaet"]'),
+    nacht: root.querySelector('.summary-grid[data-type="nacht"]'),
+    flex: root.querySelector('.summary-grid[data-type="flex"]')
+  };
+  const summaryTypes = Object.keys(summaryGrids).filter(type => summaryGrids[type]);
+  const summaryLabels = {
+    frueh:'Fr\u00fchdienste',
+    spaet:'Sp\u00e4tdienste',
+    nacht:'Nachtdienste',
+    flex:'Flexdienste'
+  };
+  const totalsEls = {
+    minutes: root.querySelector('[data-total-minutes]'),
+    hours: root.querySelector('[data-total-hours]'),
+    fte: root.querySelector('[data-total-fte]')
+  };
+  const FTE_BASE_MINUTES = 38.5 * 60;
+
+  let summaryDirty = false;
+  let totalsDirty = false;
+  let shiftCounter = 0;
+  let currentMode = getInitialMode();
+  let currentDragPayload = null;
+  const shiftMap = new Map();
+  const scheduleModels = {
+    individuell:{},
+    standard:{},
+    monfr:{}
+  };
+  const dayOrderTemplates = {
+    individuell:[],
+    standard:['Montag \u2013 Sonntag'],
+    monfr:['Montag \u2013 Freitag','Samstag & Sonntag']
+  };
+
+  const pointerState = {
+    shift:null,
+    pointerId:null,
+    action:'move',
+    startX:0,
+    startStart:0,
+    startDuration:0,
+    grabOffset:0,
+    columnWidth:0,
+    trackRect:null
+  };
+
+  parseInitialSchedule();
+  buildPresetModels();
+  setupLegendDnD();
+  setupModelSwitching();
+  setupGlobalDrop();
+  renderSchedule(currentMode);
+  requestSummaryUpdate();
+  requestTotalsUpdate();
+
+  function getInitialMode(){
+    const checked = root.querySelector('.model-option input[name="dienstmodell"]:checked');
+    return checked ? checked.value : 'standard';
+  }
+
+  function parseInitialSchedule(){
+    const rows = Array.from(scheduleGrid.querySelectorAll('.day-row'));
+    rows.forEach(row => {
+      const day = row.dataset.day || row.querySelector('.day-label')?.textContent.trim() || 'Tag';
+      if(!dayOrderTemplates.individuell.includes(day)){
+        dayOrderTemplates.individuell.push(day);
+      }
+      const shiftEls = Array.from(row.querySelectorAll('.shift'));
+      scheduleModels.individuell[day] = shiftEls.map(el => {
+        const type = el.dataset.type || 'frueh';
+        const defaults = legendDefaults[type] || { label:'Dienst', duration:24 };
+        const label = el.querySelector('.shift-label')?.textContent.trim() || defaults.label;
+        const start = parseInt(el.dataset.start,10) || parseInt(el.style.getPropertyValue('--start'),10) || 1;
+        const duration = parseInt(el.dataset.duration,10) || parseInt(el.style.getPropertyValue('--duration'),10) || defaults.duration;
+        return createShiftObject(day, type, label, start, duration);
+      });
+    });
+    scheduleGrid.innerHTML = '';
+  }
+
+  function buildPresetModels(){
+    const baseDay = dayOrderTemplates.individuell[0];
+    const weekendDay = scheduleModels.individuell['Samstag'] ? 'Samstag' :
+                       scheduleModels.individuell['Sonntag'] ? 'Sonntag' : baseDay;
+    scheduleModels.standard['Montag \u2013 Sonntag'] = cloneShiftList(scheduleModels.individuell[baseDay] || [], 'Montag \u2013 Sonntag');
+    scheduleModels.monfr['Montag \u2013 Freitag'] = cloneShiftList(scheduleModels.individuell[baseDay] || [], 'Montag \u2013 Freitag');
+    scheduleModels.monfr['Samstag & Sonntag'] = cloneShiftList(scheduleModels.individuell[weekendDay] || [], 'Samstag & Sonntag');
+  }
+
+  function setupLegendDnD(){
+    legendItems.forEach(item => {
+      item.setAttribute('draggable','true');
+      item.addEventListener('dragstart', onLegendDragStart);
+      item.addEventListener('dragend', onLegendDragEnd);
+      item.addEventListener('click', () => quickAddShift(item.dataset.type));
+      item.addEventListener('keydown', event => {
+        if(event.key === 'Enter' || event.key === ' '){
+          event.preventDefault();
+          quickAddShift(item.dataset.type);
+        }
+      });
+    });
+  }
+
+  function onLegendDragStart(event){
+    const type = event.currentTarget.dataset.type;
+    const defaults = legendDefaults[type];
+    if(!defaults) return;
+    const payload = JSON.stringify({ type, duration:defaults.duration, label:defaults.label });
+    event.dataTransfer.effectAllowed = 'copy';
+    event.dataTransfer.dropEffect = 'copy';
+    event.dataTransfer.setData('application/json', payload);
+    event.dataTransfer.setData('text/plain', payload);
+    document.body.classList.add('is-shift-dragging');
+    currentDragPayload = { type, duration:defaults.duration, label:defaults.label };
+  }
+
+  function onLegendDragEnd(){
+    document.body.classList.remove('is-shift-dragging');
+    currentDragPayload = null;
+  }
+
+  function quickAddShift(type){
+    const defaults = legendDefaults[type];
+    if(!defaults) return;
+    const targetDay = getCurrentDayOrder()[0];
+    if(!targetDay) return;
+    const modelData = scheduleModels[currentMode];
+    if(!modelData[targetDay]){
+      modelData[targetDay] = [];
+    }
+    modelData[targetDay].push(createShiftObject(targetDay, type, defaults.label, 1, defaults.duration));
+    renderSchedule(currentMode);
+    requestSummaryUpdate();
+    requestTotalsUpdate();
+  }
+
+  function setupModelSwitching(){
+    modelInputs.forEach(input => {
+      input.addEventListener('change', () => {
+        if(!input.checked) return;
+        currentMode = input.value;
+        if(!scheduleModels[currentMode]){
+          scheduleModels[currentMode] = {};
+        }
+        renderSchedule(currentMode);
+        requestSummaryUpdate();
+        requestTotalsUpdate();
+      });
+    });
+  }
+
+  function renderSchedule(mode){
+    const modelData = scheduleModels[mode];
+    if(!modelData) return;
+    sortModelRows(modelData);
+    shiftMap.clear();
+    scheduleGrid.innerHTML = '';
+
+    const order = getCurrentDayOrder();
+    order.forEach(dayLabel => {
+      if(!modelData[dayLabel]){
+        modelData[dayLabel] = [];
+      }
+    });
+
+    order.forEach(dayLabel => {
+      const row = document.createElement('div');
+      row.className = 'day-row';
+      row.dataset.day = dayLabel;
+
+      const label = document.createElement('div');
+      label.className = 'day-label';
+      label.textContent = dayLabel;
+      row.appendChild(label);
+
+      const track = document.createElement('div');
+      track.className = 'day-track';
+      track.dataset.day = dayLabel;
+      row.appendChild(track);
+      attachTrackDnD(track);
+
+      (modelData[dayLabel] || []).forEach(shiftObj => {
+        shiftObj.day = dayLabel;
+        const shiftEl = createShiftElement(shiftObj);
+        track.appendChild(shiftEl);
+      });
+
+      scheduleGrid.appendChild(row);
+    });
+
+    Array.from(scheduleGrid.querySelectorAll('.day-track .shift')).forEach(attachShiftHandlers);
+    requestTotalsUpdate();
+  }
+
+  function attachTrackDnD(track){
+    const onEnter = event => {
+      event.preventDefault();
+      track.classList.add('drop-target');
+    };
+    const onOver = event => {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = 'copy';
+    };
+    const onLeave = () => track.classList.remove('drop-target');
+    const onDrop = event => {
+      const data = parseDragData(event);
+      track.classList.remove('drop-target');
+      if(!data) return;
+      event.preventDefault();
+      handleDropOnTrack(track, event, data);
+    };
+    track.addEventListener('dragenter', onEnter, true);
+    track.addEventListener('dragover', onOver, true);
+    track.addEventListener('dragleave', onLeave, true);
+    track.addEventListener('drop', onDrop, true);
+  }
+
+  function setupGlobalDrop(){
+    if(!scheduleGrid) return;
+    scheduleGrid.addEventListener('dragover', event => {
+      const data = parseDragData(event);
+      const track = event.target.closest('.day-track');
+      if(!data || !track) return;
+      event.preventDefault();
+      track.classList.add('drop-target');
+    }, true);
+    scheduleGrid.addEventListener('drop', event => {
+      const data = parseDragData(event);
+      const track = event.target.closest('.day-track');
+      document.querySelectorAll('.day-track.drop-target').forEach(el => el.classList.remove('drop-target'));
+      if(!data || !track) return;
+      event.preventDefault();
+      handleDropOnTrack(track, event, data);
+    }, true);
+  }
+
+  function handleDropOnTrack(track, event, data){
+    document.body.classList.remove('is-shift-dragging');
+    const defaults = legendDefaults[data.type];
+    if(!defaults) return;
+    const rect = track.getBoundingClientRect();
+    const offsetX = event.clientX - rect.left;
+    const columnWidth = rect.width / SHIFT_COLUMNS;
+    let start = Math.round(offsetX / columnWidth) + 1;
+    if(!Number.isFinite(start)) start = 1;
+    const maxStart = SHIFT_COLUMNS - defaults.duration + 1;
+    start = Math.max(1, Math.min(maxStart, start));
+    const dayLabel = track.dataset.day;
+    const modelData = scheduleModels[currentMode];
+    if(!modelData[dayLabel]){
+      modelData[dayLabel] = [];
+    }
+    modelData[dayLabel].push(createShiftObject(dayLabel, data.type, defaults.label, start, defaults.duration));
+    renderSchedule(currentMode);
+    requestSummaryUpdate();
+    requestTotalsUpdate();
+  }
+
+  function parseDragData(event){
+    if(currentDragPayload && currentDragPayload.type) return currentDragPayload;
+    if(!event.dataTransfer) return null;
+    const raw = event.dataTransfer.getData('application/json') || event.dataTransfer.getData('text/plain');
+    if(!raw) return null;
+    try{
+      const payload = JSON.parse(raw);
+      if(!payload.type) return null;
+      currentDragPayload = payload;
+      return payload;
+    }catch{
+      return null;
+    }
+  }
+
+  function attachShiftHandlers(shift){
+    shift.addEventListener('pointerdown', onPointerDown);
+    shift.addEventListener('keydown', onKeyDown);
+    shift.addEventListener('dblclick', () => removeShift(shift));
+  }
+
+  function createShiftElement(shiftObj){
+    shiftMap.set(shiftObj.id, shiftObj);
+    const shift = document.createElement('div');
+    shift.className = 'shift';
+    shift.dataset.id = shiftObj.id;
+    shift.dataset.type = shiftObj.type;
+    shift.dataset.name = shiftObj.label;
+    shift.dataset.start = String(shiftObj.start);
+    shift.dataset.duration = String(shiftObj.duration);
+    shift.setAttribute('tabindex', '0');
+    shift.setAttribute('role', 'slider');
+    shift.setAttribute('aria-orientation', 'horizontal');
+    shift.setAttribute('aria-valuemin', '1');
+    shift.setAttribute('aria-valuemax', String(SHIFT_COLUMNS - shiftObj.duration + 1));
+    shift.setAttribute('aria-valuenow', String(shiftObj.start));
+    shift.setAttribute('aria-label', `${shiftObj.label} (${shiftObj.day})`);
+    shift.style.setProperty('--start', shiftObj.start);
+    shift.style.setProperty('--duration', shiftObj.duration);
+
+    const handleStart = document.createElement('div');
+    handleStart.className = 'shift-handle start';
+    shift.appendChild(handleStart);
+
+    const label = document.createElement('span');
+    label.className = 'shift-label';
+    label.textContent = shiftObj.label;
+    shift.appendChild(label);
+
+    const time = document.createElement('span');
+    time.className = 'shift-time';
+    time.textContent = formatShiftTime(shiftObj.start, shiftObj.duration);
+    shift.appendChild(time);
+
+    const handleEnd = document.createElement('div');
+    handleEnd.className = 'shift-handle end';
+    shift.appendChild(handleEnd);
+
+    return shift;
+  }
+
+  function createShiftObject(day, type, label, start, duration){
+    return {
+      id: `shift-${++shiftCounter}`,
+      day,
+      type,
+      label,
+      start,
+      duration
+    };
+  }
+
+  function cloneShiftList(list, dayLabel){
+    return (list || []).map(item => ({
+      id: `shift-${++shiftCounter}`,
+      day: dayLabel,
+      type: item.type,
+      label: item.label,
+      start: item.start,
+      duration: item.duration
+    }));
+  }
+
+  function getCurrentDayOrder(){
+    const baseOrder = dayOrderTemplates[currentMode] ? [...dayOrderTemplates[currentMode]] : [];
+    const modelData = scheduleModels[currentMode];
+    Object.keys(modelData).forEach(key => {
+      if(!baseOrder.includes(key)){
+        baseOrder.push(key);
+      }
+    });
+    return baseOrder;
+  }
+
+  function sortModelRows(modelData){
+    Object.keys(modelData).forEach(day => {
+      modelData[day].sort((a,b) => a.start - b.start);
+    });
+  }
+
+  function onPointerDown(event){
+    if(event.button !== 0) return;
+    const shift = event.currentTarget;
+    const shiftObj = shiftMap.get(shift.dataset.id);
+    if(!shiftObj) return;
+
+    pointerState.shift = shift;
+    pointerState.pointerId = event.pointerId;
+    pointerState.trackRect = shift.parentElement.getBoundingClientRect();
+    pointerState.columnWidth = pointerState.trackRect.width / SHIFT_COLUMNS;
+    pointerState.startX = event.clientX;
+    pointerState.startStart = shiftObj.start;
+    pointerState.startDuration = shiftObj.duration;
+    const target = event.target;
+    pointerState.grabOffset = 0;
+    if(target.classList.contains('shift-handle') && target.classList.contains('start')){
+      pointerState.action = 'resize-start';
+    }else if(target.classList.contains('shift-handle') && target.classList.contains('end')){
+      pointerState.action = 'resize-end';
+    }else{
+      pointerState.action = 'move';
+      const rect = shift.getBoundingClientRect();
+      pointerState.grabOffset = Math.min(Math.max(event.clientX - rect.left, 0), rect.width);
+    }
+    shift.setPointerCapture(event.pointerId);
+    shift.classList.add('dragging');
+    shift.addEventListener('pointermove', onPointerMove);
+    shift.addEventListener('pointerup', onPointerUp);
+    shift.addEventListener('pointercancel', onPointerUp);
+  }
+
+  function onPointerMove(event){
+    const shift = pointerState.shift;
+    if(!shift || event.pointerId !== pointerState.pointerId) return;
+    if(pointerState.action === 'move'){
+      const leftEdge = event.clientX - pointerState.grabOffset;
+      const offsetInTrack = leftEdge - pointerState.trackRect.left;
+      const startCandidate = Math.round(offsetInTrack / pointerState.columnWidth) + 1;
+      const actualStart = updateShiftPosition(shift, startCandidate);
+      pointerState.startStart = actualStart;
+    }else if(pointerState.action === 'resize-start'){
+      const deltaColumns = (event.clientX - pointerState.startX) / pointerState.columnWidth;
+      const desiredStart = pointerState.startStart + Math.round(deltaColumns);
+      const endLine = pointerState.startStart + pointerState.startDuration;
+      const clampedStart = Math.min(Math.max(desiredStart, 1), endLine - MIN_DURATION);
+      const newDuration = endLine - clampedStart;
+      const actualStart = updateShiftPosition(shift, clampedStart);
+      const actualDuration = updateShiftDuration(shift, newDuration);
+      pointerState.startStart = actualStart;
+      pointerState.startDuration = actualDuration;
+      pointerState.startX = event.clientX;
+    }else if(pointerState.action === 'resize-end'){
+      const deltaColumns = (event.clientX - pointerState.startX) / pointerState.columnWidth;
+      const desiredDuration = pointerState.startDuration + Math.round(deltaColumns);
+      const actualDuration = updateShiftDuration(shift, desiredDuration);
+      pointerState.startDuration = actualDuration;
+      pointerState.startX = event.clientX;
+    }
+  }
+
+  function onPointerUp(event){
+    const shift = pointerState.shift;
+    if(!shift || event.pointerId !== pointerState.pointerId) return;
+    shift.releasePointerCapture(event.pointerId);
+    shift.classList.remove('dragging');
+    shift.removeEventListener('pointermove', onPointerMove);
+    shift.removeEventListener('pointerup', onPointerUp);
+    shift.removeEventListener('pointercancel', onPointerUp);
+    pointerState.shift = null;
+    pointerState.pointerId = null;
+    pointerState.action = 'move';
+    pointerState.grabOffset = 0;
+    requestSummaryUpdate();
+    requestTotalsUpdate();
+  }
+
+  function onKeyDown(event){
+    const shift = event.currentTarget;
+    const currentStart = parseInt(shift.dataset.start, 10);
+    const currentDuration = parseInt(shift.dataset.duration, 10);
+    if(event.altKey && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')){
+      event.preventDefault();
+      const delta = event.key === 'ArrowLeft' ? -1 : 1;
+      updateShiftDuration(shift, currentDuration + delta);
+      return;
+    }
+    if(event.key === 'Delete' || event.key === 'Backspace'){
+      event.preventDefault();
+      removeShift(shift);
+      return;
+    }
+    if(event.key === 'ArrowLeft' || event.key === 'ArrowRight'){
+      event.preventDefault();
+      const delta = event.key === 'ArrowLeft' ? -1 : 1;
+      updateShiftPosition(shift, currentStart + delta);
+    }
+  }
+
+  function updateShiftPosition(shift, rawStart){
+    const duration = parseInt(shift.dataset.duration, 10);
+    const minStart = 1;
+    const maxStart = SHIFT_COLUMNS - duration + 1;
+    const clamped = Math.min(Math.max(rawStart, minStart), maxStart);
+    shift.dataset.start = String(clamped);
+    shift.style.setProperty('--start', clamped);
+    shift.setAttribute('aria-valuenow', String(clamped));
+    shift.setAttribute('aria-valuemax', String(SHIFT_COLUMNS - duration + 1));
+    updateTimeLabel(shift, clamped, duration);
+    const shiftObj = shiftMap.get(shift.dataset.id);
+    if(shiftObj){
+      shiftObj.start = clamped;
+      sortRow(shiftObj.day);
+    }
+    requestSummaryUpdate();
+    requestTotalsUpdate();
+    return clamped;
+  }
+
+  function updateShiftDuration(shift, rawDuration){
+    const start = parseInt(shift.dataset.start, 10);
+    const minDuration = MIN_DURATION;
+    const maxDuration = SHIFT_COLUMNS - start + 1;
+    const clamped = Math.min(Math.max(rawDuration, minDuration), maxDuration);
+    shift.dataset.duration = String(clamped);
+    shift.style.setProperty('--duration', clamped);
+    shift.setAttribute('aria-valuemax', String(SHIFT_COLUMNS - clamped + 1));
+    updateTimeLabel(shift, start, clamped);
+    const shiftObj = shiftMap.get(shift.dataset.id);
+    if(shiftObj){
+      shiftObj.duration = clamped;
+      sortRow(shiftObj.day);
+    }
+    requestSummaryUpdate();
+    requestTotalsUpdate();
+    return clamped;
+  }
+
+  function removeShift(shift){
+    const shiftObj = shiftMap.get(shift.dataset.id);
+    shift.remove();
+    if(shiftObj){
+      const list = scheduleModels[currentMode]?.[shiftObj.day];
+      if(Array.isArray(list)){
+        const idx = list.findIndex(item => item.id === shiftObj.id);
+        if(idx !== -1) list.splice(idx,1);
+      }
+      shiftMap.delete(shiftObj.id);
+    }
+    requestSummaryUpdate();
+    requestTotalsUpdate();
+  }
+
+  function sortRow(dayLabel){
+    const modelData = scheduleModels[currentMode];
+    if(modelData && modelData[dayLabel]){
+      modelData[dayLabel].sort((a,b) => a.start - b.start);
+    }
+  }
+
+  function updateTimeLabel(shift, startColumn, duration){
+    const label = shift.querySelector('.shift-time');
+    if(!label) return;
+    label.textContent = formatShiftTime(startColumn, duration);
+  }
+
+  function formatShiftTime(startColumn, duration){
+    const startMinutes = TIMELINE_START_MINUTES + (startColumn - 1) * MINUTES_PER_COLUMN;
+    const endMinutes = startMinutes + duration * MINUTES_PER_COLUMN;
+    return `${formatTime(startMinutes)} \u2013 ${formatTime(endMinutes)}`;
+  }
+
+  function requestSummaryUpdate(){
+    if(!summaryTypes.length) return;
+    if(summaryDirty) return;
+    summaryDirty = true;
+    requestAnimationFrame(() => {
+      summaryDirty = false;
+      refreshSummary();
+    });
+  }
+
+  function refreshSummary(){
+    const totals = {};
+    summaryTypes.forEach(type => {
+      totals[type] = new Array(SHIFT_COLUMNS).fill(0);
+    });
+    const modelData = scheduleModels[currentMode] || {};
+    Object.values(modelData).forEach(shifts => {
+      shifts.forEach(shift => {
+        const arr = totals[shift.type];
+        if(!arr) return;
+        const startIdx = shift.start - 1;
+        for(let i = 0; i < shift.duration; i++){
+          const idx = startIdx + i;
+          if(idx >= 0 && idx < SHIFT_COLUMNS){
+            arr[idx] += 1;
+          }
+        }
+      });
+    });
+    summaryTypes.forEach(type => {
+      const grid = summaryGrids[type];
+      if(!grid) return;
+      grid.innerHTML = '';
+      const counts = totals[type];
+      let i = 0;
+      while(i < SHIFT_COLUMNS){
+        const value = counts[i];
+        if(value > 0){
+          let span = 1;
+          while(i + span < SHIFT_COLUMNS && counts[i + span] === value) span++;
+          const bar = document.createElement('div');
+          bar.className = 'summary-bar';
+          bar.style.setProperty('--start', i + 1);
+          bar.style.setProperty('--duration', span);
+          const startMinutes = TIMELINE_START_MINUTES + i * MINUTES_PER_COLUMN;
+          const endMinutes = startMinutes + span * MINUTES_PER_COLUMN;
+          bar.textContent = value;
+          bar.title = `${formatTime(startMinutes)} \u2013 ${formatTime(endMinutes)}: ${value} ${summaryLabels[type] || 'Dienste'}`;
+          grid.appendChild(bar);
+          i += span;
+        }else{
+          i++;
+        }
+      }
+    });
+  }
+
+  function requestTotalsUpdate(){
+    if(totalsDirty) return;
+    totalsDirty = true;
+    requestAnimationFrame(() => {
+      totalsDirty = false;
+      refreshTotals();
+    });
+  }
+
+  function refreshTotals(){
+    const totalMinutes = computeWeekMinutes();
+    const totalHours = totalMinutes / 60;
+    const fte = totalMinutes / FTE_BASE_MINUTES;
+    setValue(totalsEls.minutes, Math.round(totalMinutes), 0);
+    setValue(totalsEls.hours, totalHours, 1);
+    setValue(totalsEls.fte, fte, 2);
+  }
+
+  function computeWeekMinutes(){
+    const modelData = scheduleModels[currentMode] || {};
+    if(currentMode === 'standard'){
+      const dayKey = Object.keys(modelData)[0];
+      return dayKey ? totalMinutesForDay(modelData[dayKey]) * 7 : 0;
+    }
+    if(currentMode === 'monfr'){
+      const monfrMinutes = totalMinutesForDay(modelData['Montag \u2013 Freitag'] || []);
+      const weekendMinutes = totalMinutesForDay(modelData['Samstag & Sonntag'] || []);
+      return monfrMinutes * 5 + weekendMinutes * 2;
+    }
+    return Object.values(modelData).reduce((sum, list) => sum + totalMinutesForDay(list), 0);
+  }
+
+  function totalMinutesForDay(list){
+    return (list || []).reduce((sum, shift) => sum + (shift.duration || 0) * MINUTES_PER_COLUMN, 0);
+  }
+
+  function setValue(el, value, fractionDigits){
+    if(!el) return;
+    el.textContent = Number.isFinite(value)
+      ? value.toLocaleString('de-DE', { minimumFractionDigits:fractionDigits, maximumFractionDigits:fractionDigits })
+      : '0';
+  }
+
+  function formatTime(totalMinutes){
+    const minutesInDay = 24 * 60;
+    const wrapped = ((totalMinutes % minutesInDay) + minutesInDay) % minutesInDay;
+    const hours = Math.floor(wrapped / 60);
+    const minutes = wrapped % 60;
+    return String(hours).padStart(2,'0') + ':' + String(minutes).padStart(2,'0');
+  }
+})();
+</script>
+

@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stellenplan</title>
+  <link rel="stylesheet" href="../../../../style.css" />
+  <style>
+    body{
+      margin:0;
+      font-family:var(--font-base);
+      font-size:var(--font-size-base);
+      line-height:var(--line-height-base);
+      background:linear-gradient(135deg,#eef2f7 0%,#fdfdff 100%);
+      color:var(--text);
+      min-height:100vh;
+    }
+    main{
+      padding:24px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      width:100%;
+      max-width:100%;
+      margin:0 auto;
+    }
+    .card{box-shadow:var(--shadow); border:1px solid rgba(15,23,42,.06); background:#fff;}
+    .top{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      padding:18px;
+    }
+    .header-row{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      padding-bottom:8px;
+      border-bottom:1px solid var(--line);
+    }
+    .hero-title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+    .pill{display:inline-flex; gap:8px; padding:8px 14px; border-radius:12px; background:linear-gradient(135deg, #1f4b82, #12355c); color:#fff; font-weight:700;}
+    h1{margin:0;}
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+      align-items:flex-end;
+      margin-top:6px;
+      padding-top:6px;
+    }
+    .controls select,
+    .controls input{
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      font:inherit;
+      background:#fff;
+      box-shadow:0 8px 20px rgba(15,23,42,0.05);
+    }
+    .controls button{
+      border:1px solid transparent;
+      background:linear-gradient(135deg, #1f4b82, #12355c);
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:700;
+      color:#fff;
+      transition:.15s ease all;
+      box-shadow:0 10px 24px rgba(18,53,92,.16);
+    }
+    .controls button.primary{
+      background:linear-gradient(135deg, #f9be00, #d99b00);
+      color:#0f172a;
+      border-color:transparent;
+    }
+    .controls button:hover{box-shadow:0 12px 28px rgba(18,53,92,.2); transform:translateY(-1px);}
+    .controls button:active{transform:translateY(0);}
+    .section-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .section-header h3{margin:0;}
+    .table-wrap{
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(248,250,252,0.97));
+      box-shadow:var(--shadow);
+    }
+    table{width:100%; border-collapse:collapse;}
+    th,td{padding:10px 10px; border-bottom:1px solid var(--line); text-align:left; vertical-align:middle;}
+    th{background:#f1f5f9; color:#0f172a; position:sticky; top:0; z-index:2; font-size:0.95rem;}
+    th:first-child, td:first-child, th:nth-child(2), td:nth-child(2){position:sticky; left:0; background:#fff; z-index:1;}
+    .name-input,.vk-input{
+      width:100%; padding:10px 10px; border:1px solid var(--line); border-radius:10px; font:inherit; text-align:center; background:#fff; transition:.15s ease all;
+    }
+    .name-input{text-align:left;}
+    .name-input:focus,.vk-input:focus{outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(37,99,235,.18);}
+    td.actions-cell, th.actions-col{vertical-align:middle; text-align:center; padding:0 8px; min-width:120px;}
+    .actions-cell{display:table-cell;}
+    .actions-cell button{
+      padding:6px 12px;
+      border-radius:8px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      white-space:nowrap;
+      display:inline-block;
+      margin:6px auto;
+    }
+    th.actions-col, td.actions-cell{text-align:center; min-width:120px;}
+    .totals-row td{font-weight:700; background:#f8fafc;}
+    .spacer-row td{background:#f1f5f9;}
+    .hint{color:var(--muted); margin:4px 0 0;}
+    tr:hover td{background:#f8fafc;}
+    .save-status{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:10px;
+      background:#ecfeff;
+      color:#0f172a;
+      border:1px solid #bae6fd;
+      font-weight:600;
+    }
+    // Qualifikations-Popover (wird für beide Tabellen genutzt)
+    const qualPopover = document.createElement('div');
+    qualPopover.className = 'qual-popover';
+    qualPopover.innerHTML = QUAL_OPTIONS.map(opt => `<label><input type="checkbox" data-qual="${opt}">${opt}</label>`).join('');
+    document.body.appendChild(qualPopover);
+    let qualTarget = null;
+    .save-status.error{
+      background:#fef2f2;
+      border-color:#fecdd3;
+      color:#991b1b;
+    }
+    .qual-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 8px;
+      border-radius:8px;
+      border:1px solid var(--line);
+      background:#f8fafc;
+      cursor:pointer;
+      font-size:0.85rem;
+      width:100%;
+      justify-content:space-between;
+    }
+    .qual-badge span{color:#0f172a; font-weight:600;}
+    .qual-popover{
+      position:absolute;
+      background:#fff;
+      border:1px solid var(--line);
+      box-shadow:0 12px 30px rgba(15,23,42,0.16);
+      border-radius:12px;
+      padding:10px;
+      display:none;
+      z-index:99;
+      width:220px;
+      max-height:260px;
+      overflow:auto;
+    }
+    .qual-popover label{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:0.88rem;
+      padding:4px 2px;
+    }
+    @media (max-width: 900px){
+      th:nth-child(2), td:nth-child(2){left:100px;}
+      th:first-child, td:first-child{min-width:100px;}
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card top">
+      <div class="header-row">
+        <div class="hero-title">
+          <div class="pill">Stellenplan</div>
+          <h1>Planung &amp; Kontrolle</h1>
+          <p style="margin:0; color:var(--muted);">Mitarbeiter:innen und Zusatzgruppen pflegen, Ø-Werte pro Monat sichern.</p>
+        </div>
+        <span id="saveStatus" class="save-status" aria-live="polite" style="display:none;"></span>
+      </div>
+      <div class="controls">
+        <label style="display:flex; flex-direction:column; gap:4px; min-width:200px;">
+          Abteilung
+          <select id="deptSelect"></select>
+        </label>
+        <label style="display:flex; flex-direction:column; gap:4px; min-width:120px;">
+          Jahr
+          <input id="yearInput" type="number" min="2020" max="2100" />
+        </label>
+        <button id="btnAddRow" class="primary" type="button" style="margin-top:6px;">+ Mitarbeiter:in</button>
+        <button id="btnAddExtra" type="button" style="margin-top:6px;">+ Zusatzzeile</button>
+        <button id="btnSaveDb" type="button" style="margin-top:6px;">Speichern (DB)</button>
+      </div>
+      <div class="summary">
+        <div class="tile"><span>Summe (Jahr)</span><strong id="sumYear">0,0</strong></div>
+        <div class="tile"><span>Durchschnitt / Monat</span><strong id="avgMonth">0,0</strong></div>
+        <div class="tile"><span>Peak-Monat</span><strong id="peakMonth">-</strong></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="table-wrap">
+        <table id="planTable">
+          <thead>
+            <tr>
+              <th style="min-width:120px;">Personalnummer</th>
+              <th style="min-width:200px;">Mitarbeiter:in</th>
+              <th>Jan</th><th>Feb</th><th>Mrz</th><th>Apr</th><th>Mai</th><th>Jun</th>
+              <th>Jul</th><th>Aug</th><th>Sep</th><th>Okt</th><th>Nov</th><th>Dez</th>
+              <th>&Oslash; Monat</th>
+              <th style="min-width:140px;">Qualifikation</th>
+              <th class="actions-col">Aktionen</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+          <tfoot>
+            <tr class="totals-row">
+              <td></td>
+              <td></td>
+              <td>Summe Monat</td>
+              <td data-sum-month="0">0,0</td><td data-sum-month="1">0,0</td><td data-sum-month="2">0,0</td><td data-sum-month="3">0,0</td><td data-sum-month="4">0,0</td><td data-sum-month="5">0,0</td><td data-sum-month="6">0,0</td><td data-sum-month="7">0,0</td><td data-sum-month="8">0,0</td><td data-sum-month="9">0,0</td><td data-sum-month="10">0,0</td><td data-sum-month="11">0,0</td>
+              <td data-total-year>0,0</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <p class="hint">Alle Werte in VK. &Auml;nderungen werden lokal im Browser pro Abteilung/Jahr gespeichert.</p>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <h3 style="margin-top:0;">Zusatzgruppen (Sch&uuml;ler:innen, Azubis, MFA, ATA ...)</h3>
+      </div>
+      <div class="table-wrap">
+        <table id="extrasTable">
+          <thead>
+            <tr>
+              <th style="min-width:120px;">Personalnummer</th>
+              <th style="min-width:200px;">Kategorie</th>
+              <th>Jan</th><th>Feb</th><th>Mrz</th><th>Apr</th><th>Mai</th><th>Jun</th>
+              <th>Jul</th><th>Aug</th><th>Sep</th><th>Okt</th><th>Nov</th><th>Dez</th>
+              <th style="min-width:140px;">Qualifikation</th>
+              <th>&Oslash; Monat</th>
+              <th class="actions-col">Aktionen</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+          <tfoot>
+            <tr class="totals-row">
+              <td></td>
+              <td>Summe Zusatz</td>
+              <td data-extra-month="0">0,0</td><td data-extra-month="1">0,0</td><td data-extra-month="2">0,0</td><td data-extra-month="3">0,0</td><td data-extra-month="4">0,0</td><td data-extra-month="5">0,0</td><td data-extra-month="6">0,0</td><td data-extra-month="7">0,0</td><td data-extra-month="8">0,0</td><td data-extra-month="9">0,0</td><td data-extra-month="10">0,0</td><td data-extra-month="11">0,0</td>
+              <td data-total-extra>0,0</td>
+              <td></td>
+            </tr>
+            <tr class="totals-row spacer-row">
+              <td></td>
+              <td>Abschluss (Haupt + Zusatz)</td>
+              <td data-combined-month="0">0,0</td><td data-combined-month="1">0,0</td><td data-combined-month="2">0,0</td><td data-combined-month="3">0,0</td><td data-combined-month="4">0,0</td><td data-combined-month="5">0,0</td><td data-combined-month="6">0,0</td><td data-combined-month="7">0,0</td><td data-combined-month="8">0,0</td><td data-combined-month="9">0,0</td><td data-combined-month="10">0,0</td><td data-combined-month="11">0,0</td>
+              <td data-total-combined>0,0</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const STORAGE_KEY = 'clinicon_stellenplan_v2';
+    const SUPABASE_URL_STORAGE = 'clinicon_supabase_url';
+    const SUPABASE_KEY_STORAGE = 'clinicon_supabase_key';
+    const MONTHS = ['Jan','Feb','Mrz','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+    const DEPARTMENTS = ['Station 1','Station 2','Station 3','Station 4','Station 5','Station 6','Station 7','Endoskopie','OP','Sozialdienst','Pflegedienstleitung'];
+    const QUAL_OPTIONS = [
+      'Notfallpflege',
+      'Anästhesie/Intensiv',
+      'Hygiene',
+      'Praxisanleitung',
+      'OP',
+      'Endoskopie',
+      'Onkologie',
+      'Palliativ',
+      'Wundmanagement',
+      'Diabetes',
+      'Dialyse',
+      'Stroke Unit',
+      'Kardiologie',
+      'Geriatrie',
+      'Neonatologie',
+      'Psychiatrie',
+      'Schmerzmanagement',
+      'Pflegepädagogik',
+      'Stationsleitung',
+      'Fachkraft Präv./Reha'
+    ];
+    const DEFAULT_SUPABASE_URL = 'https://fqilehnixnsujefyrdcy.supabase.co';
+    const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxaWxlaG5peG5zdWplZnlyZGN5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjM5MjIyNzUsImV4cCI6MjA3OTQ5ODI3NX0.Ml1J-YsID7_CXX7LbLZM4ayhWpV08FBSZc3rgVuwqt4';
+    const SUPABASE_URL = (window.SUPABASE_URL || localStorage.getItem(SUPABASE_URL_STORAGE) || DEFAULT_SUPABASE_URL).trim();
+    const SUPABASE_ANON_KEY = (window.SUPABASE_ANON_KEY || localStorage.getItem(SUPABASE_KEY_STORAGE) || DEFAULT_SUPABASE_KEY).trim();
+    const supabaseClient = (typeof window.supabase !== 'undefined' && SUPABASE_URL && SUPABASE_ANON_KEY)
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
+    if(!localStorage.getItem(SUPABASE_URL_STORAGE) && SUPABASE_URL){
+      try{ localStorage.setItem(SUPABASE_URL_STORAGE, SUPABASE_URL); }catch(e){ /* ignore quota issues */ }
+    }
+    if(!localStorage.getItem(SUPABASE_KEY_STORAGE) && SUPABASE_ANON_KEY){
+      try{ localStorage.setItem(SUPABASE_KEY_STORAGE, SUPABASE_ANON_KEY); }catch(e){ /* ignore quota issues */ }
+    }
+    const SITE_LABEL = (sessionStorage.getItem('cliniconSite') || '').trim();
+    const SITE_CODE = SITE_LABEL.toLowerCase().replace(/[^a-z0-9_]/g,'');
+    const HAS_SITE = Boolean(SITE_CODE);
+    const USE_REMOTE = Boolean(supabaseClient && HAS_SITE);
+    const tableName = (base) => SITE_CODE ? `${base}_${SITE_CODE}` : base;
+    const currentTableInfo = () => SITE_CODE ? `Zieltabelle: ${tableName('stellenplan_employees')} / ${tableName('stellenplan_extras')}` : 'Kein Standortcode gesetzt';
+
+    const state = { dept: DEPARTMENTS[0], year: new Date().getFullYear(), data:{} };
+    let syncTimer = null;
+    const els = {
+      deptSelect: document.getElementById('deptSelect'),
+      yearInput: document.getElementById('yearInput'),
+      tbody: document.querySelector('#planTable tbody'),
+      extrasTbody: document.querySelector('#extrasTable tbody'),
+      sumYear: document.getElementById('sumYear'),
+      avgMonth: document.getElementById('avgMonth'),
+      peakMonth: document.getElementById('peakMonth'),
+    };
+
+    function loadStorage(){
+      try{
+        state.data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      }catch(e){ state.data = {}; }
+    }
+    function saveStorage(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
+    }
+    function parseValues(arr){
+      if(Array.isArray(arr)) return arr.map(v=>Number(v)||0);
+      if(typeof arr === 'string'){
+        const cleaned = arr.replace(/[{}]/g,'');
+        if(!cleaned) return Array(12).fill(0);
+        return cleaned.split(',').map(v=>Number(v)||0);
+      }
+      return Array(12).fill(0);
+    }
+
+    function ensureDefaults(plan){
+      plan.employees.forEach(emp => {
+        if(emp.personalNumber === undefined) emp.personalNumber = '';
+        if(emp.include === undefined) emp.include = true;
+        if(emp.qual === undefined) emp.qual = '';
+        emp.values = parseValues(emp.values);
+      });
+      plan.extras.forEach(ex => {
+        if(ex.personalNumber === undefined) ex.personalNumber = '';
+        if(ex.include === undefined) ex.include = true;
+        if(ex.qual === undefined) ex.qual = '';
+        ex.values = parseValues(ex.values);
+      });
+    }
+    function getCurrentPlan(){
+      const key = `${state.dept}-${state.year}`;
+      if(!state.data[key]){
+        state.data[key] = {
+          employees:[
+            {id:crypto.randomUUID(), personalNumber:'', name:'Mitarbeiter:in 1', values:Array(12).fill(0)},
+            {id:crypto.randomUUID(), personalNumber:'', name:'Mitarbeiter:in 2', values:Array(12).fill(0)}
+          ],
+          extras:[
+            {id:crypto.randomUUID(), personalNumber:'', category:'Schüler:in', values:Array(12).fill(0)},
+            {id:crypto.randomUUID(), personalNumber:'', category:'Azubi', values:Array(12).fill(0)},
+            {id:crypto.randomUUID(), personalNumber:'', category:'MFA/ATA', values:Array(12).fill(0)}
+          ]
+        };
+      }
+      const plan = state.data[key];
+      ensureDefaults(plan);
+      return plan;
+    }
+
+    async function fetchRemotePlan(){
+      if(!USE_REMOTE) return null;
+      const { data: rawEmployees, error: empErr } = await supabaseClient
+        .from(tableName('stellenplan_employees'))
+        .select('id, dept, year, personal_number, name, months, values')
+        .eq('dept', state.dept)
+        .eq('year', state.year);
+      const { data: rawExtras, error: extraErr } = await supabaseClient
+        .from(tableName('stellenplan_extras'))
+        .select('id, dept, year, personal_number, category, months, values')
+        .eq('dept', state.dept)
+        .eq('year', state.year);
+      if(empErr || extraErr){
+        const msg = empErr?.message || extraErr?.message || 'Remote load fehlgeschlagen.';
+        setLoadStatus(msg);
+        throw new Error(msg);
+      }
+      const employees = (rawEmployees || []).map(emp => ({
+        id: emp.id,
+        personalNumber: emp.personal_number || emp.personalNumber || '',
+        name: emp.name,
+        values: parseValues(emp.months ?? emp.values ?? [])
+      }));
+      const extras = (rawExtras || []).map(ex => ({
+        id: ex.id,
+        personalNumber: ex.personal_number || ex.personalNumber || '',
+        category: ex.category,
+        values: parseValues(ex.months ?? ex.values ?? [])
+      }));
+      return { employees, extras };
+    }
+
+    async function syncTable(tableName, rows){
+      if(!USE_REMOTE) return;
+      const deleteRes = await supabaseClient
+        .from(tableName)
+        .delete()
+        .eq('dept', state.dept)
+        .eq('year', state.year);
+      if(deleteRes.error) throw new Error(`DELETE ${tableName}: ${deleteRes.error.message}`);
+      if(rows.length === 0) return;
+      const upsertRes = await supabaseClient
+        .from(tableName)
+        .upsert(rows);
+      if(upsertRes.error) throw new Error(`UPSERT ${tableName}: ${upsertRes.error.message}`);
+    }
+
+    async function syncRemotePlan(){
+      if(!USE_REMOTE) return;
+      const plan = getCurrentPlan();
+      const employees = plan.employees.map(emp => ({
+        id: emp.id,
+        dept: state.dept,
+        year: state.year,
+        personal_number: emp.personalNumber || '',
+        name: emp.name,
+        months: emp.values.map(v=>Number(v)||0)
+      }));
+      const extras = plan.extras.map(ex => ({
+        id: ex.id,
+        dept: state.dept,
+        year: state.year,
+        personal_number: ex.personalNumber || '',
+        category: ex.category,
+        months: ex.values.map(v=>Number(v)||0)
+      }));
+      await syncTable(tableName('stellenplan_employees'), employees);
+      await syncTable(tableName('stellenplan_extras'), extras);
+    }
+
+    function scheduleSync(){
+      if(!USE_REMOTE) return;
+      if(syncTimer) clearTimeout(syncTimer);
+      syncTimer = setTimeout(() => {
+        syncRemotePlan().catch(err => console.warn('Remote sync failed', err));
+      }, 800);
+    }
+
+    function setSaveStatus(message, isError=false){
+      const el = document.getElementById('saveStatus');
+      if(!el) return;
+      el.style.display = message ? 'inline-block' : 'none';
+      el.textContent = message || '';
+      el.classList.toggle('error', Boolean(isError));
+    }
+    function setLoadStatus(message){
+      const el = document.getElementById('saveStatus');
+      if(!el) return;
+      el.style.display = message ? 'inline-block' : 'none';
+      el.textContent = message || '';
+      el.classList.add('error');
+    }
+    function setConnInfo(){
+      if(!SUPABASE_URL || !SUPABASE_ANON_KEY){
+        setSaveStatus('Supabase URL/Key fehlen (localStorage clinicon_supabase_url / clinicon_supabase_key).', true);
+      }else if(!HAS_SITE){
+        setSaveStatus('Kein Standortcode gefunden. Bitte zuerst einloggen.', true);
+      }else{
+        setSaveStatus(`Bereit zum Speichern. ${currentTableInfo()}`);
+      }
+    }
+
+    async function saveToDatabase(){
+      if(!USE_REMOTE){
+        setSaveStatus('Keine Datenbank-Verbindung konfiguriert.', true);
+        return;
+      }
+      try{
+        setSaveStatus('Speichere ...');
+        await syncRemotePlan();
+        const ts = new Date().toLocaleTimeString('de-DE', { hour:'2-digit', minute:'2-digit' });
+        setSaveStatus(`Gespeichert (${ts})`);
+      }catch(err){
+        console.error('Speichern fehlgeschlagen', err);
+        setSaveStatus((err?.message || 'Speichern fehlgeschlagen. Tabelle vorhanden?') + ' ' + currentTableInfo(), true);
+      }
+    }
+
+    async function hydrateFromRemote(){
+      if(!USE_REMOTE) return;
+      try{
+        const remote = await fetchRemotePlan();
+        if(remote){
+          const key = `${state.dept}-${state.year}`;
+          const hasRemote = (remote.employees && remote.employees.length) || (remote.extras && remote.extras.length);
+          if(hasRemote){
+            state.data[key] = {
+              employees: remote.employees || [],
+              extras: remote.extras || []
+            };
+          }else if(!state.data[key]){
+            state.data[key] = getCurrentPlan();
+          }
+          ensureDefaults(state.data[key]);
+          saveStorage();
+          renderTable();
+          renderExtras();
+        }
+      }catch(err){
+        console.warn('Remote load failed', err);
+        setLoadStatus((err?.message || 'Laden fehlgeschlagen. Tabelle vorhanden?') + ' ' + currentTableInfo());
+      }
+    }
+    function renderDeptSelect(){
+      els.deptSelect.innerHTML = DEPARTMENTS.map(d=>`<option value="${d}">${d}</option>`).join('');
+      els.deptSelect.value = state.dept;
+      els.yearInput.value = state.year;
+    }
+    function fmt(n){ return Number(n||0).toFixed(2).replace('.',','); }
+
+    function calcTotals(plan){
+      const monthMain = Array(12).fill(0);
+      let totalMain = 0;
+      plan.employees.forEach(emp => emp.values.forEach((v,i)=>{ const val=Number(v)||0; monthMain[i]+=val; totalMain+=val; }));
+
+      const monthExtra = Array(12).fill(0);
+      let totalExtra = 0;
+      plan.extras.forEach(ex => {
+        ex.values.forEach((v,i)=>{ const val=Number(v)||0; monthExtra[i]+=val; totalExtra+=val; });
+      });
+
+      const combined = monthMain.map((v,i)=>v+monthExtra[i]);
+      const totalCombined = totalMain + totalExtra;
+
+      const maxVal = Math.max(...monthMain);
+      const maxIdx = monthMain.indexOf(maxVal);
+      els.sumYear.textContent = fmt(totalMain);
+      els.avgMonth.textContent = fmt(totalMain/12);
+      els.peakMonth.textContent = maxVal>0 ? `${MONTHS[maxIdx]} (${fmt(maxVal)})` : '-';
+
+      document.querySelectorAll('[data-sum-month]').forEach(c=>c.textContent = fmt(monthMain[Number(c.dataset.sumMonth)]));
+      const totalCell = document.querySelector('[data-total-year]'); if(totalCell) totalCell.textContent = fmt(totalMain/12);
+      document.querySelectorAll('[data-extra-month]').forEach(c=>c.textContent = fmt(monthExtra[Number(c.dataset.extraMonth)]));
+      const totalExtraCell = document.querySelector('[data-total-extra]'); if(totalExtraCell) totalExtraCell.textContent = fmt(totalExtra/12);
+      document.querySelectorAll('[data-combined-month]').forEach(c=>c.textContent = fmt(combined[Number(c.dataset.combinedMonth)]));
+      const totalCombinedCell = document.querySelector('[data-total-combined]'); if(totalCombinedCell) totalCombinedCell.textContent = fmt(totalCombined/12);
+    }
+
+    function renderTable(){
+      const plan = getCurrentPlan();
+      els.tbody.innerHTML = '';
+      plan.employees.forEach(emp => {
+        if(emp.personalNumber === undefined) emp.personalNumber = '';
+        if(emp.include === undefined) emp.include = true;
+        if(emp.qual === undefined) emp.qual = '';
+        const tr = document.createElement('tr');
+        tr.dataset.id = emp.id;
+        const qualBadgeLabel = (emp.qual||'').split(',').filter(Boolean);
+        const qualText = qualBadgeLabel.length ? qualBadgeLabel.join(', ') : 'Qualifikation wählen';
+        const qualButtons = `<button class="qual-badge" data-qual-badge="emp" data-id="${emp.id}"><span>${qualText}</span><span>▼</span></button>`;
+        let tds = `<td><input class="name-input" data-field="pnr" placeholder="z.B. 1001" value="${emp.personalNumber||''}"></td>`;
+        tds += `<td><input class="name-input" data-field="name" value="${emp.name}"></td>`;
+        emp.values.forEach((val,idx)=>{ tds += `<td><input class="vk-input" type="number" min="0" step="0.01" value="${val}" data-month="${idx}"></td>`; });
+        const rowSum = emp.values.reduce((a,b)=>a+Number(b||0),0);
+        const rowAvg = rowSum/12;
+        tds += `<td data-row-sum>${fmt(rowAvg)}</td>`;
+        tds += `<td style="min-width:140px;">${qualButtons}</td>`;
+        tds += `<td class="actions-cell"><button data-action="delete">L?schen</button></td>`;
+        tr.innerHTML = tds;
+        els.tbody.appendChild(tr);
+      });
+      calcTotals(plan);
+    }
+
+    function renderExtras(){
+      const plan = getCurrentPlan();
+      els.extrasTbody.innerHTML = '';
+      plan.extras.forEach(ex => {
+        if(ex.personalNumber === undefined) ex.personalNumber = '';
+        if(ex.include === undefined) ex.include = true;
+        if(ex.qual === undefined) ex.qual = '';
+        const tr = document.createElement('tr');
+        tr.dataset.id = ex.id;
+        const qualBadgeLabel = (ex.qual||'').split(',').filter(Boolean);
+        const qualText = qualBadgeLabel.length ? qualBadgeLabel.join(', ') : 'Qualifikation wählen';
+        const qualButtons = `<button class="qual-badge" data-qual-badge="extra" data-id="${ex.id}"><span>${qualText}</span><span>▼</span></button>`;
+        let tds = `<td><input class="name-input" data-field="pnr" placeholder="z.B. 2001" value="${ex.personalNumber||''}"></td>`;
+        tds += `<td><input class="name-input" data-field="category" value="${ex.category}"></td>`;
+        ex.values.forEach((val,idx)=>{ tds += `<td><input class="vk-input" type="number" min="0" step="0.01" value="${val}" data-month="${idx}"></td>`; });
+        const rowSum = ex.values.reduce((a,b)=>a+Number(b||0),0);
+        const rowAvg = rowSum/12;
+        tds += `<td data-row-sum>${fmt(rowAvg)}</td>`;
+        tds += `<td style="min-width:140px;">${qualButtons}</td>`;
+        tds += `<td class="actions-cell"><button data-action="delete-extra">L?schen</button></td>`;
+        tr.innerHTML = tds;
+        els.extrasTbody.appendChild(tr);
+      });
+      calcTotals(plan);
+    }
+    function recalcRow(tr, emp){
+      tr.querySelectorAll('.vk-input').forEach(inp => {
+        const idx = Number(inp.dataset.month);
+        emp.values[idx] = Number(inp.value)||0;
+      });
+      const sum = emp.values.reduce((a,b)=>a+Number(b||0),0);
+      const avg = sum/12;
+      const sumCell = tr.querySelector('[data-row-sum]');
+      if(sumCell) sumCell.textContent = fmt(avg);
+    }
+
+    function addExtraRow(){
+      const plan = getCurrentPlan();
+      plan.extras.push({id:crypto.randomUUID(), personalNumber:'', category:'Neu', include:true, qual:'', values:Array(12).fill(0)});
+      renderExtras();
+      saveStorage();
+      scheduleSync();
+    }
+
+    function bindEvents(){
+      els.deptSelect.addEventListener('change', () => {
+        state.dept = els.deptSelect.value;
+        renderTable();
+        renderExtras();
+        saveStorage();
+        hydrateFromRemote();
+      });
+      els.yearInput.addEventListener('change', () => {
+        state.year = Number(els.yearInput.value) || new Date().getFullYear();
+        renderTable();
+        renderExtras();
+        saveStorage();
+        hydrateFromRemote();
+      });
+      document.getElementById('btnAddRow').addEventListener('click', () => {
+        const plan = getCurrentPlan();
+        plan.employees.push({id:crypto.randomUUID(), personalNumber:'', name:'Neu', values:Array(12).fill(0)});
+        renderTable();
+        calcTotals(plan);
+        saveStorage();
+        scheduleSync();
+      });
+      const btnSave = document.getElementById('btnSaveDb');
+      if(btnSave) btnSave.addEventListener('click', saveToDatabase);
+      const btnAddExtra = document.getElementById('btnAddExtra');
+      if(btnAddExtra) btnAddExtra.addEventListener('click', addExtraRow);
+
+      els.tbody.addEventListener('input', (e) => {
+        const tr = e.target.closest('tr'); if(!tr) return;
+        const id = tr.dataset.id;
+        const plan = getCurrentPlan();
+        const emp = plan.employees.find(x=>x.id===id); if(!emp) return;
+        if(e.target.classList.contains('name-input')){
+          if(e.target.dataset.field === 'name'){ emp.name = e.target.value; }
+          else { emp.personalNumber = e.target.value; }
+        }
+        if(e.target.dataset.field === 'include'){
+          emp.include = e.target.checked;
+        }
+        if(e.target.classList.contains('vk-input')) recalcRow(tr, emp);
+        calcTotals(plan);
+        saveStorage();
+        scheduleSync();
+      });
+      els.tbody.addEventListener('click', (e) => {
+        if(e.target.classList.contains('qual-toggle')){
+          const tr = e.target.closest('tr'); if(!tr) return;
+          const id = tr.dataset.id;
+          const plan = getCurrentPlan();
+          const emp = plan.employees.find(x=>x.id===id); if(!emp) return;
+          const qual = e.target.dataset.qual;
+          const list = new Set((emp.qual||'').split(',').map(s=>s.trim()).filter(Boolean));
+          if(list.has(qual)){
+            list.delete(qual);
+            e.target.classList.remove('is-active');
+          }else{
+            list.add(qual);
+            e.target.classList.add('is-active');
+          }
+          emp.qual = Array.from(list).join(', ');
+          saveStorage();
+          scheduleSync();
+          return;
+        }
+        if(e.target.dataset.action === 'delete'){
+          if(!confirm('Diesen Eintrag wirklich l?schen?')) return;
+          const tr = e.target.closest('tr');
+          const id = tr?.dataset.id;
+          const plan = getCurrentPlan();
+          plan.employees = plan.employees.filter(x=>x.id!==id);
+          renderTable();
+          calcTotals(plan);
+          saveStorage();
+          scheduleSync();
+        }
+      });
+
+      els.extrasTbody.addEventListener('input', (e) => {
+        const tr = e.target.closest('tr'); if(!tr) return;
+        const id = tr.dataset.id;
+        const plan = getCurrentPlan();
+        const ex = plan.extras.find(x=>x.id===id); if(!ex) return;
+        if(e.target.classList.contains('name-input')){
+          if(e.target.dataset.field === 'category'){ ex.category = e.target.value; }
+          else if(e.target.dataset.field === 'qual'){ ex.qual = e.target.value; }
+          else { ex.personalNumber = e.target.value; }
+        }
+        if(e.target.dataset.field === 'include'){
+          ex.include = e.target.checked;
+        }
+        if(e.target.classList.contains('vk-input')){
+          const idx = Number(e.target.dataset.month);
+          ex.values[idx] = Number(e.target.value)||0;
+          const sum = ex.values.reduce((a,b)=>a+Number(b||0),0);
+          const avg = sum/12;
+          const sumCell = tr.querySelector('[data-row-sum]'); if(sumCell) sumCell.textContent = fmt(avg);
+        }
+        calcTotals(plan);
+        saveStorage();
+        scheduleSync();
+      });
+      els.extrasTbody.addEventListener('click', (e) => {
+        if(e.target.classList.contains('qual-toggle')){
+          const tr = e.target.closest('tr'); if(!tr) return;
+          const id = tr.dataset.id;
+          const plan = getCurrentPlan();
+          const ex = plan.extras.find(x=>x.id===id); if(!ex) return;
+          const qual = e.target.dataset.qual;
+          const list = new Set((ex.qual||'').split(',').map(s=>s.trim()).filter(Boolean));
+          if(list.has(qual)){
+            list.delete(qual);
+            e.target.classList.remove('is-active');
+          }else{
+            list.add(qual);
+            e.target.classList.add('is-active');
+          }
+          ex.qual = Array.from(list).join(', ');
+          saveStorage();
+          scheduleSync();
+          return;
+        }
+        if(e.target.dataset.action === 'delete-extra'){
+          if(!confirm('Diese Zusatzzeile wirklich l?schen?')) return;
+          const tr = e.target.closest('tr');
+          const id = tr?.dataset.id;
+          const plan = getCurrentPlan();
+          plan.extras = plan.extras.filter(x=>x.id!==id);
+          renderExtras();
+          calcTotals(plan);
+          saveStorage();
+          scheduleSync();
+        }
+      });
+    }
+
+    (function init(){
+      loadStorage();
+      renderDeptSelect();
+      renderTable();
+      renderExtras();
+      if(USE_REMOTE){
+        hydrateFromRemote();
+      }
+      bindEvents();
+      setConnInfo();
+      if(els.aiToggle && els.aiContext){
+        els.aiToggle.addEventListener('click', () => {
+          els.aiContext.classList.toggle('is-open');
+          els.aiToggle.textContent = els.aiContext.classList.contains('is-open') ? 'JSON ausblenden' : 'JSON anzeigen';
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
+
+

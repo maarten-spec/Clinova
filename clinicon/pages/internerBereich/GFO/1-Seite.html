@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CliniCon - GFO</title>
+  <link rel="icon" href="../../../assets/Bilder/CliniConLogo.png" />
+  <link rel="stylesheet" href="../../../style.css" />
+  <style>
+    body{ background:var(--bg); }
+    .logo-pair{ display:flex; align-items:center; gap:12px; }
+    .frame-container{ padding:0; overflow:hidden; }
+    #pageFrame{
+      width:100%;
+      border:none;
+      min-height:70vh;
+      background:transparent;
+    }
+    .nav a.start-link{
+      margin-bottom:12px;
+      background:var(--accent-weak);
+      border-color:#bfd7ff;
+      color:var(--accent-strong);
+      font-weight:700;
+      box-shadow:0 6px 14px rgba(37,99,235,.14);
+    }
+    .nav a.start-link:hover{
+      background:linear-gradient(180deg,#ffffff,#eef5ff);
+    }
+    @media (max-width: 960px){
+      .logo-pair{ flex-wrap:wrap; justify-content:flex-end; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="side" aria-label="GFO Navigation">
+      <a class="brand" href="#" onclick="handleBrandClick(event); return false;" style="flex-direction:column; gap:8px;">
+        <img src="../../../assets/Bilder/gfo-logo.jpg" alt="GFO Logo" style="width:180px; height:auto; object-fit:contain;" />
+      </a>
+
+      <nav class="nav" id="mainNav">
+        <a href="#"
+           class="active"
+           data-key="unterstartseite"
+           data-path="pages/1_Unterstartseite.html"
+           data-title="GFO Unterstartseite"
+           data-subtitle="Interner Bereich - GFO"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11.5 12 4l9 7.5" />
+            <path d="M5 10.5V20h14v-9.5" />
+            <path d="M9 20v-5a3 3 0 0 1 6 0v5" />
+          </svg>
+          <span>Unterstartseite</span>
+        </a>
+        <a href="#"
+           data-key="clinicon-assistent"
+           data-path="pages/clinicon-assistent.html"
+           data-title="Clinicon Assistent"
+           data-subtitle="Assistent für Klinikverbund nach Fachabteilung"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3l1.5 3.5L17 8l-3.5 1.5L12 13l-1.5-3.5L7 8l3.5-1.5Z" />
+            <path d="M6 15l1.2 2L9 18.2 7 19l-1 2-1-2-2-.8 1.8-1.2Z" />
+            <path d="M17.5 14l.8 1.7L20 16.5l-1.7.8-.8 1.7-.8-1.7-1.7-.8 1.7-.8Z" />
+          </svg>
+          <span>Clinicon Assistent</span>
+        </a>
+        <a href="#"
+           data-key="stellenplan"
+           data-path="pages/stellenplan.html"
+           data-title="Stellenplan"
+           data-subtitle="Planung &amp; &Uuml;bersicht"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 6h16" />
+            <path d="M4 12h10" />
+            <path d="M4 18h7" />
+          </svg>
+          <span>Stellenplan</span>
+        </a>
+        <a href="#"
+           data-key="stellenplan-gesamt"
+           data-path="pages/stellenplan-gesamt.html"
+           data-title="Stellenplan Gesamt"
+           data-subtitle="Alle Abteilungen, ein Blick"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3h18v4H3z" />
+            <path d="M3 10h12v4H3z" />
+            <path d="M3 17h8v4H3z" />
+            <path d="M16 10h5" />
+            <path d="M16 14h5" />
+            <path d="M12 17h9" />
+          </svg>
+          <span>Stellenplan Gesamt</span>
+        </a>
+        <a href="#"
+           data-key="stellenplan-insights"
+           data-path="pages/stellenplan-insights.html"
+           data-title="Stellenplan Insights"
+           data-subtitle="Live-Analyse &amp; Forecast"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18" />
+            <path d="M7 14.5 12 9l3.5 3.5L21 7" />
+            <path d="M14 3h7v7" />
+          </svg>
+          <span>Stellenplan Insights</span>
+        </a>
+        <a href="#"
+           data-key="benchmark"
+           data-path="pages/1_Benchmark.html"
+           data-title="Benchmark"
+           data-subtitle="Auswertung &amp; Vergleich"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v18h18" />
+            <path d="M7 13l3 3 7-7" />
+          </svg>
+          <span>Benchmark</span>
+        </a>
+        <a href="#"
+           data-key="fachabteilungen"
+           data-path="pages/1_Fachabteilungen.html"
+           data-title="Fachabteilungen"
+           data-subtitle="Suche im gesamten GFO Verbund"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10V6a2 2 0 0 0-2-2h-2" />
+            <path d="M3 10V6a2 2 0 0 1 2-2h2" />
+            <path d="M7 14h10" />
+            <path d="M17 18h2a2 2 0 0 0 2-2v-4H3v4a2 2 0 0 0 2 2h2" />
+            <rect x="7" y="18" width="10" height="4" rx="1" />
+          </svg>
+          <span>Fachabteilungen</span>
+        </a>
+        <a href="#"
+           data-key="maptool"
+           data-path="pages/maptool.html"
+           data-title="Map-Tool"
+           data-subtitle="Standortkarte &amp; Kontakte"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6.5 9 4l6 2.5 6-2.5v13L15 19l-6-2.5L3 19z" />
+            <path d="M9 4v12.5" />
+            <path d="M15 6.5v12.5" />
+          </svg>
+          <span>Map-Tool</span>
+        </a>
+        <a href="#"
+           data-key="klinikverbund"
+           data-path="pages/1_klinikverbund.html"
+           data-title="Klinikverbund"
+           data-subtitle="Standorte und Cluster im GFO Verbund"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+          <span>Klinikverbund</span>
+        </a>
+        <a href="#"
+           class="start-link"
+           data-key="portal"
+           data-path="../../../index.html"
+           data-external="true"
+           data-title="Startseite"
+           data-subtitle="Zurück zum Portal"
+           onclick="handleNavClick(event,this);">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 11.5 12 4l9 7.5" />
+            <path d="M5 10.5V20h14v-9.5" />
+            <path d="M9 20v-5a3 3 0 0 1 6 0v5" />
+          </svg>
+          <span>Startseite</span>
+        </a>
+      </nav>
+    </aside>
+
+    <div>
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 id="pageHeading">CliniCon - GFO</h1>
+          <p id="pageSubheading">Interner Bereich</p>
+        </div>
+        <img class="product-logo" src="../../../assets/Bilder/CliniConLogo.png" alt="CliniCon Logo" />
+      </header>
+
+      <main id="mainContent" role="main">
+        <section class="card frame-container">
+          <iframe id="pageFrame" title="GFO Inhalt" src="" loading="lazy"></iframe>
+        </section>
+      </main>
+
+      <footer>&copy; CliniCon &ndash; GFO Kliniken Verbund</footer>
+    </div>
+  </div>
+
+  <script>
+    const frame = document.getElementById('pageFrame');
+    const navLinks = () => Array.from(document.querySelectorAll('#mainNav a'));
+    const siteCode = (() => {
+      const params = new URLSearchParams(location.search);
+      const fromUrl = (params.get('site') || '').trim().toUpperCase();
+      const fromSession = (sessionStorage.getItem('cliniconSite') || '').trim().toUpperCase();
+      const resolved = fromUrl || fromSession;
+      if(resolved){
+        sessionStorage.setItem('cliniconSite', resolved);
+      }
+      return resolved;
+    })();
+    const siteLabel = siteCode || 'GFO';
+
+    function setActive(el){
+      navLinks().forEach(link => link.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function updateHeading(title, subtitle){
+      const baseTitle = title || 'GFO';
+      const heading = siteLabel ? `${baseTitle} (${siteLabel})` : baseTitle;
+      document.getElementById('pageHeading').textContent = 'CliniCon - ' + heading;
+      document.getElementById('pageSubheading').textContent = subtitle || (siteLabel ? `Interner Bereich ${siteLabel}` : 'Interner Bereich');
+      document.title = 'CliniCon - ' + heading;
+    }
+
+    const withSiteParam = (path) => {
+      if(!path || !siteCode) return path;
+      const url = new URL(path, location.href);
+      url.searchParams.set('site', siteCode);
+      return url.toString();
+    };
+
+    function loadFrame(path, title, subtitle){
+      const target = withSiteParam(path);
+      frame.dataset.title = title || '';
+      frame.dataset.subtitle = subtitle || '';
+      frame.src = target;
+      updateHeading(title, subtitle);
+    }
+
+    function navigate(link, push = true){
+      const path = link.dataset.path;
+      const title = link.dataset.title || link.textContent.trim();
+      const subtitle = link.dataset.subtitle || '';
+      if(!path) return;
+      setActive(link);
+      loadFrame(path, title, subtitle);
+      if(push){
+        const key = link.dataset.key || '';
+        const resolvedPath = withSiteParam(path);
+        history.pushState({ path: resolvedPath, title, subtitle, key }, '', '#' + key);
+      }
+    }
+
+    function handleNavClick(event, link){
+      event.preventDefault();
+      if(link.dataset.external === 'true'){
+        const target = link.dataset.path || '../../../index.html';
+        window.location.href = target;
+        return;
+      }
+      navigate(link);
+    }
+
+    function handleBrandClick(event){
+      event.preventDefault();
+      const startLink = document.querySelector('#mainNav a[data-key="unterstartseite"]') || navLinks()[0];
+      if(startLink){
+        navigate(startLink);
+      }
+    }
+
+    function applyEmbedSkin(){
+      const doc = frame.contentDocument;
+      if(!doc) return;
+      const style = doc.createElement('style');
+      style.textContent = `
+        .side, .brand{ display:none !important; }
+        .shell{ grid-template-columns:1fr !important; padding:0 !important; }
+        header{
+          position:relative !important;
+          top:auto !important;
+          background:transparent !important;
+          border:none !important;
+          box-shadow:none !important;
+          padding:0 0 12px 0 !important;
+        }
+        header .product-logo{ display:none !important; }
+        footer{ display:none !important; }
+        main{ grid-column:1/-1; width:100% !important; }
+        body{ margin:0; background:transparent; }
+      `;
+      doc.head.appendChild(style);
+    }
+
+    function resizeFrame(){
+      const doc = frame.contentDocument;
+      if(!doc) return;
+      const bodyHeight = doc.body ? doc.body.scrollHeight : 0;
+      const htmlHeight = doc.documentElement ? doc.documentElement.scrollHeight : 0;
+      const height = Math.max(bodyHeight, htmlHeight, 700);
+      frame.style.height = height + 'px';
+    }
+
+    function handleFrameLink(event){
+      const anchor = event.target.closest('a[href]');
+      if(!anchor) return;
+      const href = anchor.getAttribute('href');
+      if(!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || anchor.getAttribute('target') === '_blank'){
+        return;
+      }
+
+      event.preventDefault();
+      const isDa03 = /Klinikverbund[-_]ErfassungDA03/i.test(href);
+      const isBenchmark = /benchmark\.html?/i.test(href);
+
+      let cleanedHref = href;
+      if(isDa03){
+        cleanedHref = href
+          .replace(/1-?Klinikverbund-?Erfassung-?DA03/gi, '1_Klinikverbund_ErfassungDA03')
+          .replace(/Klinikverbund-?Erfassung-?DA03/gi, '1_Klinikverbund_ErfassungDA03')
+          .replace(/Klinikverbund_ErfassungDA03/gi, '1_Klinikverbund_ErfassungDA03')
+          .replace(/1_1_Klinikverbund_ErfassungDA03/gi, '1_Klinikverbund_ErfassungDA03');
+      }else if(isBenchmark){
+        cleanedHref = href.replace(/Benchmark\.html?/i, '1_Benchmark.html');
+      }
+
+      const targetUrl = new URL(cleanedHref, frame.src);
+      if(siteCode){
+        targetUrl.searchParams.set('site', siteCode);
+      }
+      const match = navLinks().find(link => {
+        const base = new URL(link.dataset.path, location.href);
+        return targetUrl.href.startsWith(base.href);
+      });
+      if(match){
+        setActive(match);
+        loadFrame(targetUrl.href, match.dataset.title || match.textContent.trim(), match.dataset.subtitle || '');
+        history.pushState({
+          path: targetUrl.href,
+          title: match.dataset.title || match.textContent.trim(),
+          subtitle: match.dataset.subtitle || '',
+          key: match.dataset.key || ''
+        }, '', '#' + (match.dataset.key || ''));
+        return;
+      }
+
+      const fallbackTitle = isDa03 ? 'Dienstart 03 Benchmark-Tool' : (isBenchmark ? 'Benchmark' : (frame.dataset.title || ''));
+      const fallbackSubtitle = isDa03 ? 'Erfassung je Standort & Cluster' : (isBenchmark ? 'Auswertung & Vergleich' : (frame.dataset.subtitle || ''));
+      loadFrame(targetUrl.href, fallbackTitle, fallbackSubtitle);
+      history.pushState({
+        path: targetUrl.href,
+        title: fallbackTitle,
+        subtitle: fallbackSubtitle,
+        key: ''
+      }, '', '#');
+    }
+
+    function bindFrameClicks(){
+      const doc = frame.contentDocument;
+      if(!doc) return;
+      doc.addEventListener('click', handleFrameLink, { capture:true });
+    }
+
+    frame.addEventListener('load', () => {
+      applyEmbedSkin();
+      resizeFrame();
+      bindFrameClicks();
+    });
+
+    window.addEventListener('resize', resizeFrame);
+
+    window.addEventListener('popstate', (event) => {
+      if(event.state){
+        const { path, title, subtitle, key } = event.state;
+        const active = key ? document.querySelector('#mainNav a[data-key="'+key+'"]') : null;
+        if(active){
+          setActive(active);
+        }
+        loadFrame(path, title, subtitle);
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const map = navLinks().reduce((acc, link) => {
+        if(link.dataset.key){
+          acc[link.dataset.key] = link;
+        }
+        return acc;
+      }, {});
+      const key = (location.hash || '#unterstartseite').replace('#','');
+      const link = map[key] || navLinks()[0];
+      if(link){
+        navigate(link, false);
+        history.replaceState({
+          path: withSiteParam(link.dataset.path),
+          title: link.dataset.title || link.textContent.trim(),
+          subtitle: link.dataset.subtitle || '',
+          key: link.dataset.key || ''
+        }, '', '#' + (link.dataset.key || ''));
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+

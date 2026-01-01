@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CliniCon - Map-Tool</title>
+  <link rel="stylesheet" href="../../../../assets/typography.css" />
+  <style>
+    :root{
+      --bg:#f5f7fb; --panel:#ffffff; --muted:#94a3b8; --text:#0f172a; --line:#e2e8f0;
+      --accent:#2563eb; --accent-weak:#dbeafe; --accent-strong:#1d4ed8; --shadow:0 18px 36px rgba(15,23,42,.08);
+      --font-base:"Roboto","Go","Segoe UI","Helvetica",Arial,sans-serif;
+      --font-size-base:16px; --line-height-base:1.6;
+      --font-size-h1:1.9rem; --font-size-h2:1.5rem; --font-size-h3:1.2rem;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--font-base);
+      font-size:var(--font-size-base);
+      line-height:var(--line-height-base);
+      color:var(--text); background:var(--bg);
+    }
+    h1,h2,h3{margin:0 0 8px; letter-spacing:.01em; line-height:1.3;}
+    h1{font-size:var(--font-size-h1);} h2{font-size:var(--font-size-h2);} h3{font-size:var(--font-size-h3);}
+
+    .page{
+      padding:24px;
+      display:grid;
+      gap:18px;
+    }
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px 20px;
+      box-shadow:var(--shadow);
+    }
+    .hero{
+      display:grid;
+      gap:6px;
+    }
+    .hero p{margin:0; color:var(--muted);}
+
+    .grid-2{
+      display:grid;
+      gap:16px;
+      grid-template-columns:2fr 1fr;
+      align-items:start;
+    }
+    .field-col{
+      display:grid;
+      gap:12px;
+    }
+    label{
+      display:grid;
+      gap:6px;
+      font-weight:600;
+      color:var(--text);
+    }
+    input, textarea{
+      width:100%;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      font:inherit;
+      background:#fff;
+    }
+    textarea{min-height:130px; resize:vertical;}
+    .btn-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    button{
+      border:1px solid var(--line);
+      background:#fff;
+      color:var(--accent-strong);
+      padding:10px 14px;
+      border-radius:12px;
+      font-weight:600;
+      cursor:pointer;
+      transition:.15s ease all;
+    }
+    button.primary{
+      background:var(--accent);
+      color:#fff;
+      border-color:var(--accent);
+    }
+    button:hover{box-shadow:0 8px 16px rgba(37,99,235,.14); border-color:var(--accent);}
+    button:disabled{opacity:.5; cursor:not-allowed; box-shadow:none;}
+
+    .map-shell{
+      position:relative;
+    }
+    .map-wrap{
+      display:grid;
+      gap:12px;
+    }
+    #map{
+      width:100%;
+      height:520px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      overflow:hidden;
+    }
+    .map-actions{
+      position:absolute;
+      top:12px;
+      right:12px;
+      display:flex;
+      gap:8px;
+      z-index:2;
+    }
+    .map-actions button{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:8px 10px;
+      font-weight:600;
+      cursor:pointer;
+      box-shadow:0 8px 16px rgba(15,23,42,.12);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      border:1px solid var(--line);
+      border-radius:12px;
+      overflow:hidden;
+    }
+    th,td{
+      padding:10px 12px;
+      text-align:left;
+      border-bottom:1px solid var(--line);
+    }
+    th{background:#f8fafc; color:#0f172a;}
+    tr:last-child td{border-bottom:none;}
+    .text-muted{color:var(--muted);}
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 10px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:var(--accent-weak);
+      color:var(--accent-strong);
+      font-weight:600;
+    }
+    .nearest{color:var(--accent-strong); font-weight:700;}
+
+    @media(max-width: 980px){
+      .grid-2{grid-template-columns:1fr;}
+      #map{height:380px;}
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="card hero">
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span class="badge">Entfernungsrechner</span>
+        <h2 style="margin:0;">Klinik-N&auml;he per Postleitzahl</h2>
+      </div>
+      <p>Tragen Sie eine oder mehrere Postleitzahlen ein und vergleichen Sie die Distanz zu beiden Krankenh&auml;usern. Das n&auml;chste Haus wird automatisch markiert.</p>
+    </section>
+
+    <section class="card grid-2">
+      <div class="field-col">
+        <label>
+          Ziel-Postleitzahlen (eine pro Zeile)
+          <textarea id="addressList" placeholder="z.B.&#10;50667 K&ouml;ln&#10;56068 Koblenz&#10;57072 Siegen"></textarea>
+        </label>
+        <div class="btn-row">
+          <button id="btnCalc" class="primary">Distanzen berechnen</button>
+          <button id="btnReset" type="button">Zur&uuml;cksetzen</button>
+        </div>
+        <p class="text-muted" style="margin:0;">Hinweis: Die Routen werden &uuml;ber die Google Distance Matrix ermittelt (Fahrstrecke, Auto).</p>
+      </div>
+      <div class="field-col">
+        <label>
+          Krankenhaus A (Adresse)
+          <input id="hospitalA" type="text" value="GFO Kliniken Niederrhein - St. Vinzenz-Hospital Dinslaken, Dr.-Otto-Seidel-Str. 31, 46535 Dinslaken" />
+        </label>
+        <label>
+          Krankenhaus B (Adresse)
+          <input id="hospitalB" type="text" value="GFO Kliniken Niederrhein - St. Josef Krankenhaus Moers, Asberger Str. 4, 47441 Moers" />
+        </label>
+      </div>
+    </section>
+
+    <section class="card map-wrap">
+      <div class="map-shell">
+        <div id="map"></div>
+        <div class="map-actions">
+          <button id="btnFullscreen" type="button">Vollbild</button>
+          <button id="btnExport" type="button">Export (CSV)</button>
+        </div>
+      </div>
+      <table id="resultsTable">
+        <thead>
+          <tr>
+            <th>Postleitzahl / Ort</th>
+            <th>Distanz A (km)</th>
+            <th>Distanz B (km)</th>
+            <th>N&auml;her</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    let map, geocoder, dmService, dirService;
+    let hospitalMarkers = [];
+    let markers = [];
+    let polylines = [];
+    let hospitals = [];
+    let lastResults = [];
+
+    const fitBounds = () => {
+      if(!map) return;
+      const bounds = new google.maps.LatLngBounds();
+      [...hospitalMarkers, ...markers].forEach(m => bounds.extend(m.getPosition()));
+      if(!bounds.isEmpty()) map.fitBounds(bounds);
+    };
+
+    function clearOverlays(){
+      markers.forEach(m => m.setMap(null));
+      polylines.forEach(p => p.setMap(null));
+      markers = [];
+      polylines = [];
+    }
+
+    function renderHospitals(){
+      hospitalMarkers.forEach(m => m.setMap(null));
+      hospitalMarkers = hospitals.map(h => new google.maps.Marker({
+        position:h.location,
+        map,
+        title:h.name,
+        icon:{path:google.maps.SymbolPath.BACKWARD_CLOSED_ARROW, scale:6, fillColor:h.color, fillOpacity:1, strokeWeight:1}
+      }));
+    }
+
+    function setLoading(state){
+      document.getElementById('btnCalc').disabled = state;
+    }
+
+    async function geocode(address){
+      return new Promise((resolve,reject)=>{
+        geocoder.geocode({address}, (res, status)=>{
+          if(status === 'OK' && res[0]){
+            resolve(res[0].geometry.location);
+          } else {
+            reject(status);
+          }
+        });
+      });
+    }
+
+    function routeDistance(origin, hospital){
+      return new Promise((resolve,reject)=>{
+        dirService.route({
+          origin,
+          destination:hospital.location,
+          travelMode:'DRIVING'
+        }, (res,status)=>{
+          if(status === 'OK' && res.routes[0] && res.routes[0].legs[0]){
+            const leg = res.routes[0].legs[0];
+            resolve({
+              hospital,
+              meters: leg.distance.value,
+              path: res.routes[0].overview_path
+            });
+          }else{
+            reject(status);
+          }
+        });
+      });
+    }
+
+    async function calcDistances(){
+      const listInput = document.getElementById('addressList').value.trim();
+      const rows = listInput.split('\n').map(s=>s.trim()).filter(Boolean);
+      const tbody = document.querySelector('#resultsTable tbody');
+      tbody.innerHTML = '';
+      clearOverlays();
+      lastResults = [];
+      if(!rows.length || hospitals.length < 2) return;
+
+      setLoading(true);
+      try{
+        for(const row of rows){
+          let origin;
+          try{
+            origin = await geocode(row);
+          }catch(err){
+            continue;
+          }
+          const results = await Promise.all(hospitals.map(h => routeDistance(origin, h)));
+          const sorted = results.slice().sort((a,b)=>a.meters-b.meters);
+          const winner = sorted[0];
+
+          const m = new google.maps.Marker({position:origin, map, title:row});
+          markers.push(m);
+          polylines.push(new google.maps.Polyline({
+            path:winner.path,
+            map,
+            strokeColor:winner.hospital.color,
+            strokeOpacity:0.9,
+            strokeWeight:4
+          }));
+
+          const resRow = {
+            input: row,
+            distA: results.find(r=>r.hospital.id==='A')?.meters || Infinity,
+            distB: results.find(r=>r.hospital.id==='B')?.meters || Infinity,
+            nearer: winner.hospital.name
+          };
+          lastResults.push(resRow);
+
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${row}</td>
+            <td>${(resRow.distA/1000).toFixed(1)}</td>
+            <td>${(resRow.distB/1000).toFixed(1)}</td>
+            <td class="nearest">${winner.hospital.name}</td>
+          `;
+          tbody.appendChild(tr);
+
+          await new Promise(r=>setTimeout(r,120));
+        }
+        fitBounds();
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    async function initHospitals(){
+      const a = document.getElementById('hospitalA').value.trim();
+      const b = document.getElementById('hospitalB').value.trim();
+      const [locA, locB] = await Promise.all([geocode(a), geocode(b)]);
+      hospitals = [
+        {id:'A', name:'GFO Kliniken Niederrhein - St. Vinzenz-Hospital Dinslaken', address:a, location:locA, color:'#2563eb'},
+        {id:'B', name:'GFO Kliniken Niederrhein - St. Josef Krankenhaus Moers', address:b, location:locB, color:'#16a34a'}
+      ];
+      renderHospitals();
+      fitBounds();
+    }
+
+    function resetAll(){
+      document.getElementById('addressList').value = '';
+      document.querySelector('#resultsTable tbody').innerHTML = '';
+      clearOverlays();
+      fitBounds();
+    }
+
+    function initMap(){
+      map = new google.maps.Map(document.getElementById('map'), {
+        center:{lat:50.94, lng:7.0},
+        zoom:8,
+        mapTypeControl:false,
+        streetViewControl:false,
+        fullscreenControl:false
+      });
+      geocoder = new google.maps.Geocoder();
+      dmService = new google.maps.DistanceMatrixService();
+      dirService = new google.maps.DirectionsService();
+
+      document.getElementById('btnCalc').addEventListener('click', calcDistances);
+      document.getElementById('btnReset').addEventListener('click', resetAll);
+      document.getElementById('hospitalA').addEventListener('change', initHospitals);
+      document.getElementById('hospitalB').addEventListener('change', initHospitals);
+
+      document.getElementById('btnFullscreen').addEventListener('click', () => {
+        const el = document.getElementById('map');
+        if(el.requestFullscreen){
+          el.requestFullscreen();
+        }else if(el.webkitRequestFullscreen){
+          el.webkitRequestFullscreen();
+        }
+      });
+
+      document.getElementById('btnExport').addEventListener('click', () => {
+        if(!lastResults.length) return;
+        const header = ['Postleitzahl/Ort','Distanz A (km)','Distanz B (km)','Näher'];
+        const rows = lastResults.map(r => [
+          `"${r.input.replace(/"/g,'""')}"`,
+          (r.distA/1000).toFixed(1),
+          (r.distB/1000).toFixed(1),
+          `"${r.nearer.replace(/"/g,'""')}"`
+        ]);
+        const csv = [header.join(';'), ...rows.map(r=>r.join(';'))].join('\n');
+        const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'clinicon-maptool.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+      initHospitals();
+    }
+
+    window.initMap = initMap;
+  </script>
+  <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2BH7qqKdBWIkZqPGT6IJpYTcIM3vqpd8&callback=initMap"></script>
+</body>
+</html>

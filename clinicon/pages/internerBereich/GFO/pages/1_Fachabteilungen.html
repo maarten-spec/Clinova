@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CliniCon - Fachabteilungen</title>
+  <link rel="stylesheet" href="../../../../assets/typography.css" />
+  <style>
+    :root{
+      --bg:#f5f7fb; --panel:#ffffff; --muted:#94a3b8; --text:#0f172a; --line:#e2e8f0;
+      --accent:#2563eb; --accent-weak:#dbeafe; --accent-strong:#1d4ed8; --shadow:0 18px 36px rgba(15,23,42,.08);
+      --font-base:"Roboto","Go","Segoe UI","Helvetica",Arial,sans-serif;
+      --font-size-base:16px;
+      --line-height-base:1.6;
+      --font-size-h1:1.9rem;
+      --font-size-h2:1.5rem;
+      --font-size-h3:1.2rem;
+      --font-size-h4:1.05rem;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--font-base);
+      font-size:var(--font-size-base);
+      line-height:var(--line-height-base);
+      color:var(--text); background:var(--bg);
+    }
+    h1,h2,h3,h4{
+      margin:0 0 8px;
+      letter-spacing:.01em;
+      line-height:1.3;
+      color:var(--text);
+    }
+    h1{ font-size:var(--font-size-h1); }
+    h2{ font-size:var(--font-size-h2); }
+    h3{ font-size:var(--font-size-h3); }
+    h4{ font-size:var(--font-size-h4); }
+    .shell{display:grid; grid-template-columns:240px 1fr; min-height:100dvh}
+    .side{
+      position:sticky; top:0; height:100dvh; background:#ffffffcc; backdrop-filter:saturate(180%) blur(10px);
+      border-right:1px solid var(--line); display:flex; flex-direction:column; align-items:flex-start; gap:12px; padding:16px 12px;
+      width:240px; overflow:hidden
+    }
+    .brand{display:flex; align-items:center; gap:10px; padding:6px 8px; width:100%}
+    .brand img{width:180px; height:auto; object-fit:contain}
+    .nav{display:flex; flex-direction:column; gap:6px; width:100%; margin-top:8px}
+    .nav a{ display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--text);
+      padding:10px 12px; border-radius:12px; border:1px solid transparent; transition:.15s ease all }
+    .nav a:hover{ background:var(--accent-weak); border-color:#bfd7ff }
+    .nav a.active{ background:var(--accent); color:white }
+    .nav svg{ min-width:22px }
+    header{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:16px; padding:20px 24px; border-bottom:1px solid var(--line); background:#fff; position:sticky; top:0; z-index:2
+    }
+    .topbar-left{ min-height:8px; }
+    .product-logo{ height:56px; width:auto; object-fit:contain }
+    main{
+      padding:24px;
+      display:grid;
+      gap:20px;
+      grid-template-columns:repeat(12,1fr);
+      margin:0 auto;
+      width:100%;
+    }
+    .card{ background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:24px; box-shadow:var(--shadow) }
+    .hero{
+      grid-column:1/-1; display:grid; gap:12px; text-align:center; justify-items:center; padding:28px;
+      background:linear-gradient(145deg, rgba(37,99,235,0.18), rgba(255,255,255,0.9)); border:1px solid rgba(37,99,235,0.2)
+    }
+    .hero h2{ margin:0; font-size:var(--font-size-h2); }
+    .hero p{ margin:0; max-width:720px; color:#1f2937; }
+    .filters{ grid-column:1/-1; display:grid; gap:14px; align-items:center }
+    .chips{ display:flex; flex-wrap:wrap; gap:8px; margin:0; }
+    .chip{
+      border:1px solid var(--line);
+      background:#fff;
+      padding:10px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+      color:var(--text);
+      white-space:nowrap;
+      transition:.15s ease all;
+      box-shadow:0 2px 6px rgba(0,0,0,0.04);
+    }
+    .chip.active{
+      background:var(--accent);
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 8px 18px rgba(37,99,235,.25);
+    }
+    .search-row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center }
+    .search-row input{
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:10px;
+      min-width:220px;
+      font-size:1rem;
+    }
+    .search-row button{
+      border:none; background:var(--accent); color:#fff; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:700;
+    }
+    table{ width:100%; border-collapse:collapse; }
+    th,td{
+      padding:10px 12px;
+      border-bottom:1px solid var(--line);
+      text-align:left;
+      vertical-align:top;
+    }
+    th{ color:#0f172a; font-size:.95rem }
+    td{ color:#334155; }
+    .tag{ display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:var(--accent-weak); color:var(--accent-strong); font-weight:600; }
+    .actions{ display:flex; gap:8px; flex-wrap:wrap; }
+    .btn{
+      border:1px solid var(--line);
+      background:#fff;
+      padding:8px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:700;
+      color:var(--accent-strong);
+      transition:.15s ease all;
+    }
+    .btn:hover{ border-color:var(--accent); box-shadow:0 6px 14px rgba(37,99,235,.15); }
+    .standorte-bar{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .standort-badge{ border:1px solid var(--line); padding:6px 12px; border-radius:10px; background:#fff; cursor:default; }
+    footer{ grid-column:1/-1; padding:18px 24px; color:var(--muted); text-align:right }
+    @media (max-width: 960px){
+      .shell{ grid-template-columns:1fr }
+      .side{ position:relative; height:auto; width:100%; flex-direction:row; align-items:center; justify-content:space-between; padding:12px 16px }
+      .nav{ flex-direction:row; overflow-x:auto; padding-bottom:4px }
+      header{ position:relative }
+      main{ grid-template-columns:repeat(6,1fr); padding:20px }
+    }
+    @media (max-width: 640px){
+      main{ grid-template-columns:repeat(4,1fr); }
+      .search-row input{ width:100%; min-width:0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <a class="brand" href="#">
+        <img src="Bilder/Log.jpg" alt="GFO Logo" />
+      </a>
+      <nav class="nav">
+        <a href="1_Unterstartseite.html">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5L12 3l9 6.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5z"/></svg>
+          <span>Start</span>
+        </a>
+        <a href="1_klinikverbund.html">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>Klinikverbund</span>
+        </a>
+        <a href="1_Benchmark.html">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 13l3 3 7-7"/></svg>
+          <span>Benchmark</span>
+        </a>
+        <a class="active" href="1_Fachabteilungen.html">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9l8-6 8 6v12"/><path d="M9 21V12h6v9"/></svg>
+          <span>Fachabteilungen</span>
+        </a>
+      </nav>
+    </aside>
+
+    <div>
+      <header>
+        <div class="topbar-left"></div>
+        <img class="product-logo" src="Bilder/CliniConLogo.png" alt="CliniCon Logo" />
+      </header>
+
+      <main class="fa-main">
+        <section class="hero card">
+          <h2>Fachabteilungen</h2>
+          <p>Diese Plattform unterst&uuml;tzt Sie dabei, Patientinnen und Patienten schnell in die passende Fachabteilung innerhalb der GFO zu &uuml;berleiten.</p>
+        </section>
+
+        <section class="card filters">
+          <div class="chips" id="fa-chips"></div>
+          <div class="search-row">
+            <input id="searchInput" type="search" placeholder="Standort oder Fach suchen ..." />
+            <button id="resetFilters" type="button">Zur&uuml;cksetzen</button>
+            <span id="fa-count" style="color:var(--muted); font-weight:600;"></span>
+          </div>
+          <div class="standorte-bar" id="fa-standorte-result"></div>
+        </section>
+
+        <section class="card" style="grid-column:1/-1;">
+          <table id="fa-table">
+            <thead>
+              <tr>
+                <th>Standort</th>
+                <th>Fachabteilung</th>
+                <th>Kontakt</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </section>
+      </main>
+
+      <footer>CliniCon &ndash; GFO Kliniken Verbund</footer>
+    </div>
+  </div>
+
+  <script>
+    const DATA = [
+      { standort:'St. Marien Hospital Bonn (Bonn)', fach:'Allgemein- und Viszeralchirurgie', mail:'chirurgie@marien-hospital-bonn.de', tel:'0228 505-2141' },
+      { standort:'St. Marien Hospital Bonn (Bonn)', fach:'Anästhesie und Intensivmedizin', mail:'- (Sekretariat via Zentrale)', tel:'0228 505-0' },
+      { standort:'St. Marien Hospital Bonn (Bonn)', fach:'Gastroenterologie (Innere Medizin)', mail:'gastroenterologie@marien-hospital-bonn.de', tel:'0228 505-2141' },
+      { standort:'St. Marien Hospital Bonn (Bonn)', fach:'Geburtshilfe', mail:'kreissaal@marien-hospital-bonn.de', tel:'0228 505-0' },
+      { standort:'St. Marien Hospital Bonn (Bonn)', fach:'Gefäß- und Endovaskulärchirurgie', mail:'gefaesschirurgie@marien-hospital-bonn.de', tel:'0228 505-2152' },
+      { standort:'St. Marien Hospital Bonn (Bonn)', fach:'Gynäkologie', mail:'gynaekologie@marien-hospital-bonn.de', tel:'0228 505-2201' },
+      { standort:'St. Marien Hospital Bonn (Bonn)', fach:'Hals-Nasen-Ohren-Heilkunde (HNO)', mail:'- (Belegabteilung, Kontakt via Zentrale)', tel:'0228 632763' },
+      { standort:'St. Marien Hospital Bonn (Bonn)', fach:'Kinder- und Jugendmedizin (Pädiatrie/Neonatologie)', mail:'- (Sekretariat via Zentrale)', tel:'0228 505-2900' },
+      { standort:'St. Marien Hospital Bonn (Bonn)', fach:'Lungenklinik (Pneumologie)', mail:'- (Sekretariat via Zentrale)', tel:'0228 505-0' },
+      { standort:'St. Marien Hospital Bonn (Bonn)', fach:'Radiologie', mail:'radiologie@marien-hospital-bonn.de', tel:'0228 505-2192' },
+      { standort:'St. Marien Hospital Bonn (Bonn)', fach:'Schmerzmedizin (Schmerztherapie)', mail:'schmerztherapie@marien-hospital-bonn.de', tel:'0228 505-0' },
+      { standort:'St. Marien Hospital Bonn (Bonn)', fach:'Zentrale Notaufnahme', mail:'- (Notfall, Kontakt via Zentrale)', tel:'0228 505-0' },
+
+      { standort:'St. Josef Hospital Bonn-Beuel (Bonn)', fach:'Allgemein- und Viszeralchirurgie', mail:'chirurgie@krankenhaus-bonn.de', tel:'0228 407-272' },
+      { standort:'St. Josef Hospital Bonn-Beuel (Bonn)', fach:'Anästhesie und Intensivmedizin', mail:'– (Sekretariat via Zentrale)', tel:'0228 407-0' },
+      { standort:'St. Josef Hospital Bonn-Beuel (Bonn)', fach:'Augenheilkunde', mail:'augenklinik@krankenhaus-bonn.de', tel:'0228 96209-0' },
+      { standort:'St. Josef Hospital Bonn-Beuel (Bonn)', fach:'Gastroenterologie (Innere Medizin)', mail:'gastroenterologie@krankenhaus-bonn.de', tel:'0228 407-301' },
+      { standort:'St. Josef Hospital Bonn-Beuel (Bonn)', fach:'Geriatrie', mail:'geriatrie@krankenhaus-bonn.de', tel:'0228 407-0' },
+      { standort:'St. Josef Hospital Bonn-Beuel (Bonn)', fach:'Intensivmedizin', mail:'– (über Anästhesie)', tel:'0228 407-0' },
+      { standort:'St. Josef Hospital Bonn-Beuel (Bonn)', fach:'Kardiologie', mail:'kardiologie@krankenhaus-bonn.de', tel:'0228 407-480' },
+      { standort:'St. Josef Hospital Bonn-Beuel (Bonn)', fach:'Orthopädie, Unfall-, Handchirurgie', mail:'chirurgie@krankenhaus-bonn.de', tel:'0228 407-307' },
+      { standort:'St. Josef Hospital Bonn-Beuel (Bonn)', fach:'Schmerzmedizin (Schmerztherapie)', mail:'schmerztherapie@krankenhaus-bonn.de', tel:'0228 407-0' },
+      { standort:'St. Josef Hospital Bonn-Beuel (Bonn)', fach:'Zentrale Notaufnahme', mail:'– (Notfall, Kontakt via Zentrale)', tel:'0228 407-0' },
+
+      { standort:'Cura Krankenhaus Bad Honnef', fach:'Allgemein- und Viszeralchirurgie', mail:'chirurgie@cura.org', tel:'02224 772-1136' },
+      { standort:'Cura Krankenhaus Bad Honnef', fach:'Anästhesie und Intensivmedizin', mail:'anaesthesie@cura.org (via Sekretariat)', tel:'02224 772-1194' },
+      { standort:'Cura Krankenhaus Bad Honnef', fach:'Gastroenterologie (Innere Medizin)', mail:'innere@cura.org (via Sekretariat)', tel:'02224 772-1303' },
+      { standort:'Cura Krankenhaus Bad Honnef', fach:'Geriatrie', mail:'geriatrie@cura.org', tel:'02224 772-1304' },
+      { standort:'Cura Krankenhaus Bad Honnef', fach:'Hals-Nasen-Ohren-Heilkunde (HNO)', mail:'hno@cura.org (Belegarzt)', tel:'02224 9370-0' },
+      { standort:'Cura Krankenhaus Bad Honnef', fach:'Institut für Notfallmedizin', mail:'notfall@cura.org (Leitstelle)', tel:'02224 772-0' },
+      { standort:'Cura Krankenhaus Bad Honnef', fach:'Intensivmedizin', mail:'– (über Anästhesie)', tel:'02224 772-0' },
+      { standort:'Cura Krankenhaus Bad Honnef', fach:'Kardiologie', mail:'kardiologie@cura.org', tel:'02224 772-1194' },
+      { standort:'Cura Krankenhaus Bad Honnef', fach:'Orthopädie und Unfallchirurgie', mail:'chirurgie@cura.org', tel:'02224 772-1136' },
+      { standort:'Cura Krankenhaus Bad Honnef', fach:'Schmerzmedizin (Schmerztherapie)', mail:'schmerztherapie@cura.org', tel:'02224 772-1194' },
+      { standort:'Cura Krankenhaus Bad Honnef', fach:'Zentrale Notaufnahme', mail:'– (Notfall, Kontakt via Zentrale)', tel:'02224 772-0' },
+
+      { standort:'GFO Klinik Engelskirchen – St. Josef Krankenhaus', fach:'Allgemein- und Viszeralchirurgie', mail:'annette.hinzel@k-k-o.de', tel:'02263 81-2311' },
+      { standort:'GFO Klinik Engelskirchen – St. Josef Krankenhaus', fach:'Innere Medizin', mail:'– (Sekretariat Innere)', tel:'02263 81-0' },
+      { standort:'GFO Klinik Engelskirchen – St. Josef Krankenhaus', fach:'Urologie', mail:'– (Sekretariat Urologie)', tel:'02263 81-0' },
+      { standort:'GFO Klinik Engelskirchen – St. Josef Krankenhaus', fach:'Anästhesiologie & Intensivmedizin', mail:'– (Sekretariat Anästhesie)', tel:'02263 81-0' },
+      { standort:'GFO Klinik Engelskirchen – St. Josef Krankenhaus', fach:'Notfallambulanz', mail:'– (über Zentrale)', tel:'02263 81-0' },
+      { standort:'GFO Klinik Engelskirchen – St. Josef Krankenhaus', fach:'Geriatrie', mail:'– (Sekretariat Geriatrie)', tel:'02263 81-0' },
+      { standort:'GFO Klinik Engelskirchen – St. Josef Krankenhaus', fach:'Orthopädie & Unfallchirurgie', mail:'– (Sekretariat Ortho)', tel:'02263 81-0' },
+
+      { standort:'St. Vinzenz Hospital Dinslaken', fach:'Allgemeinchirurgie & Viszeralchirurgie', mail:'viszeralchirurgie@st-vinzenz-hospital.de', tel:'02064 44-1022' },
+      { standort:'St. Vinzenz Hospital Dinslaken', fach:'Anästhesie & Intensivmedizin', mail:'anaesthesie@st-vinzenz-hospital.de', tel:'02064 44-0' },
+      { standort:'St. Vinzenz Hospital Dinslaken', fach:'Diabetologie & Rheumatologie (Innere)', mail:'innere@st-vinzenz-hospital.de', tel:'02064 44-0' },
+      { standort:'St. Vinzenz Hospital Dinslaken', fach:'Gastroenterologie & Viszeralmedizin', mail:'gastroenterologie@st-vinzenz-hospital.de', tel:'02064 44-0' },
+      { standort:'St. Vinzenz Hospital Dinslaken', fach:'Geriatrie & Frührehabilitation', mail:'geriatrie@st-vinzenz-hospital.de', tel:'02064 44-0' },
+      { standort:'St. Vinzenz Hospital Dinslaken', fach:'Gynäkologie & Geburtshilfe', mail:'gyn@st-vinzenz-hospital.de', tel:'02064 44-0' },
+      { standort:'St. Vinzenz Hospital Dinslaken', fach:'Innere Medizin (allgemein)', mail:'innere@st-vinzenz-hospital.de', tel:'02064 44-0' },
+      { standort:'St. Vinzenz Hospital Dinslaken', fach:'Kinder- und Jugendmedizin', mail:'kinder@st-vinzenz-hospital.de', tel:'02064 44-0' },
+      { standort:'St. Vinzenz Hospital Dinslaken', fach:'Orthopädie, Unfallchirurgie & Traumatologie', mail:'unfallchirurgie@st-vinzenz-hospital.de', tel:'02064 44-0' },
+      { standort:'St. Vinzenz Hospital Dinslaken', fach:'Palliativmedizin', mail:'palliativ@st-vinzenz-hospital.de', tel:'02064 44-0' },
+      { standort:'St. Vinzenz Hospital Dinslaken', fach:'Psychiatrie, Psychotherapie & Psychosomatik', mail:'psychiatrie@st-vinzenz-hospital.de', tel:'02064 44-0' },
+      { standort:'St. Vinzenz Hospital Dinslaken', fach:'Schmerztherapie', mail:'schmerztherapie@st-vinzenz-hospital.de', tel:'02064 44-0' },
+      { standort:'St. Vinzenz Hospital Dinslaken', fach:'Zentrale Notaufnahme', mail:'– (Notfallambulanz)', tel:'02064 44-0' },
+
+      { standort:'St. Camillus Duisburg', fach:'Psychiatrie, Psychotherapie & Psychosomatik', mail:'– (Sekretariat Psychiatrie)', tel:'0203 47907-123' },
+      { standort:'St. Nikolaus Hospital Rheinberg', fach:'Psychiatrie, Psychotherapie & Psychosomatik', mail:'– (über Sekretariat St. Camillus)', tel:'0203 47907-123' },
+
+      { standort:'St. Josef Krankenhaus Moers', fach:'Allgemeinchirurgie & Viszeralchirurgie', mail:'chirurgie@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Anästhesie & Intensivmedizin', mail:'anaesthesie@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Diabetologie & Rheumatologie', mail:'diabetologie@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Gastroenterologie & Viszeralmedizin', mail:'gastroenterologie@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Geriatrie & Frührehabilitation', mail:'geriatrie@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Gynäkologie & Geburtshilfe', mail:'gyn@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Innere Medizin', mail:'innere@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Kardiologie', mail:'kardiologie@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Neurologie & Neurophysiologie', mail:'neurologie@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Orthopädie, Unfallchirurgie & Traumatologie', mail:'unfallchirurgie@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Palliativmedizin', mail:'palliativ@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Schmerztherapie', mail:'schmerztherapie@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Radiologie & Neuroradiologie', mail:'radiologie@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Urologie & Kinderurologie', mail:'urologie@st-josef-moers.de', tel:'02841 107-0' },
+      { standort:'St. Josef Krankenhaus Moers', fach:'Zentrale Notaufnahme', mail:'– (Notfallambulanz)', tel:'02841 107-0' },
+
+      { standort:'St. Martinus Hospital Olpe', fach:'Allgemein- & Viszeralchirurgie', mail:'info@hospitalgesellschaft.de', tel:'02761 85-0' },
+      { standort:'St. Martinus Hospital Olpe', fach:'Innere Medizin (Kardiologie, Gastroenterologie etc.)', mail:'info@hospitalgesellschaft.de', tel:'02761 85-0' },
+      { standort:'St. Martinus Hospital Olpe', fach:'Orthopädie, Unfall-, Wirbelsäulen- & Handchirurgie', mail:'info@hospitalgesellschaft.de', tel:'02761 85-0' },
+      { standort:'St. Martinus Hospital Olpe', fach:'Anästhesie, Intensiv-, Notfall- & Palliativmedizin', mail:'info@hospitalgesellschaft.de', tel:'02761 85-0' },
+      { standort:'St. Martinus Hospital Olpe', fach:'Geburtshilfe', mail:'info@hospitalgesellschaft.de', tel:'02761 85-0' },
+      { standort:'St. Martinus Hospital Olpe', fach:'Gynäkologie', mail:'info@hospitalgesellschaft.de', tel:'02761 85-0' },
+      { standort:'St. Martinus Hospital Olpe', fach:'Psychiatrie, Psychotherapie & Psychosomatik', mail:'info@hospitalgesellschaft.de', tel:'02761 85-0' },
+      { standort:'St. Martinus Hospital Olpe', fach:'Radiologie & Nuklearmedizin', mail:'info@hospitalgesellschaft.de', tel:'02761 85-0' },
+      { standort:'St. Martinus Hospital Olpe', fach:'Zentrale Notaufnahme', mail:'– (Notfallnummer Olpe)', tel:'02761 85-2188' },
+
+      { standort:'St. Josefs Hospital Lennestadt', fach:'Innere Medizin', mail:'info@hospitalgesellschaft.de', tel:'02723 606-0' },
+      { standort:'St. Josefs Hospital Lennestadt', fach:'Allgemeinchirurgie', mail:'info@hospitalgesellschaft.de', tel:'02723 606-0' },
+      { standort:'St. Josefs Hospital Lennestadt', fach:'Gynäkologie & Geburtshilfe', mail:'info@hospitalgesellschaft.de', tel:'02723 606-0' },
+      { standort:'St. Josefs Hospital Lennestadt', fach:'Urologie', mail:'info@hospitalgesellschaft.de', tel:'02723 606-0' },
+      { standort:'St. Josefs Hospital Lennestadt', fach:'Psychiatrie (Allgemeine Psychiatrie)', mail:'info@hospitalgesellschaft.de', tel:'02723 606-0' },
+
+      { standort:'GFO Klinik Wissen – St. Antonius Krankenhaus', fach:'Offene Akutstation (Suchtmedizin)', mail:'direktion@antonius-wissen.de', tel:'02742 706-0' },
+      { standort:'GFO Klinik Wissen – St. Antonius Krankenhaus', fach:'Gerontopsychiatrie', mail:'direktion@antonius-wissen.de', tel:'02742 706-0' },
+      { standort:'GFO Klinik Wissen – St. Antonius Krankenhaus', fach:'Psychotherapie (stationär)', mail:'direktion@antonius-wissen.de', tel:'02742 706-0' },
+      { standort:'GFO Klinik Wissen – St. Antonius Krankenhaus', fach:'Geschützte geschlossene Akutstation', mail:'direktion@antonius-wissen.de', tel:'02742 706-0' },
+
+      { standort:'Marienhospital Brühl', fach:'Allgemein-, Viszeral- & Gefäßchirurgie', mail:'marienhospital@marienhospital-bruehl.de', tel:'02232 74-0' },
+      { standort:'Marienhospital Brühl', fach:'Geriatrie', mail:'marienhospital@marienhospital-bruehl.de', tel:'02232 74-0' },
+      { standort:'Marienhospital Brühl', fach:'Kardiologie, Angiologie & Intensivmedizin (Innere Med. I)', mail:'marienhospital@marienhospital-bruehl.de', tel:'02232 74-0' },
+      { standort:'Marienhospital Brühl', fach:'Anästhesie & Intensivmedizin', mail:'marienhospital@marienhospital-bruehl.de', tel:'02232 74-0' },
+      { standort:'Marienhospital Brühl', fach:'Gynäkologie & Geburtshilfe', mail:'marienhospital@marienhospital-bruehl.de', tel:'02232 74-0' },
+      { standort:'Marienhospital Brühl', fach:'Orthopädie & Unfallchirurgie', mail:'marienhospital@marienhospital-bruehl.de', tel:'02232 74-0' },
+      { standort:'Marienhospital Brühl', fach:'Gastroenterologie, Pneumologie & Onkologie (Innere Med. II)', mail:'marienhospital@marienhospital-bruehl.de', tel:'02232 74-0' },
+      { standort:'Marienhospital Brühl', fach:'Hals-Nasen-Ohrenheilkunde (Belegabteilung)', mail:'marienhospital@marienhospital-bruehl.de', tel:'02232 74-0' },
+      { standort:'Marienhospital Brühl', fach:'Zentrale Notfallambulanz', mail:'– (Notaufnahme)', tel:'02232 74-0' },
+
+      { standort:'St. Josefs Krankenhaus Hilden', fach:'Allgemein- & Viszeralchirurgie', mail:'info@gfo-kliniken-mettmann-sued.de', tel:'02103 899-0' },
+      { standort:'St. Josefs Krankenhaus Hilden', fach:'Anästhesie, Intensivmedizin & Schmerztherapie', mail:'info@gfo-kliniken-mettmann-sued.de', tel:'02103 899-0' },
+      { standort:'St. Josefs Krankenhaus Hilden', fach:'Brustzentrum (Senologie)', mail:'info@gfo-kliniken-mettmann-sued.de', tel:'02103 899-0' },
+      { standort:'St. Josefs Krankenhaus Hilden', fach:'Gynäkologie & Geburtshilfe', mail:'info@gfo-kliniken-mettmann-sued.de', tel:'02103 899-0' },
+      { standort:'St. Josefs Krankenhaus Hilden', fach:'Innere Medizin (Gastroenterologie)', mail:'info@gfo-kliniken-mettmann-sued.de', tel:'02103 899-0' },
+      { standort:'St. Josefs Krankenhaus Hilden', fach:'Mund-, Kiefer- & Gesichtschirurgie (Beleg)', mail:'– (über Sekretariat MKG)', tel:'02103 899-0' },
+      { standort:'St. Josefs Krankenhaus Hilden', fach:'Orthopädie & Unfallchirurgie', mail:'info@gfo-kliniken-mettmann-sued.de', tel:'02103 899-0' },
+
+      { standort:'St. Martinus Krankenhaus Langenfeld', fach:'Allgemein- & Viszeralchirurgie', mail:'krankenhaus@stmartinus-langenfeld.de', tel:'02173 796-0' },
+      { standort:'St. Martinus Krankenhaus Langenfeld', fach:'Anästhesie, Intensivmedizin & Schmerztherapie', mail:'krankenhaus@stmartinus-langenfeld.de', tel:'02173 796-0' },
+      { standort:'St. Martinus Krankenhaus Langenfeld', fach:'Geriatrie', mail:'krankenhaus@stmartinus-langenfeld.de', tel:'02173 796-0' },
+      { standort:'St. Martinus Krankenhaus Langenfeld', fach:'Innere Medizin', mail:'krankenhaus@stmartinus-langenfeld.de', tel:'02173 796-0' },
+      { standort:'St. Martinus Krankenhaus Langenfeld', fach:'Orthopädie & Unfallchirurgie', mail:'krankenhaus@stmartinus-langenfeld.de', tel:'02173 796-0' },
+
+      { standort:'Vinzenz Pallotti Hospital Bensberg (Bergisch Gladbach)', fach:'Allgemein- & Viszeralchirurgie', mail:'info@gfo-kliniken-rhein-berg.de', tel:'02204 41-0' },
+      { standort:'Vinzenz Pallotti Hospital Bensberg (Bergisch Gladbach)', fach:'Orthopädie, Unfall- & Handchirurgie', mail:'info@gfo-kliniken-rhein-berg.de', tel:'02204 41-0' },
+      { standort:'Vinzenz Pallotti Hospital Bensberg (Bergisch Gladbach)', fach:'Anästhesiologie & Intensivmedizin', mail:'info@gfo-kliniken-rhein-berg.de', tel:'02204 41-0' },
+      { standort:'Vinzenz Pallotti Hospital Bensberg (Bergisch Gladbach)', fach:'Urologie & Kinderurologie', mail:'info@gfo-kliniken-rhein-berg.de', tel:'02204 41-0' },
+      { standort:'Vinzenz Pallotti Hospital Bensberg (Bergisch Gladbach)', fach:'Geriatrie', mail:'info@gfo-kliniken-rhein-berg.de', tel:'02204 41-0' },
+      { standort:'Vinzenz Pallotti Hospital Bensberg (Bergisch Gladbach)', fach:'Wirbelsäulen-Chirurgie (Wirbelsäulenzentrum)', mail:'info@gfo-kliniken-rhein-berg.de', tel:'02204 41-0' },
+      { standort:'Vinzenz Pallotti Hospital Bensberg (Bergisch Gladbach)', fach:'Zentrale Notaufnahme', mail:'– (Notaufnahme Bensberg)', tel:'02204 41-0' },
+
+      { standort:'Marien-Krankenhaus Bergisch Gladbach', fach:'Gynäkologie & Geburtshilfe', mail:'info@gfo-kliniken-rhein-berg.de', tel:'02202 938-0' },
+      { standort:'Marien-Krankenhaus Bergisch Gladbach', fach:'Innere Medizin (inkl. Kardiologie)', mail:'info@gfo-kliniken-rhein-berg.de', tel:'02202 938-0' },
+      { standort:'Marien-Krankenhaus Bergisch Gladbach', fach:'Neurologie & Klinische Neurophysiologie', mail:'info@gfo-kliniken-rhein-berg.de', tel:'02202 938-0' },
+      { standort:'Marien-Krankenhaus Bergisch Gladbach', fach:'Zentrale Notaufnahme (inkl. Stroke Unit)', mail:'– (Notaufnahme BG)', tel:'02202 938-0' },
+
+      { standort:'St. Josef Hospital Troisdorf', fach:'Geriatrie', mail:'info@gfo-kliniken-troisdorf.de', tel:'02241 801-0' },
+      { standort:'St. Josef Hospital Troisdorf', fach:'Gynäkologie & Geburtshilfe', mail:'info@gfo-kliniken-troisdorf.de', tel:'02241 801-0' },
+      { standort:'St. Josef Hospital Troisdorf', fach:'Innere Medizin', mail:'info@gfo-kliniken-troisdorf.de', tel:'02241 801-0' },
+      { standort:'St. Josef Hospital Troisdorf', fach:'Urologie', mail:'info@gfo-kliniken-troisdorf.de', tel:'02241 801-751' },
+
+      { standort:'St. Johannes Krankenhaus Troisdorf (Sieglar)', fach:'Innere Medizin', mail:'info@gfo-kliniken-troisdorf.de', tel:'02241 488-0' },
+      { standort:'St. Johannes Krankenhaus Troisdorf (Sieglar)', fach:'Neurologie', mail:'info@gfo-kliniken-troisdorf.de', tel:'02241 488-0' },
+      { standort:'St. Johannes Krankenhaus Troisdorf (Sieglar)', fach:'Orthopädie & Unfallchirurgie', mail:'info@gfo-kliniken-troisdorf.de', tel:'02241 488-0' },
+      { standort:'St. Johannes Krankenhaus Troisdorf (Sieglar)', fach:'Allgemein- und Viszeralchirurgie', mail:'info@gfo-kliniken-troisdorf.de', tel:'02241 488-0' },
+      { standort:'St. Johannes Krankenhaus Troisdorf (Sieglar)', fach:'Radiologie', mail:'info@gfo-kliniken-troisdorf.de', tel:'02241 801-39930' },
+      { standort:'St. Johannes Krankenhaus Troisdorf (Sieglar)', fach:'Zentrale Notaufnahme', mail:'– (Notfallnummer)', tel:'02241 488-0' },
+
+      { standort:'St. Marien-Krankenhaus Siegen', fach:'Klinik für Allgemeine Innere Medizin (Gastroenterologie, Diabetologie)', mail:'info@marien-kliniken.de', tel:'0271 231-0' },
+      { standort:'St. Marien-Krankenhaus Siegen', fach:'Klinik für Kardiologie & Angiologie (mit Intensiv)', mail:'info@marien-kliniken.de', tel:'0271 231-0' },
+      { standort:'St. Marien-Krankenhaus Siegen', fach:'Klinik für Allgemein- & Viszeralchirurgie', mail:'info@marien-kliniken.de', tel:'0271 231-0' },
+      { standort:'St. Marien-Krankenhaus Siegen', fach:'Klinik für Gefäßchirurgie', mail:'info@marien-kliniken.de', tel:'0271 231-0' },
+      { standort:'St. Marien-Krankenhaus Siegen', fach:'Klinik für Orthopädie, Unfall-, Handchirurgie & Sporttraumatologie', mail:'info@marien-kliniken.de', tel:'0271 231-0' },
+      { standort:'St. Marien-Krankenhaus Siegen', fach:'Klinik für Gynäkologie & Geburtshilfe', mail:'info@marien-kliniken.de', tel:'0271 231-0' },
+      { standort:'St. Marien-Krankenhaus Siegen', fach:'Klinik für Anästhesie, Intensiv- & Notfallmedizin', mail:'info@marien-kliniken.de', tel:'0271 231-0' },
+      { standort:'St. Marien-Krankenhaus Siegen', fach:'Institut für Radiologie', mail:'info@marien-kliniken.de', tel:'0271 231-0' }
+    ];
+
+    const CODE_BY_STANDORT = {
+      'St. Marien Hospital Bonn (Bonn)':'B-MHB',
+      'St. Josef Hospital Bonn-Beuel (Bonn)':'B-SJH',
+      'Cura Krankenhaus Bad Honnef':'BN-CURA',
+      'GFO Klinik Engelskirchen �?" St. Josef Krankenhaus':'ENG',
+      'St. Vinzenz Hospital Dinslaken':'DIN',
+      'St. Josef Krankenhaus Moers':'MOE',
+      'St. Martinus Hospital Olpe':'OLP',
+      'St. Josefs Hospital Lennestadt':'LEN',
+      'GFO Klinik Wissen �?" St. Antonius Krankenhaus':'WIS',
+      'Marienhospital BrǬhl':'BRH',
+      'St. Josefs Krankenhaus Hilden':'HIL',
+      'St. Martinus Krankenhaus Langenfeld':'LAN',
+      'Vinzenz Pallotti Hospital Bensberg (Bergisch Gladbach)':'BEN',
+      'Marien-Krankenhaus Bergisch Gladbach':'BGL',
+      'St. Josef Hospital Troisdorf':'TRS',
+      'St. Johannes Krankenhaus Troisdorf (Sieglar)':'TRO',
+      'St. Marien-Krankenhaus Siegen':'SIE'
+    };
+
+    function normalizeFach(fach){
+      const f = fach.toLowerCase();
+      const map = [
+        [/viszeral|allgemein|gefaess|gefa��|chirurgie/, 'Allgemein- & Viszeralchirurgie'],
+        [/unfall|orthop|wirbels|\bhand|trauma/, 'Orthopädie & Unfallchirurgie'],
+        [/gastro|pneumo|onkologie/, 'Innere Medizin / Gastroenterologie'],
+        [/kardio|angiologie/, 'Kardiologie & Angiologie'],
+        [/geriatr/, 'Geriatrie'],
+        [/gyn|geburt/, 'Gynäkologie & Geburtshilfe'],
+        [/urologie/, 'Urologie'],
+        [/neuro/, 'Neurologie'],
+        [/psychiatr|psychotherapie/, 'Psychiatrie & Psychotherapie'],
+        [/an��st|an.{0,3}st|intensiv|notfall/, 'Anästhesie & Intensivmedizin'],
+        [/radiolog|nuklear/, 'Radiologie / Nuklearmedizin'],
+        [/notaufnahme|notfallambulanz/, 'Zentrale Notaufnahme']
+      ];
+      const hit = map.find(([re]) => re.test(f));
+      return hit ? hit[1] : fach;
+    }
+
+    const NORMALIZED = DATA.map(d => ({
+      ...d,
+      fachNorm: normalizeFach(d.fach),
+      code: CODE_BY_STANDORT[d.standort] || 'GFO'
+    }));
+
+    const tbody = document.querySelector('#fa-table tbody');
+    const chipsWrap = document.getElementById('fa-chips');
+    const searchInput = document.getElementById('searchInput');
+    const resetBtn = document.getElementById('resetFilters');
+
+    function renderTable(rows){
+      tbody.innerHTML = rows.map(r => `
+        <tr data-standort="${r.standort}" data-fach="${r.fachNorm}" data-code="${r.code}">
+          <td>[${r.code}] ${r.standort}</td>
+          <td><span class="tag">${r.fachNorm}</span></td>
+          <td>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <span>${r.mail}<br><span style="color:var(--muted);">${r.tel}</span></span>
+              <button class="btn fa-mail" data-mail="${r.mail}" data-standort="${r.standort}" data-fach="${r.fachNorm}">R&uuml;ckruf anfragen</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function updateStandorteResult(){
+      const container = document.getElementById('fa-standorte-result');
+      const counter = document.getElementById('fa-count');
+      const rows = Array.from(document.querySelectorAll('#fa-table tbody tr'));
+      const visible = rows.filter(r => r.style.display !== 'none');
+      const set = new Set(visible.map(r => r.dataset.standort));
+      container.innerHTML = '';
+      if(set.size === 0){
+        container.innerHTML = '<span style="color:#64748b">Keine Standorte gefunden.</span>';
+        counter.textContent = '';
+        return;
+      }
+      Array.from(set).sort().forEach(s => {
+        const b = document.createElement('span');
+        b.className = 'standort-badge';
+        b.textContent = s;
+        container.appendChild(b);
+      });
+      counter.textContent = set.size + ' Standort' + (set.size!==1 ? 'e' : '');
+    }
+
+    function applyFilter(fach, search){
+      const q = (fach || '').toLowerCase();
+      const s = (search || '').toLowerCase();
+      const rows = Array.from(document.querySelectorAll('#fa-table tbody tr'));
+      rows.forEach(r => {
+        const f = r.dataset.fach.toLowerCase();
+        const st = r.dataset.standort.toLowerCase();
+        const matchFach = !q || f.includes(q);
+        const matchSearch = !s || f.includes(s) || st.includes(s);
+        r.style.display = (matchFach && matchSearch) ? '' : 'none';
+      });
+      updateStandorteResult();
+    }
+
+    function resetFilters(){
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      const first = chipsWrap.querySelector('.chip');
+      if(first) first.classList.add('active');
+      searchInput.value = '';
+      applyFilter('', '');
+    }
+
+    // init
+    renderTable(NORMALIZED);
+
+    // Chips dynamisch aus Daten
+    const fachSet = Array.from(new Set(NORMALIZED.map(d => d.fachNorm))).sort();
+    const chipNames = ['Alle', ...fachSet];
+    chipNames.forEach(name => {
+      const btn = document.createElement('button');
+      btn.className = 'chip';
+      btn.innerHTML = name;
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        applyFilter(name === 'Alle' ? '' : name, searchInput.value);
+      });
+      chipsWrap.appendChild(btn);
+    });
+    const firstChip = chipsWrap.querySelector('.chip');
+    if(firstChip){
+      firstChip.classList.add('active');
+    }
+
+    searchInput.addEventListener('input', () => {
+      const active = document.querySelector('.chip.active');
+      const fach = active ? (active.textContent === 'Alle' ? '' : active.textContent) : '';
+      applyFilter(fach, searchInput.value);
+    });
+    resetBtn.addEventListener('click', resetFilters);
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.fa-mail');
+      if(!btn) return;
+      const mail = btn.dataset.mail || '';
+      const fach = btn.dataset.fach || 'Fachabteilung';
+      const standort = btn.dataset.standort || 'Standort';
+      const subj = encodeURIComponent(`[Rückruf] ${fach} - ${standort}`);
+      const body = encodeURIComponent(`Guten Tag,\n\nbitte um einen Rückruf aus der ${fach} (${standort}).\nRückrufnummer: [Telefonnummer einfügen]\n\nVielen Dank und freundliche Grüße`);
+      window.location.href = `mailto:${mail}?subject=${subj}&body=${body}`;
+    });
+
+    applyFilter('', '');
+  </script>
+</body>
+</html>

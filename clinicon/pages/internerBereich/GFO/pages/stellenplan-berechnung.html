@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Stellenplanberechnungsstation - GFO</title>
+  <link rel="stylesheet" href="../../../../style.css" />
+  <style>
+    body{
+      margin:0;
+      font-family:var(--font-base);
+      font-size:var(--font-size-base);
+      line-height:var(--line-height-base);
+      background:var(--bg);
+      color:var(--text);
+    }
+    main{
+      padding:24px;
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+    }
+    .page-header h1{
+      margin:0 0 6px;
+      font-size:1.6rem;
+      letter-spacing:.01em;
+    }
+    .page-header p{
+      margin:0;
+      color:var(--muted);
+    }
+    .status-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:14px;
+    }
+    .status-card{
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:var(--panel);
+      box-shadow:0 8px 20px rgba(15,23,42,.08);
+    }
+    .status-card strong{ display:block; font-size:1.2rem; margin-bottom:6px; }
+    .status-card span{ color:var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="page-header card">
+      <h1>Stellenplanberechnungsstation</h1>
+      <p>Simulation und Berechnung der Stellenpl&auml;ne.</p>
+    </section>
+
+    <section class="card">
+      <div class="status-grid">
+        <div class="status-card">
+          <strong>Datenerfassung</strong>
+          <span>Anbindung an Dienstart 03 Benchmark in Vorbereitung.</span>
+        </div>
+        <div class="status-card">
+          <strong>Simulation</strong>
+          <span>Berechnungsschritte werden aktuell automatisiert.</span>
+        </div>
+        <div class="status-card">
+          <strong>Export</strong>
+          <span>CSV und PDF Export werden integriert.</span>
+        </div>
+      </div>
+      <p style="margin-top:18px; color:var(--muted);">Diese Seite dient als Platzhalter, bis die finale Berechnungseinheit vollst&auml;ndig bereitsteht.</p>
+    </section>
+  </main>
+</body>
+</html>
+
